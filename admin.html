@@ -215,35 +215,39 @@
 
 
             <!-- GALLERY -->
+            
+<section class="dashboard-card">
 
-            <section class="dashboard-card">
+    <h2>
+        🖼️ Upload Photo
+    </h2>
 
-                <h2>
-                    🖼️ Upload Photo
-                </h2>
+    <input
+        id="photoTitle"
+        type="text"
+        placeholder="Photo title"
+    >
 
-                <input
-                    id="photoTitle"
-                    placeholder="Photo title"
-                >
+    <input
+        id="photoCaption"
+        type="text"
+        placeholder="Caption"
+    >
 
-                <input
-                    id="photoCaption"
-                    placeholder="Caption"
-                >
+    <input
+        id="photoFile"
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp"
+    >
 
-                <input
-                    id="photoFile"
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/heic,image/heif"
+    <button
+        type="button"
+        onclick="uploadPhoto()"
+    >
+        Upload Photo
+    </button>
 
-                <button
-                    onclick="uploadPhoto()"
-                >
-                    Upload Photo
-                </button>
-
-            </section>
+</section>
 
 
             <!-- VIDEO -->
