@@ -10,11 +10,11 @@ const path = require("path");
 const rateLimit = require("express-rate-limit");
 const { GridFSBucket, ObjectId } = require("mongodb");
 
-const User = require("./models/User");
-const Notice = require("./models/Notice");
-const Gallery = require("./models/Gallery");
-const Video = require("./models/Video");
-const Event = require("./models/Event");
+const User = require("./User");
+const Notice = require("./Notice");
+const Gallery = require("./Gallery");
+const Video = require("./Video");
+const Event = require("./Event");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
