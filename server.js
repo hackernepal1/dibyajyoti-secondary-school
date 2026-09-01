@@ -37,21 +37,40 @@ const authLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false
 });
-
 const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 15 * 1024 * 1024 },
+
+    limits: {
+        fileSize: 30 * 1024 * 1024
+    },
+
     fileFilter: (req, file, cb) => {
+
         const allowed = [
-            "image/jpeg", "image/png", "image/webp", "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+            "image/heic",
+            "image/heif",
             "application/pdf"
         ];
-        if (!allowed.includes(file.mimetype)) {
-            return cb(new Error("Only JPG, PNG, WEBP, GIF images and PDF files are allowed."));
+
+        if (!allowed.includes(file.mimetype.toLowerCase())) {
+            return cb(
+                new Error(
+                    "Only JPG, JPEG, PNG, WEBP, GIF, HEIC, HEIF images and PDF files are allowed."
+                )
+            );
         }
+
         cb(null, true);
     }
+    
+}
 });
+
 
 function requireAuth(req, res, next) {
     const header = req.headers.authorization || "";
