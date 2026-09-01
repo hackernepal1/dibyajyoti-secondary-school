@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login | Dibya Jyoti</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background:
+                linear-gradient(
+                    135deg,
+                    #02265c,
+                    #063b8c
+                );
+        }
+
+        .login-card {
+            width: min(430px, 92%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow:
+                0 25px 70px rgba(0,0,0,.25);
+        }
+
+        .login-logo {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: #063b8c;
+            color: white;
+            display: grid;
+            place-items: center;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .login-card h1 {
+            text-align: center;
+            color: #063b8c;
+            margin-bottom: 5px;
+        }
+
+        .login-card > p {
+            text-align: center;
+            color: #687386;
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #dce2eb;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            border-color: #063b8c;
+        }
+
+        .login-submit {
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: 8px;
+            background: #063b8c;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .login-submit:hover {
+            background: #02265c;
+        }
+
+        #loginMessage {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #063b8c;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="login-card">
+
+        <div class="login-logo">
+            DJ
+        </div>
+
+        <h1>Admin Login</h1>
+
+        <p>
+            Dibya Jyoti Secondary School
+        </p>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+
+                <label>
+                    Username
+                </label>
+
+                <input
+                    id="username"
+                    type="text"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    id="password"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                class="login-submit"
+                type="submit"
+            >
+                🔐 Login
+            </button>
+
+        </form>
+
+
+        <div id="loginMessage"></div>
+
+
+        <a
+            href="index.html"
+            class="back-home"
+        >
+            ← Back to Website
+        </a>
+
+    </main>
+
+
+    <script>
+        const loginForm = document.getElementById("loginForm");
+        const message = document.getElementById("loginMessage");
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+
+            if (!username || !password) {
+                message.textContent = "Please fill in all fields";
+                return;
+            }
+
+            message.textContent = "Signing in...";
+
+                        try {
+                const response = await fetch(
+                    "/api/auth/login",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            username,
+                            password
+                        })
+                    }
+                );
+
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Login failed"
+                    );
+                }
+
+                localStorage.setItem(
+                    "djss_admin_token",
+                    data.token
+                );
+
+                message.textContent = "Login successful. Redirecting...";
+
+                window.location.href = "admin.html";
+
+            } catch (error) {
+                message.textContent = error.message;
+            }
+        });
+    </script>
+</body>
+</html>

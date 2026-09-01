@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Dibya Jyoti</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        body {
+            background: #f4f7fb;
+        }
+
+        .admin-header {
+            background: #02265c;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .admin-header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-header h1 {
+            font-size: 22px;
+        }
+
+        .logout {
+            border: 1px solid rgba(255,255,255,.4);
+            background: transparent;
+            color: white;
+            padding: 9px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .dashboard {
+            padding: 45px 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.05);
+        }
+
+        .dashboard-card h2 {
+            color: #063b8c;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-card input,
+        .dashboard-card textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #dce2eb;
+            border-radius: 7px;
+            margin-bottom: 10px;
+            font-family: inherit;
+        }
+
+        .dashboard-card textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .dashboard-card button {
+            background: #063b8c;
+            color: white;
+            border: 0;
+            padding: 10px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .dashboard-card button:hover {
+            background: #02265c;
+        }
+
+        .full-card {
+            grid-column: 1 / -1;
+        }
+
+        .admin-list {
+            margin-top: 15px;
+        }
+
+        .admin-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #e5e9f0;
+            padding: 12px 0;
+        }
+
+        .delete {
+            background: #b42318 !important;
+        }
+
+        #status {
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            background: white;
+        }
+
+        @media(max-width: 800px) {
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-card {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<header class="admin-header">
+
+    <div class="container admin-header-inner">
+
+        <div>
+
+            <h1>
+                🏫 Dibya Jyoti Admin
+            </h1>
+
+            <small>
+                School Website Management
+            </small>
+
+        </div>
+
+
+        <button
+            class="logout"
+            id="logout"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="dashboard">
+
+    <div class="container">
+
+        <div id="status">
+            Loading dashboard...
+        </div>
+
+
+        <div class="dashboard-grid">
+
+
+            <!-- NOTICE -->
+
+            <section class="dashboard-card">
+
+                <h2>
+                    📢 Add Notice
+                </h2>
+
+                <input
+                    id="noticeTitle"
+                    placeholder="Notice title"
+                >
+
+                <textarea
+                    id="noticeDescription"
+                    placeholder="Description"
+                ></textarea>
+
+                <button
+                    onclick="addNotice()"
+                >
+                    Publish Notice
+                </button>
+
+            </section>
+
+
+            <!-- GALLERY -->
+
+            <section class="dashboard-card">
+
+                <h2>
+                    🖼️ Upload Photo
+                </h2>
+
+                <input
+                    id="photoTitle"
+                    placeholder="Photo title"
+                >
+
+                <input
+                    id="photoCaption"
+                    placeholder="Caption"
+                >
+
+                <input
+                    id="photoFile"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                >
+
+                <button
+                    onclick="uploadPhoto()"
+                >
+                    Upload Photo
+                </button>
+
+            </section>
+
+
+            <!-- VIDEO -->
+
+            <section class="dashboard-card">
+
+                <h2>
+                    🎥 Add Video
+                </h2>
+
+                <input
+                    id="videoTitle"
+                    placeholder="Video title"
+                >
+
+                <input
+                    id="videoUrl"
+                    placeholder="YouTube or video URL"
+                >
+
+                <textarea
+                    id="videoDescription"
+                    placeholder="Description"
+                ></textarea>
+
+                <button
+                    onclick="addVideo()"
+                >
+                    Add Video
+                </button>
+
+            </section>
+
+
+            <!-- DOCUMENT -->
+
+            <section class="dashboard-card">
+
+                <h2>
+                    📄 Upload PDF
+                </h2>
+
+                <input
+                    id="documentFile"
+                    type="file"
+                    accept="application/pdf"
+                >
+
+                <button
+                    onclick="uploadDocument()"
+                >
+                    Upload Document
+                </button>
+
+            </section>
+
+
+            <!-- EVENT -->
+
+            <section class="dashboard-card">
+
+                <h2>
+                    📅 Add Event
+                </h2>
+
+                <input
+                    id="eventTitle"
+                    placeholder="Event title"
+                >
+
+                <input
+                    id="eventDate"
+                    type="date"
+                >
+
+                <input
+                    id="eventLocation"
+                    placeholder="Location"
+                >
+
+                <textarea
+                    id="eventDescription"
+                    placeholder="Description"
+                ></textarea>
+
+                <button
+                    onclick="addEvent()"
+                >
+                    Add Event
+                </button>
+
+            </section>
+
+
+            <!-- CONTENT -->
+
+            <section class="dashboard-card">
+
+                <h2>
+                    🌐 Website
+                </h2>
+
+                <p>
+                    Manage notices, photos, videos,
+                    documents and events from this dashboard.
+                </p>
+
+                <br>
+
+                <a
+                    href="index.html"
+                    class="btn primary"
+                >
+                    View Website
+                </a>
+
+            </section>
+
+
+            <!-- NOTICE LIST -->
+
+            <section class="dashboard-card full-card">
+
+                <h2>
+                    Current Notices
+                </h2>
+
+                <div
+                    id="noticeList"
+                    class="admin-list"
+                >
+                    Loading...
+                </div>
+
+            </section>
+
+
+            <!-- GALLERY LIST -->
+
+            <section class="dashboard-card full-card">
+
+                <h2>
+                    Current Gallery
+                </h2>
+
+                <div
+                    id="galleryList"
+                    class="admin-list"
+                >
+                    Loading...
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+const API = "/api";
+const token = localStorage.getItem("djss_admin_token");
+
+if (!token) window.location.href = "login.html";
+
+async function api(endpoint, options = {}) {
+    const headers = { ...(options.headers || {}), Authorization: `Bearer ${token}` };
+    const response = await fetch(`${API}${endpoint}`, { ...options, headers });
+    if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("djss_admin_token");
+        window.location.href = "login.html";
+        return null;
+    }
+    return response;
+}
+
+function status(message) {
+    const el = document.getElementById("status");
+    if (el) el.textContent = message;
+}
+
+async function addNotice() {
+    const title = document.getElementById("noticeTitle").value.trim();
+    const description = document.getElementById("noticeDescription").value.trim();
+    if (!title) return status("Please enter a notice title.");
+    const response = await api("/notices", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, published: true })
+    });
+    if (response && response.ok) {
+        status("Notice published successfully.");
+        document.getElementById("noticeTitle").value = "";
+        document.getElementById("noticeDescription").value = "";
+        loadNotices();
+    } else if (response) status((await response.json()).message || "Could not publish notice.");
+}
+
+async function uploadPhoto() {
+    const file = document.getElementById("photoFile").files[0];
+    if (!file) return status("Select a photo first.");
+    const form = new FormData(); form.append("file", file);
+    const response = await api("/upload", { method: "POST", body: form });
+    if (!response) return;
+    const data = await response.json();
+    if (!response.ok) return status(data.message || "Photo upload failed.");
+    const save = await api("/gallery", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            title: document.getElementById("photoTitle").value.trim() || "School Gallery",
+            caption: document.getElementById("photoCaption").value.trim(), imageUrl: data.url
+        })
+    });
+    if (save && save.ok) { status("Photo uploaded successfully."); loadGallery(); }
+}
+
+async function addVideo() {
+    const title = document.getElementById("videoTitle").value.trim();
+    const videoUrl = document.getElementById("videoUrl").value.trim();
+    const description = document.getElementById("videoDescription").value.trim();
+    if (!title || !videoUrl) return status("Video title and URL are required.");
+    const response = await api("/videos", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, videoUrl, description })
+    });
+    if (response && response.ok) { status("Video added successfully."); loadVideos(); }
+}
+
+async function uploadDocument() {
+    const file = document.getElementById("documentFile").files[0];
+    if (!file) return status("Select a PDF first.");
+    if (file.type !== "application/pdf") return status("Only PDF files are allowed.");
+    const form = new FormData(); form.append("file", file);
+    const response = await api("/upload", { method: "POST", body: form });
+    if (!response) return;
+    const data = await response.json();
+    status(data.message || "Document uploaded.");
+}
+
+async function addEvent() {
+    const title = document.getElementById("eventTitle").value.trim();
+    const eventDate = document.getElementById("eventDate").value;
+    const location = document.getElementById("eventLocation").value.trim();
+    const description = document.getElementById("eventDescription").value.trim();
+    if (!title || !eventDate) return status("Event title and date are required.");
+    const response = await api("/events", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, eventDate, location, description })
+    });
+    if (response && response.ok) { status("Event added successfully."); loadEvents(); }
+}
+
+async function loadNotices() {
+    try {
+        const response = await fetch("/api/notices");
+        const notices = await response.json();
+        const container = document.getElementById("noticeList");
+        if (!container) return;
+        container.innerHTML = notices.length ? notices.map(n => `<div class="admin-list-item"><div><strong>${escapeHTML(n.title)}</strong><p>${escapeHTML(n.description || "")}</p></div></div>`).join("") : "No notices.";
+    } catch { status("Could not load notices."); }
+}
+
+async function loadGallery() {
+    try {
+        const response = await fetch("/api/gallery");
+        const items = await response.json();
+        const container = document.getElementById("galleryList");
+        if (!container) return;
+        container.innerHTML = items.length ? items.map(i => `<div class="admin-list-item"><div><strong>${escapeHTML(i.title)}</strong><p>${escapeHTML(i.caption || "")}</p></div></div>`).join("") : "No photos uploaded.";
+    } catch { status("Could not load gallery."); }
+}
+
+async function loadVideos() { try { await fetch("/api/videos"); } catch {} }
+async function loadEvents() { try { await fetch("/api/events"); } catch {} }
+
+function escapeHTML(value) {
+    return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+
+document.getElementById("logout")?.addEventListener("click", () => {
+    localStorage.removeItem("djss_admin_token");
+    window.location.href = "login.html";
+});
+
+status("Admin dashboard connected.");
+loadNotices();
+loadGallery();
+</script>
+</body>
+</html>
