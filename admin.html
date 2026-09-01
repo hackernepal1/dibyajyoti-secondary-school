@@ -444,22 +444,77 @@ async function addNotice() {
 }
 
 async function uploadPhoto() {
-    const file = document.getElementById("photoFile").files[0];
-    if (!file) return status("Select a photo first.");
-    const form = new FormData(); form.append("file", file);
-    const response = await api("/upload", { method: "POST", body: form });
-    if (!response) return;
-    const data = await response.json();
-    if (!response.ok) return status(data.message || "Photo upload failed.");
-    const save = await api("/gallery", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            title: document.getElementById("photoTitle").value.trim() || "School Gallery",
-            caption: document.getElementById("photoCaption").value.trim(), imageUrl: data.url
-        })
-    });
-    if (save && save.ok) { status("Photo uploaded successfully."); loadGallery(); }
-}
+
+    const fileInput = document.getElementById("photoFile");
+    const file = fileInput.files[0];
+
+    if (!file) {
+        return status("Please select a photo first.");
+    }
+
+    status("Uploading photo...");
+
+    try {
+
+        const form = new FormData();
+        form.append("file", file);
+
+        const response = await api("/upload", {
+            method: "POST",
+            body: form
+        });
+
+        if (!response) return;
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return status(data.message || "Photo upload failed.");
+        }
+
+        const save = await api("/gallery", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title:
+                    document.getElementById("photoTitle").value.trim()
+                    || "School Gallery",
+
+                caption:
+                    document.getElementById("photoCaption").value.trim(),
+
+                imageUrl: data.url
+            })
+        });
+
+        if (!save) return;
+
+        const saveData = await save.json();
+
+        if (!save.ok) {
+            return status(
+                saveData.message || "Photo uploaded but could not be saved to gallery."
+            );
+        }
+
+        status("✅ Photo uploaded successfully!");
+
+        document.getElementById("photoTitle").value = "";
+        document.getElementById("photoCaption").value = "";
+        fileInput.value = "";
+
+        loadGallery();
+
+    } catch (error) {
+
+        console.error("Photo upload error:", error);
+
+        status("Photo upload failed. Please try again.");
+
+    }
+    }
 
 async function addVideo() {
     const title = document.getElementById("videoTitle").value.trim();
