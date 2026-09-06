@@ -29,6 +29,8 @@ const Event = require("./Event");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const FRONTEND_DIR = path.join(__dirname);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI is required");
 if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is required");
