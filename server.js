@@ -6,6 +6,16 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const multer = require("multer");
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+// Cloudinary कॉन्फ़िगरेशन
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 const { GridFSBucket, ObjectId } = require("mongodb");
@@ -27,9 +37,6 @@ if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
 }
 
 app.set("trust proxy", 1);
-app.use(cors());
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true }));
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -38,8 +45,14 @@ const authLimiter = rateLimit({
     legacyHeaders: false
 });
 const upload = multer({
-    storage: multer.memoryStorage(),
-
+      storage: new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'school_gallery',
+      allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'gif', 'heic', 'heif', 'pdf'],
+    },
+  }),
+    
     limits: {
         fileSize: 30 * 1024 * 1024
     },
@@ -144,15 +157,34 @@ app.get("/api/events", async (req, res) => {
     catch (err) { res.status(500).json({ message: "Unable to load events" }); }
 });
 
-// Admin APIs
-app.post("/api/notices", requireAuth, async (req, res) => {
-    try { res.status(201).json(await Notice.create(req.body)); }
-    catch (err) { res.status(400).json({ message: err.message }); }
+// // Admin APIs
+
+// 1. नोटिस अपलोड रूट (Notices Route)
+app.post("/api/notices", requireAuth, upload.single("image"), async (req, res) => {
+  try {
+    const noticeData = { ...req.body };
+    if (req.file) {
+      noticeData.image = req.file.path; // क्लाउडीनरी का परमानेंट इमेज लिंक
+    }
+    const newNotice = await Notice.create(noticeData);
+    res.status(201).json(newNotice);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
-app.post("/api/gallery", requireAuth, async (req, res) => {
-    try { res.status(201).json(await Gallery.create(req.body)); }
-    catch (err) { res.status(400).json({ message: err.message }); }
+// 2. गैलरी अपलोड रूट (Gallery Route)
+app.post("/api/gallery", requireAuth, upload.single("image"), async (req, res) => {
+  try {
+    const galleryData = { ...req.body };
+    if (req.file) {
+      galleryData.image = req.file.path; // क्लाउडीनरी का परमानेंट इमेज लिंक
+    }
+    const newGallery = await Gallery.create(galleryData);
+    res.status(201).json(newGallery);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 app.post("/api/videos", requireAuth, async (req, res) => {
