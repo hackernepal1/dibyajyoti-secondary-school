@@ -50,9 +50,11 @@ const upload = multer({
       storage: new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-      folder: 'school_gallery',
-      allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'gif', 'heic', 'heif', 'pdf'],
-    },
+  folder: 'school_gallery',
+  upload_preset: 'ml_default',
+  allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'gif', 'heic', 'heif', 'pdf'],
+},
+        
   }),
     
     limits: {
