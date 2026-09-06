@@ -47,15 +47,13 @@ const authLimiter = rateLimit({
     legacyHeaders: false
 });
 const upload = multer({
-      storage: new CloudinaryStorage({
+  storage: new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-  folder: 'school_gallery',
-  upload_preset: 'ml_default',
-  allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'gif', 'heic', 'heif', 'pdf'],
-},
-        
-  }),
+      folder: 'school_gallery',
+      upload_preset: 'ml_default',
+    },
+  }),       
     
     limits: {
         fileSize: 30 * 1024 * 1024
