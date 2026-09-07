@@ -7,13 +7,14 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/animation.css">
     <style>
-        /* नयाँ शिक्षक ग्रिड र बटनको लागि डिजाइन */
+        /* नया शिक्षक ग्रिड र विबरण को लागी डिजाइन */
         .nav-btn-container { text-align: center; margin: 20px 0 40px 0; }
-        .nav-btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-family: Arial, sans-serif; }
+        .nav-btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
         .nav-btn:hover { background-color: #0056b3; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; padding: 10px 0; }
-        .card { border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); background: #fff; font-family: Arial, sans-serif; }
-        .profile-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 3px solid #1877f2; margin-bottom: 10px; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; padding: 20px; }
+        .card { border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .profile-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 3px solid #1877f2; margin: 0 auto 15px auto; display: block; }
         .card h3 { margin: 10px 0 5px 0; color: #333; }
         .fb-btn { display: inline-block; margin-top: 15px; padding: 8px 16px; background-color: #1877f2; color: white; text-decoration: none; border-radius: 20px; font-weight: bold; font-size: 14px; }
         .fb-btn:hover { background-color: #145dbf; }
@@ -31,7 +32,7 @@
                 <a href="about.html">About</a>
                 <a href="academics.html">Academics</a>
                 <a href="programs.html">+2 Programs</a>
-                <a href="teachers.html">Teachers</a>
+                <a href="teachers.html" class="active">Teachers</a>
                 <a href="gallery.html">Gallery</a>
                 <a href="videos.html">Videos</a>
                 <a href="notices.html">Notices</a>
@@ -45,7 +46,7 @@
         <div class="container">
             <span class="section-label">DIBYA JYOTI SECONDARY SCHOOL</span>
             <h2>Teachers</h2>
-            <p>Our teachers and staff work together to support learning, discipline, creativity and the overall development of students.</p>
+            <p>Our teachers and staff work together to support learning, discipline, creativity and the overall development of our students.</p>
             
             <!-- यहाँ फारम खोल्ने नयाँ बटन थपिएको छ -->
             <div class="nav-btn-container">
@@ -63,7 +64,7 @@
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('teacher-grid');
-                if(container) {
+                if (container) {
                     container.innerHTML = ""; // पुराना नमुना डेटा सफा गर्न
                     data.forEach(teacher => {
                         const card = document.createElement('div');
@@ -71,9 +72,9 @@
                         card.innerHTML = `
                             <img src="${teacher.photo}" class="profile-img" alt="${teacher.name}">
                             <h3>${teacher.name}</h3>
-                            <p style="color: #666; margin: 5px 0; font-size: 14px;"><strong>Address:</strong> ${teacher.address}</p>
-                            <p style="color: #666; margin: 5px 0; font-size: 14px;"><strong>Phone:</strong> ${teacher.contact}</p>
-                            <a href="${teacher.facebook}" target="_blank" rel="noopener noreferrer" class="fb-btn">Connect on Facebook</a>
+                            <p style="color: #666; margin: 5px 0;"><strong>Address:</strong> ${teacher.address}</p>
+                            <p style="color: #666; margin: 5px 0;"><strong>Phone:</strong> ${teacher.phone}</p>
+                            <a href="${teacher.facebook}" target="_blank" class="fb-btn">Connect</a>
                         `;
                         container.appendChild(card);
                     });
