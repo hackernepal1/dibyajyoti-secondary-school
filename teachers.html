@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/animation.css">
     <style>
-        /* नयाँ शिक्षक ग्रिड र बटनको लागि डिजाइन */
         .nav-btn-container { text-align: center; margin: 20px 0 40px 0; }
         .nav-btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-family: Arial, sans-serif; }
         .nav-btn:hover { background-color: #0056b3; }
@@ -47,64 +46,60 @@
             <h2>Teachers</h2>
             <p>Our teachers and staff work together to support learning, discipline, creativity and the overall development of students.</p>
             
-            <!-- यहाँ फारम खोल्ने नयाँ बटन थपिएको छ -->
             <div class="nav-btn-container">
                 <a href="teacher-Information.html" class="nav-btn">Add New Teacher Information</a>
             </div>
 
-            <!-- शिक्षकका कार्डहरू स्वतः बन्ने ठाउँ (Grid) -->
-            <div id="teacher-grid" class="grid-container"></div>
+            <div id="teacher-grid" class="grid-container">
+                <p style="text-align:center; color:#888;">Loading database...</p>
+            </div>
         </div>
     </main>
 
-    <!-- teachers.json बाट डेटा तान्ने स्क्रिप्ट -->
+    <!-- सफा र सही काम गर्ने Airtable API स्क्रिप्ट -->
     <script>
-    // Airtable API बाट सिधै लाइभ डेटा तान्ने स्वचालित कोड
-    const baseId = 'appYdYiqvwFBQuVNT'; 
-    const tableName = 'Table 1'; // यदि तपाईंले Airtable मा नाम फेर्नुभएको छैन भने यो नै हुन्छ
+        const baseId = 'appYdYiqvvWJvQ7u1'; 
+        const tableName = 'Table%201'; 
+        const personalAccessToken = 'patennsomj0wC2Kk2.ea4da07512bfc4d6d5f584d2ab8e7d739631812440a646994b9d4c77d3f7e9d8'; 
 
-    // सुरक्षा र गोपनियताका लागि तपाईंको Airtable Token (की) यहाँ राख्नुपर्छ
-    // 'pat...' बाट सुरु हुने टोकन कोडलाई यहाँ राख्नुहोस्
-    const personalAccessToken = 'patennsomj0wC2Kk2.ea4da07512bfc4d6d5f584d2ab8e7d739631812440a646994b9d4c77d3f7e9d8';
+        const url = `https://airtable.com{baseId}/${tableName}`;
 
-    const url = `https://airtable.com{baseId}/${tableName}`;
-
-    fetch(url, {
-        headers: { Authorization: `Bearer ${personalAccessToken}` }
-    })
-    .then(response => response.json())
-    .then(data => {
-        const container = document.getElementById('teacher-grid');
-        if(container) {
-            container.innerHTML = ""; // पुराना डाटाहरू सफा गर्न
-            
-            // यदि डेटा आयो भने कार्डहरू बनाउने
-            if(data.records && data.records.length > 0) {
-                data.records.forEach(record => {
-                    const teacher = record.fields;
-                    
-                    // यदि नाम खाली छैन भने मात्र कार्ड बनाउने
-                    if(teacher.name) {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        card.innerHTML = `
-                            <img src="${teacher.photo || 'https://placeholder.com'}" class="profile-img" alt="${teacher.name}">
-                            <h3>${teacher.name}</h3>
-                            <p style="color: #666; margin: 5px 0; font-size: 14px;"><strong>Address:</strong> ${teacher.address || 'N/A'}</p>
-                            <p style="color: #666; margin: 5px 0; font-size: 14px;"><strong>Phone:</strong> ${teacher.contact || 'N/A'}</p>
-                            <a href="${teacher.facebook || '#'}" target="_blank" rel="noopener noreferrer" class="fb-btn">Connect on Facebook</a>
-                        `;
-                        container.appendChild(card);
-                    }
-                });
-            } else {
-                container.innerHTML = "<p style='text-align:center; color:#888;'>No teachers found in database.</p>";
+        fetch(url, {
+            headers: { Authorization: `Bearer ${personalAccessToken}` }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('teacher-grid');
+            if(container) {
+                container.innerHTML = ""; 
+                if(data.records && data.records.length > 0) {
+                    data.records.forEach(record => {
+                        const teacher = record.fields;
+                        if(teacher.name) {
+                            const card = document.createElement('div');
+                            card.className = 'card';
+                            card.innerHTML = `
+                                <img src="${teacher.photo || 'https://placeholder.com'}" class="profile-img" alt="${teacher.name}">
+                                <h3>${teacher.name}</h3>
+                                <p style="color: #666; margin: 5px 0; font-size: 14px;"><strong>Address:</strong> ${teacher.address || 'N/A'}</p>
+                                <p style="color: #666; margin: 5px 0; font-size: 14px;"><strong>Phone:</strong> ${teacher.contact || 'N/A'}</p>
+                                <a href="${teacher.facebook || '#'}" target="_blank" rel="noopener noreferrer" class="fb-btn">Connect on Facebook</a>
+                            `;
+                            container.appendChild(card);
+                        }
+                    });
+                } else {
+                    container.innerHTML = "<p style='text-align:center; color:#888;'>No records found. Please add teacher info via form.</p>";
+                }
             }
-        }
-    })
-    .catch(error => console.error('Airtable Database Error:', error));
-        </script>
-    
+        })
+        .catch(error => {
+            console.error('Airtable Error:', error);
+            const container = document.getElementById('teacher-grid');
+            if(container) container.innerHTML = "<p style='text-align:center; color:red;'>Failed to load database.</p>";
+        });
+    </script>
+
     <script src="js/app.js"></script>
 </body>
 </html>
