@@ -1019,6 +1019,55 @@ button {
 /* -------------------------
    MOBILE
 ------------------------- */
+/* --- Custom School Banner & Info Styling --- */
+.school-banner-section {
+    background-color: #062c63; 
+    color: #ffffff;
+    padding: 50px 20px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+.school-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.school-main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+.school-main-title span {
+    color: #f4b41a;
+}
+.school-location {
+    font-size: 1rem;
+    color: #cccccc;
+    margin-bottom: 30px;
+}
+.school-info-box {
+    background-color: #fca311;
+    color: #ffffff;
+    padding: 25px;
+    border-radius: 6px;
+    text-align: justify;
+    line-height: 1.7;
+    font-size: 0.95rem;
+    margin-bottom: 35px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+.school-image-wrapper {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+.school-panoramic-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
 
 @media (max-width: 600px) {
 
