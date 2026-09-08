@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Teacher Name 1",
+    "designation": "Principal / Subject Teacher",
+    "email": "teacher1@dibyajyotiss.edu.np",
+    "photo": "https://githubusercontent.com"
+  },
+  {
+    "id": 2,
+    "name": "Teacher Name 2",
+    "designation": "Vice Principal",
+    "email": "teacher2@dibyajyotiss.edu.np",
+    "photo": "https://githubusercontent.com"
+  }
+]
+
