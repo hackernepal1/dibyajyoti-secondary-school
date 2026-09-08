@@ -16,10 +16,10 @@
   },
 
   {
-    "name": "Krishna Adhikari",
-    "photo": "https://i.ibb.co/Jwz7Sjv9/img-2-1788858675539.jpg",
+    "name":"Krishna Adhikari",
+    "photo":"https://i.ibb.co/Jwz7Sjv9/img-2-1788858675539.jpg",
     "address":"Bardaghat Bhutaha Nawalparasi west",
-    "contact number":"+977 984-7027637",
-    "Facebook": "https://www.facebook.com/kripa.adhikari.18"
+    "contact":"+977 984-7027637",
+    "facebook":"https://www.facebook.com/kripa.adhikari.18"
   }    
 ]
