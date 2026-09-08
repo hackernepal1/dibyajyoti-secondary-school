@@ -6,13 +6,13 @@
     <title>Teacher Registration | Dibya Jyoti</title>
     <style>
         body { background-color: #f4f6f9; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .form-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; box-sizing: border-box; }
+        .form-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; box-sizing: border-box; }
         h2 { text-align: center; margin-bottom: 5px; color: #333; }
         p.subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 25px; }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; font-size: 14px; }
-        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-        button { width: 100%; background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
         button:hover { background-color: #218838; }
     </style>
 </head>
@@ -22,8 +22,9 @@
     <h2>Teacher Registration</h2>
     <p class="subtitle">Dibya Jyoti Secondary School</p>
     
-    <!-- सुरक्षित Formspree लिंक यहाँ सेट कर दिया गया है -->
-    <form action="https://formspree.io" method="POST">
+    <!-- Updated Formspree Endpoint -->
+    <form action="https://formspree.io/f/maeypdkd" method="POST">
+        
         <div class="input-group">
             <label>Full Name:</label>
             <input type="text" name="name" placeholder="E.g. Jageshwarkumar Kushwaha" required>
@@ -46,7 +47,7 @@
         
         <div class="input-group">
             <label>Photo URL (Image Link):</label>
-            <input type="url" name="photo" placeholder="Paste ImgBB Direct link here" required>
+            <input type="url" name="photo" placeholder="Paste ImgBB Direct Link here" required>
         </div>
         
         <button type="submit">Submit Information</button>
