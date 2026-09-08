@@ -4,48 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teachers | Dibya Jyoti Secondary School</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animation.css">
+    <!-- यहाँ हमने CSS का सही पाथ सेट कर दिया है -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="animation.css">
 </head>
 <body>
     <header class="header">
-        <div class="container nav-wrapper">
-            <div class="brand">
-                <div class="school-logo">DJ</div>
+        <div class="container nav-wrapper" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0;">
+            <div class="brand" style="display: flex; align-items: center; gap: 10px;">
+                <div class="school-logo" style="background: #007bff; color: white; padding: 10px; border-radius: 5px; font-weight: bold;">DJ</div>
                 <div>
-                    <h1>DIBYA JYOTI</h1>
-                    <small>SECONDARY SCHOOL</small>
+                    <h1 style="font-size: 20px; margin: 0; color: #333;">DIBYA JYOTI</h1>
+                    <small style="color: #666;">SECONDARY SCHOOL</small>
                 </div>
             </div>
-            <nav>
-                <a href="index.html">Home</a>
-                <a href="about.html">About</a>
-                <a href="academics.html">Academics</a>
-                <a href="programs.html">Programs</a>
-                <a href="teachers.html" class="active">Teachers</a>
-                <a href="gallery.html">Gallery</a>
-                <a href="videos.html">Videos</a>
-                <a href="notices.html">Notices</a>
-                <a href="events.html">Events</a>
-                <a href="contact.html">Contact</a>
+            <nav style="display: flex; gap: 15px;">
+                <a href="index.html" style="text-decoration: none; color: #333;">Home</a>
+                <a href="about.html" style="text-decoration: none; color: #333;">About</a>
+                <a href="academics.html" style="text-decoration: none; color: #333;">Academics</a>
+                <a href="programs.html" style="text-decoration: none; color: #333;">Programs</a>
+                <a href="teachers.html" class="active" style="text-decoration: none; color: #007bff; font-weight: bold;">Teachers</a>
+                <a href="gallery.html" style="text-decoration: none; color: #333;">Gallery</a>
+                <a href="videos.html" style="text-decoration: none; color: #333;">Videos</a>
+                <a href="notices.html" style="text-decoration: none; color: #333;">Notices</a>
+                <a href="events.html" style="text-decoration: none; color: #333;">Events</a>
+                <a href="contact.html" style="text-decoration: none; color: #333;">Contact</a>
             </nav>
         </div>
     </header>
 
-    <main class="section">
-        <div class="container">
-            <span class="section-label">DIBYA JYOTI SECONDARY SCHOOL</span>
-            <h2>Our Teachers</h2>
-            <p>Our teachers and staff work together to support learning, discipline, creativity, and the overall development of students.</p>
+    <main class="section" style="padding: 40px 0; background-color: #f9f9f9; min-height: 80vh;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center;">
+            <span class="section-label" style="color: #007bff; font-weight: bold; letter-spacing: 1px; font-size: 14px;">DIBYA JYOTI SECONDARY SCHOOL</span>
+            <h2 style="font-size: 32px; margin: 10px 0; color: #222;">Our Teachers</h2>
+            <p style="color: #666; max-width: 600px; margin: 0 auto 30px auto; font-size: 16px;">Our teachers and staff work together to support learning, discipline, creativity, and the overall development of students.</p>
             
-            <!-- यहाँ सभी टीचर्स के कार्ड्स अपने आप लोड होंगे -->
-            <div id="teachers-list-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 30px;">
+            <!-- यहाँ सभी टीचर्स के कार्ड्स लोड होंगे -->
+            <div id="teachers-list-container" style="display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; margin-top: 30px;">
                 <p id="loading-text">Loading teachers data...</p>
             </div>
         </div>
     </main>
 
-    <!-- ऑटोमैटिक डेटा लोड करने का जावास्क्रिप्ट कोड -->
     <script>
         fetch('teachers.json')
             .then(response => {
@@ -56,7 +56,7 @@
             })
             .then(data => {
                 const listContainer = document.getElementById('teachers-list-container');
-                listContainer.innerHTML = ''; // लोडिंग टेक्स्ट को हटाएं
+                listContainer.innerHTML = ''; 
 
                 if (data.length === 0) {
                     listContainer.innerHTML = '<p>No teachers found.</p>';
@@ -65,12 +65,14 @@
 
                 data.forEach(teacher => {
                     const cardHTML = `
-                        <div class="teacher-card" style="background: #fff; border: 1px solid #e0e0e0; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 280px; transition: transform 0.2s;">
-                            <img src="${teacher.photo}" alt="${teacher.name}" style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff; margin-bottom: 15px;">
-                            <h3 style="font-size: 20px; margin: 5px 0; color: #333;">${teacher.name}</h3>
-                            <p style="color: #555; font-size: 14px; margin: 8px 0;"><strong>📍 Address:</strong> ${teacher.address}</p>
-                            <p style="color: #555; font-size: 14px; margin: 8px 0;"><strong>📞 Phone:</strong> ${teacher.contact}</p>
-                            <a href="${teacher.facebook}" target="_blank" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; border-radius: 25px; text-decoration: none; margin-top: 15px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 5px rgba(0,123,255,0.3);">Connect on Facebook</a>
+                        <div class="teacher-card" style="background: #fff; border: 1px solid #e8e8e8; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.06); width: 280px; box-sizing: border-box;">
+                            <img src="${teacher.photo}" alt="${teacher.name}" style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,123,255,0.2);">
+                            <h3 style="font-size: 22px; margin: 5px 0 10px 0; color: #333; font-weight: 600;">${teacher.name}</h3>
+                            <div style="text-align: left; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
+                                <p style="color: #555; font-size: 14px; margin: 6px 0; display: flex; align-items: center; gap: 5px;">📍 <span style="color: #777;">${teacher.address}</span></p>
+                                <p style="color: #555; font-size: 14px; margin: 6px 0; display: flex; align-items: center; gap: 5px;">📞 <span style="color: #777;">${teacher.contact}</span></p>
+                            </div>
+                            <a href="${teacher.facebook}" target="_blank" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 0; width: 100%; border-radius: 25px; text-decoration: none; margin-top: 20px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 10px rgba(0,123,255,0.25); text-align: center;">Connect on Facebook</a>
                         </div>
                     `;
                     listContainer.innerHTML += cardHTML;
@@ -78,9 +80,8 @@
             })
             .catch(error => {
                 console.error("त्रुटि:", error);
-                document.getElementById('teachers-list-container').innerHTML = '<p style="color: red;">डेटा लोड करने में समस्या आई। कृपया जांचें कि teachers.json सही है या नहीं।</p>';
+                document.getElementById('teachers-list-container').innerHTML = '<p style="color: red;">डेटा लोड करने में समस्या आई।</p>';
             });
     </script>
 </body>
 </html>
-
