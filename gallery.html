@@ -1,13 +1,396 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Gallery | Dibya Jyoti Secondary School</title><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/animation.css"></head><body><header class="header"><div class="container nav-wrapper"><a href="index.html" class="brand"><div class="school-logo">DJ</div><div><h1>DIBYA JYOTI</h1><small>SECONDARY SCHOOL</small></div></a><nav><a href="index.html">Home</a><a href="about.html">About</a><a href="academics.html">Academics</a><a href="programs.html">+2 Programs</a><a href="teachers.html">Teachers</a><a href="gallery.html">Gallery</a><a href="videos.html">Videos</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="contact.html">Contact</a></nav></div></header><main class="section"><div class="container"><span class="section-label">DIBYA JYOTI SECONDARY SCHOOL</span><h2>Gallery</h2><div id="content" class="gallery">Loading...</div></div></main><script>
-const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll("'",'&quot;').replaceAll('"','&#039;');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-fetch('/api/gallery').then(r=>r.json()).then(items=> {
-    const dynamicContent = items.length ? items.map(i => `<article><img src="${esc(i.imageUrl)}" alt="${esc(i.title)}" loading="lazy"><h3>${esc(i.title)}</h3><p>${esc(i.caption||"")}</p></article>`).join("") : '';
-    const staticContent = `<article><img src="received_971883538830572.jpeg" alt="Manual Photo" loading="lazy"><h3>School Image</h3><p>Gallery</p></article>`;
-    document.getElementById('content').innerHTML = dynamicContent + staticContent;
-}).catch(()=> {
-    const staticContent = `<article><img src="received_971883538830572.jpeg" alt="Manual Photo" loading="lazy"><h3>School Image</h3><p>Gallery</p></article>`;
-    document.getElementById('content').innerHTML = staticContent;
+<title>Dibyajyoti Secondary School | Gallery</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#050b12;
+  color:white;
+  min-height:100vh;
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  padding:45px 15px 30px;
+  background:linear-gradient(135deg,#06141e,#07101b);
+  border-bottom:1px solid #00eaff55;
+}
+
+header h1{
+  color:#00eaff;
+  font-size:clamp(30px,8vw,55px);
+  text-shadow:0 0 10px #00eaff,0 0 30px #00eaff;
+}
+
+header p{
+  margin-top:10px;
+  color:#aebdc7;
+}
+
+/* GALLERY */
+.gallery{
+  width:94%;
+  max-width:1200px;
+  margin:35px auto 70px;
+
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:25px;
+}
+
+/* CARD */
+.card{
+  background:rgba(255,255,255,.06);
+  border:1px solid #00eaff44;
+  border-radius:20px;
+  padding:9px;
+  overflow:hidden;
+
+  box-shadow:0 10px 35px #0008;
+
+  animation:show .8s ease both;
+  transition:.4s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  border-color:#00eaff;
+  box-shadow:0 0 30px #00eaff44;
+}
+
+.card img{
+  width:100%;
+  height:280px;
+  object-fit:cover;
+  display:block;
+  border-radius:14px;
+
+  cursor:pointer;
+  transition:.5s;
+}
+
+.card:hover img{
+  transform:scale(1.04);
+}
+
+.info{
+  text-align:center;
+  padding:15px 5px 8px;
+}
+
+.info h2{
+  font-size:18px;
+}
+
+.info p{
+  margin-top:6px;
+  color:#91a4af;
+  font-size:13px;
+}
+
+@keyframes show{
+  from{
+    opacity:0;
+    transform:translateY(35px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* FULLSCREEN */
+.viewer{
+  position:fixed;
+  inset:0;
+
+  background:#000e;
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  z-index:9999;
+  padding:20px;
+}
+
+.viewer.active{
+  display:flex;
+}
+
+.viewer img{
+  max-width:95%;
+  max-height:90vh;
+
+  border-radius:15px;
+
+  box-shadow:0 0 40px #00eaff55;
+
+  animation:zoom .35s ease;
+}
+
+@keyframes zoom{
+  from{
+    transform:scale(.7);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+.close{
+  position:absolute;
+  top:20px;
+  right:20px;
+
+  width:48px;
+  height:48px;
+
+  border-radius:50%;
+  border:1px solid #00eaff;
+
+  background:#07131c;
+  color:#00eaff;
+
+  font-size:30px;
+  cursor:pointer;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:30px 15px;
+
+  color:#82939e;
+
+  border-top:1px solid #00eaff33;
+}
+
+footer strong{
+  color:#00eaff;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+  .gallery{
+    grid-template-columns:1fr;
+  }
+
+  .card img{
+    height:250px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <h1>📸 PHOTO GALLERY</h1>
+
+  <p>
+    Dibyajyoti Secondary School
+  </p>
+
+</header>
+
+
+<main class="gallery">
+
+
+<!-- PHOTO 1 -->
+
+<div class="card">
+
+<img
+src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG_20260910_203204_049.jpg"
+alt="Dibyajyoti School Photo 1"
+onclick="openPhoto(this.src)"
+>
+
+<div class="info">
+<h2>School Memories 01</h2>
+<p>Dibyajyoti Secondary School</p>
+</div>
+
+</div>
+
+
+<!-- PHOTO 2 -->
+
+<div class="card">
+
+<img
+src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG_20260910_203200_676.jpg"
+alt="Dibyajyoti School Photo 2"
+onclick="openPhoto(this.src)"
+>
+
+<div class="info">
+<h2>School Memories 02</h2>
+<p>Dibyajyoti Secondary School</p>
+</div>
+
+</div>
+
+
+<!-- PHOTO 3 -->
+
+<div class="card">
+
+<img
+src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG_20260910_203157_171.jpg"
+alt="Dibyajyoti School Photo 3"
+onclick="openPhoto(this.src)"
+>
+
+<div class="info">
+<h2>School Memories 03</h2>
+<p>Dibyajyoti Secondary School</p>
+</div>
+
+</div>
+
+
+<!-- PHOTO 4 -->
+
+<div class="card">
+
+<img
+src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG_20260910_203155_497.jpg"
+alt="Dibyajyoti School Photo 4"
+onclick="openPhoto(this.src)"
+>
+
+<div class="info">
+<h2>School Memories 04</h2>
+<p>Dibyajyoti Secondary School</p>
+</div>
+
+</div>
+
+
+<!-- PHOTO 5 -->
+
+<div class="card">
+
+<img
+src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG_20260910_203151_755.jpg"
+alt="Dibyajyoti School Photo 5"
+onclick="openPhoto(this.src)"
+>
+
+<div class="info">
+<h2>School Memories 05</h2>
+<p>Dibyajyoti Secondary School</p>
+</div>
+
+</div>
+
+
+<!-- PHOTO 6 -->
+
+<div class="card">
+
+<img
+src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG_20260910_203149_910.jpg"
+alt="Dibyajyoti School Photo 6"
+onclick="openPhoto(this.src)"
+>
+
+<div class="info">
+<h2>School Memories 06</h2>
+<p>Dibyajyoti Secondary School</p>
+</div>
+
+</div>
+
+
+</main>
+
+
+<!-- FULLSCREEN VIEWER -->
+
+<div class="viewer" id="viewer">
+
+<button class="close" onclick="closePhoto()">×</button>
+
+<img id="viewerImage" src="" alt="Full Screen Photo">
+
+</div>
+
+
+<footer>
+
+© 2026
+<strong>Dibyajyoti Secondary School</strong>
+
+<br><br>
+
+Official Photo Gallery
+
+</footer>
+
+
+<script>
+
+function openPhoto(src){
+
+  document.getElementById("viewerImage").src = src;
+
+  document
+  .getElementById("viewer")
+  .classList.add("active");
+
+}
+
+
+function closePhoto(){
+
+  document
+  .getElementById("viewer")
+  .classList.remove("active");
+
+}
+
+
+document
+.getElementById("viewer")
+.addEventListener("click",function(e){
+
+  if(e.target === this){
+    closePhoto();
+  }
+
 });
+
+
+document.addEventListener("keydown",function(e){
+
+  if(e.key === "Escape"){
+    closePhoto();
+  }
+
+});
+
 </script>
-</body></html>
+
+</body>
+</html>
