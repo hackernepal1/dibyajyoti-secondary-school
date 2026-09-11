@@ -1,1 +1,1346 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Notices | Dibya Jyoti Secondary School</title><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/animation.css"></head><body><header class="header"><div class="container nav-wrapper"><a href="index.html" class="brand"><div class="school-logo">DJ</div><div><h1>DIBYA JYOTI</h1><small>SECONDARY SCHOOL</small></div></a><nav><a href="index.html">Home</a><a href="about.html">About</a><a href="academics.html">Academics</a><a href="programs.html">+2 Programs</a><a href="teachers.html">Teachers</a><a href="gallery.html">Gallery</a><a href="videos.html">Videos</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="contact.html">Contact</a></nav></div></header><main class="section"><div class="container"><span class="section-label">DIBYA JYOTI SECONDARY SCHOOL</span><h2>Notices</h2><div id="content" class="notices">Loading...</div></div></main><script>const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); fetch('/api/notices').then(r=>r.json()).then(items=>document.getElementById('content').innerHTML=items.length?items.map(i => `<article><h3>${esc(i.title)}</h3><p>${esc(i.description||"")}</p><small>${new Date(i.createdAt).toLocaleDateString("en-NP")}</small></article>`).join(""): 'No notices available.').catch(()=>document.getElementById('content').textContent='Unable to load notices.');</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0"
+>
+
+<title>
+Notice Board | Dibya Jyoti Secondary School
+</title>
+
+<link
+rel="stylesheet"
+href="css/style.css"
+>
+
+<link
+rel="stylesheet"
+href="css/animation.css"
+>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(14,165,233,.12),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(37,99,235,.12),
+            transparent 30%
+        ),
+        #f4f8fd;
+    color:#172033;
+}
+
+
+/* HEADER */
+
+.header{
+    box-shadow:
+        0 5px 25px rgba(0,0,0,.08);
+}
+
+
+/* HERO */
+
+.notice-hero{
+    position:relative;
+    overflow:hidden;
+    margin-bottom:35px;
+    padding:55px 25px;
+    border-radius:25px;
+    color:white;
+    text-align:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #02265c,
+            #063b8c,
+            #0b5ed7
+        );
+
+    box-shadow:
+        0 20px 50px
+        rgba(2,38,92,.25);
+}
+
+.notice-hero::before{
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background:rgba(255,255,255,.08);
+    top:-100px;
+    left:-60px;
+    animation:floatOrb 7s infinite ease-in-out;
+}
+
+.notice-hero::after{
+    content:"";
+    position:absolute;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background:rgba(255,255,255,.06);
+    bottom:-80px;
+    right:-40px;
+    animation:floatOrb 9s infinite ease-in-out reverse;
+}
+
+.notice-icon{
+    position:relative;
+    z-index:1;
+    width:75px;
+    height:75px;
+    margin:0 auto 18px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:22px;
+
+    background:
+        rgba(255,255,255,.13);
+
+    border:
+        1px solid rgba(255,255,255,.25);
+
+    font-size:38px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.15);
+
+    animation:
+        bellPulse 2.5s infinite;
+}
+
+.notice-hero h1{
+    position:relative;
+    z-index:1;
+    margin:0;
+    font-size:clamp(30px,5vw,48px);
+}
+
+.notice-hero p{
+    position:relative;
+    z-index:1;
+    margin:12px auto 0;
+    max-width:650px;
+    opacity:.88;
+}
+
+
+/* SEARCH */
+
+.notice-tools{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.notice-search{
+    flex:1;
+    padding:14px 17px;
+    border:1px solid #dbe4ef;
+    border-radius:13px;
+    outline:none;
+    background:white;
+    box-shadow:
+        0 7px 22px rgba(0,0,0,.05);
+}
+
+.notice-search:focus{
+    border-color:#1769d1;
+    box-shadow:
+        0 0 0 4px rgba(23,105,209,.08);
+}
+
+
+/* SECTION */
+
+.module-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:35px 0 18px;
+}
+
+.module-title .icon{
+    width:46px;
+    height:46px;
+    display:grid;
+    place-items:center;
+    border-radius:13px;
+    background:#e9f2ff;
+    font-size:23px;
+}
+
+.module-title h2{
+    margin:0;
+    color:#063b8c;
+}
+
+.module-title p{
+    margin:3px 0 0;
+    color:#718096;
+    font-size:13px;
+}
+
+
+/* NOTICE GRID */
+
+.notice-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+    gap:20px;
+}
+
+
+/* NOTICE CARD */
+
+.notice-card{
+    position:relative;
+    overflow:hidden;
+
+    background:
+        rgba(255,255,255,.96);
+
+    border:
+        1px solid #e4ebf3;
+
+    border-radius:20px;
+
+    padding:24px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15,23,42,.07);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        border-color .3s ease;
+
+    animation:
+        cardIn .55s ease both;
+}
+
+.notice-card:hover{
+    transform:
+        translateY(-7px);
+
+    border-color:#bcd5f7;
+
+    box-shadow:
+        0 20px 40px
+        rgba(15,23,42,.12);
+}
+
+.notice-card.latest{
+    border:
+        2px solid #1769d1;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f1f7ff
+        );
+}
+
+.notice-card.latest::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:4px;
+    background:
+        linear-gradient(
+            90deg,
+            #063b8c,
+            #0b8fff,
+            #063b8c
+        );
+}
+
+
+/* BADGES */
+
+.badge-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+}
+
+.new-badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    background:#dc2626;
+    color:white;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.5px;
+}
+
+.notice-badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    background:#e8f1ff;
+    color:#063b8c;
+    font-size:10px;
+    font-weight:800;
+}
+
+
+/* TITLE */
+
+.notice-card h3{
+    margin:0 0 10px;
+    color:#102a56;
+    font-size:20px;
+    line-height:1.35;
+}
+
+.notice-card p{
+    color:#596579;
+    line-height:1.7;
+    margin:0 0 15px;
+}
+
+
+/* FOOTER */
+
+.notice-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    padding-top:15px;
+    border-top:1px solid #edf1f6;
+}
+
+.notice-date{
+    color:#718096;
+    font-size:12px;
+}
+
+.read-btn{
+    border:0;
+    cursor:pointer;
+    padding:9px 13px;
+    border-radius:9px;
+    background:#063b8c;
+    color:white;
+    font-weight:700;
+    font-size:12px;
+}
+
+.read-btn:hover{
+    background:#02265c;
+}
+
+
+/* PDF */
+
+.pdf-section{
+    margin-top:45px;
+}
+
+.pdf-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+    gap:20px;
+}
+
+.pdf-card{
+    position:relative;
+    overflow:hidden;
+
+    display:flex;
+    gap:18px;
+    align-items:center;
+
+    padding:22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff,
+            #fff7ed
+        );
+
+    border:
+        1px solid #fed7aa;
+
+    border-radius:20px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(120,53,15,.06);
+
+    transition:.3s ease;
+}
+
+.pdf-card:hover{
+    transform:
+        translateY(-6px);
+
+    box-shadow:
+        0 18px 35px
+        rgba(120,53,15,.12);
+}
+
+.pdf-icon{
+    min-width:62px;
+    width:62px;
+    height:72px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:14px;
+
+    background:#fee2e2;
+    color:#b42318;
+
+    font-size:30px;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(180,35,24,.08);
+}
+
+.pdf-info{
+    flex:1;
+}
+
+.pdf-info h3{
+    margin:0 0 6px;
+    color:#7f1d1d;
+}
+
+.pdf-info p{
+    margin:0 0 12px;
+    color:#78716c;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.pdf-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.pdf-btn{
+    display:inline-block;
+    text-decoration:none;
+    padding:9px 13px;
+    border-radius:9px;
+    font-size:12px;
+    font-weight:800;
+}
+
+.view-pdf{
+    background:#b42318;
+    color:white;
+}
+
+.download-pdf{
+    background:#fff;
+    color:#7f1d1d;
+    border:1px solid #fecaca;
+}
+
+
+/* EMPTY */
+
+.empty-box{
+    text-align:center;
+    padding:45px 20px;
+    border-radius:20px;
+    background:white;
+    border:1px dashed #cbd5e1;
+    color:#718096;
+}
+
+.empty-box .empty-icon{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+
+/* MODAL */
+
+.notice-modal{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    background:
+        rgba(2,15,35,.72);
+
+    backdrop-filter:
+        blur(7px);
+}
+
+.notice-modal.active{
+    display:flex;
+}
+
+.modal-box{
+    width:min(700px,100%);
+    max-height:85vh;
+    overflow:auto;
+
+    background:white;
+    border-radius:22px;
+    padding:28px;
+
+    box-shadow:
+        0 30px 80px
+        rgba(0,0,0,.3);
+
+    animation:
+        modalIn .3s ease;
+}
+
+.modal-close{
+    float:right;
+    width:35px;
+    height:35px;
+    border:0;
+    border-radius:50%;
+    background:#eef2f7;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.modal-box h2{
+    color:#063b8c;
+    margin:5px 45px 15px 0;
+}
+
+.modal-description{
+    white-space:pre-wrap;
+    line-height:1.8;
+    color:#475569;
+}
+
+
+/* ANIMATION */
+
+@keyframes cardIn{
+
+    from{
+        opacity:0;
+        transform:
+            translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translateY(0);
+    }
+
+}
+
+@keyframes modalIn{
+
+    from{
+        opacity:0;
+        transform:
+            scale(.92)
+            translateY(15px);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            scale(1)
+            translateY(0);
+    }
+
+}
+
+@keyframes floatOrb{
+
+    0%,100%{
+        transform:
+            translate(0,0);
+    }
+
+    50%{
+        transform:
+            translate(25px,20px);
+    }
+
+}
+
+@keyframes bellPulse{
+
+    0%,100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.07)
+                  rotate(-3deg);
+    }
+
+}
+
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    .notice-grid,
+    .pdf-grid{
+        grid-template-columns:1fr;
+    }
+
+    .notice-tools{
+        display:block;
+    }
+
+    .notice-search{
+        width:100%;
+    }
+
+    .notice-hero{
+        padding:40px 18px;
+    }
+
+    .notice-card{
+        padding:20px;
+    }
+
+    .pdf-card{
+        align-items:flex-start;
+    }
+
+}
+
+@media(max-width:500px){
+
+    .pdf-card{
+        flex-direction:column;
+    }
+
+    .notice-footer{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+<div class="container nav-wrapper">
+
+<a
+href="index.html"
+class="brand"
+>
+
+<div class="school-logo">
+DJ
+</div>
+
+<div>
+
+<h1>DIBYA JYOTI</h1>
+
+<small>
+SECONDARY SCHOOL
+</small>
+
+</div>
+
+</a>
+
+
+<nav>
+
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="academics.html">Academics</a>
+<a href="programs.html">+2 Programs</a>
+<a href="teachers.html">Teachers</a>
+<a href="gallery.html">Gallery</a>
+<a href="videos.html">Videos</a>
+<a href="notices.html">Notices</a>
+<a href="events.html">Events</a>
+<a href="contact.html">Contact</a>
+
+</nav>
+
+</div>
+
+</header>
+
+
+<main class="section">
+
+<div class="container">
+
+
+<!-- HERO -->
+
+<section class="notice-hero">
+
+<div class="notice-icon">
+📢
+</div>
+
+<h1>
+School Notice Board
+</h1>
+
+<p>
+Official announcements, important information
+and school documents from Dibya Jyoti Secondary School.
+</p>
+
+</section>
+
+
+<!-- SEARCH -->
+
+<div class="notice-tools">
+
+<input
+id="noticeSearch"
+class="notice-search"
+type="search"
+placeholder="🔎 Search notices and documents..."
+>
+
+</div>
+
+
+<!-- NOTICE TITLE -->
+
+<div class="module-title">
+
+<div class="icon">
+📢
+</div>
+
+<div>
+
+<h2>
+Latest Notices
+</h2>
+
+<p>
+Stay updated with school announcements
+</p>
+
+</div>
+
+</div>
+
+
+<!-- NOTICES -->
+
+<div
+id="noticeContainer"
+class="notice-grid"
+>
+
+<div class="empty-box">
+<div class="empty-icon">⏳</div>
+Loading notices...
+</div>
+
+</div>
+
+
+<!-- PDF -->
+
+<section class="pdf-section">
+
+<div class="module-title">
+
+<div class="icon">
+📄
+</div>
+
+<div>
+
+<h2>
+School PDF Documents
+</h2>
+
+<p>
+Official school notices and downloadable documents
+</p>
+
+</div>
+
+</div>
+
+
+<div
+id="pdfContainer"
+class="pdf-grid"
+>
+
+<div class="empty-box">
+<div class="empty-icon">⏳</div>
+Loading documents...
+</div>
+
+</div>
+
+</section>
+
+
+</div>
+
+</main>
+
+
+<!-- MODAL -->
+
+<div
+id="noticeModal"
+class="notice-modal"
+>
+
+<div class="modal-box">
+
+<button
+class="modal-close"
+onclick="closeModal()"
+>
+✕
+</button>
+
+<h2 id="modalTitle">
+Notice
+</h2>
+
+<div
+id="modalDescription"
+class="modal-description"
+>
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const noticeContainer=
+    document.getElementById(
+        "noticeContainer"
+    );
+
+const pdfContainer=
+    document.getElementById(
+        "pdfContainer"
+    );
+
+const searchInput=
+    document.getElementById(
+        "noticeSearch"
+    );
+
+let allNotices=[];
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function esc(value){
+
+    return String(value??"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================
+   DATE
+========================= */
+
+function formatDate(date){
+
+    if(!date){
+        return "Date unavailable";
+    }
+
+    const d=new Date(date);
+
+    if(isNaN(d.getTime())){
+        return "Date unavailable";
+    }
+
+    return d.toLocaleDateString(
+        "en-NP",
+        {
+            year:"numeric",
+            month:"long",
+            day:"numeric"
+        }
+    );
+
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+function openNotice(
+    title,
+    description
+){
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent=title;
+
+    document.getElementById(
+        "modalDescription"
+    ).textContent=
+        description||
+        "No additional information available.";
+
+    document.getElementById(
+        "noticeModal"
+    ).classList.add("active");
+
+}
+
+
+function closeModal(){
+
+    document.getElementById(
+        "noticeModal"
+    ).classList.remove("active");
+
+}
+
+
+document
+.getElementById("noticeModal")
+.addEventListener(
+    "click",
+    function(e){
+
+        if(e.target===this){
+            closeModal();
+        }
+
+    }
+);
+
+
+/* =========================
+   RENDER
+========================= */
+
+function renderNotices(items){
+
+    const normalNotices=
+        items.filter(
+            item=>
+                !item.documentUrl
+        );
+
+    const documents=
+        items.filter(
+            item=>
+                item.documentUrl
+        );
+
+
+    /* NORMAL NOTICES */
+
+    if(!normalNotices.length){
+
+        noticeContainer.innerHTML=`
+
+            <div
+                class="empty-box"
+                style="grid-column:1/-1"
+            >
+
+                <div class="empty-icon">
+                    📢
+                </div>
+
+                No notices available.
+
+            </div>
+
+        `;
+
+    }else{
+
+        noticeContainer.innerHTML=
+            normalNotices
+            .map(
+                (item,index)=>`
+
+                <article
+                    class="notice-card
+                    ${index===0?"latest":""}"
+                >
+
+                    <div class="badge-row">
+
+                        ${
+                            index===0
+                            ?
+                            `
+                            <span class="new-badge">
+                                LATEST
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+                        <span class="notice-badge">
+                            SCHOOL NOTICE
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        ${esc(item.title)}
+                    </h3>
+
+
+                    <p>
+                        ${esc(
+                            (item.description||"")
+                            .length>180
+                            ?
+                            (item.description||"")
+                            .substring(0,180)
+                            +"..."
+                            :
+                            (item.description||"")
+                        )}
+                    </p>
+
+
+                    <div class="notice-footer">
+
+                        <span class="notice-date">
+                            📅
+                            ${formatDate(
+                                item.createdAt
+                            )}
+                        </span>
+
+
+                        <button
+                            class="read-btn"
+                            onclick='openNotice(
+                                ${JSON.stringify(
+                                    item.title||"Notice"
+                                )},
+                                ${JSON.stringify(
+                                    item.description||""
+                                )}
+                            )'
+                        >
+                            📖 Read More
+                        </button>
+
+                    </div>
+
+                </article>
+
+                `
+            )
+            .join("");
+
+    }
+
+
+    /* PDF DOCUMENTS */
+
+    if(!documents.length){
+
+        pdfContainer.innerHTML=`
+
+            <div
+                class="empty-box"
+                style="grid-column:1/-1"
+            >
+
+                <div class="empty-icon">
+                    📄
+                </div>
+
+                No PDF documents available yet.
+
+            </div>
+
+        `;
+
+    }else{
+
+        pdfContainer.innerHTML=
+            documents
+            .map(
+                item=>`
+
+                <article class="pdf-card">
+
+                    <div class="pdf-icon">
+                        📄
+                    </div>
+
+
+                    <div class="pdf-info">
+
+                        <h3>
+                            ${esc(item.title)}
+                        </h3>
+
+
+                        <p>
+                            ${esc(
+                                item.description||
+                                "Official school PDF document."
+                            )}
+                        </p>
+
+
+                        <div class="pdf-actions">
+
+                            <a
+                                class="pdf-btn view-pdf"
+                                href="${esc(
+                                    item.documentUrl
+                                )}"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                👁️ View PDF
+                            </a>
+
+
+                            <a
+                                class="pdf-btn download-pdf"
+                                href="${esc(
+                                    item.documentUrl
+                                )}"
+                                target="_blank"
+                                download
+                            >
+                                ⬇️ Download
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                `
+            )
+            .join("");
+
+    }
+
+}
+
+
+/* =========================
+   LOAD
+========================= */
+
+async function loadNotices(){
+
+    try{
+
+        const response=
+            await fetch(
+                "/api/notices"
+            );
+
+        if(!response.ok){
+            throw new Error(
+                "Request failed"
+            );
+        }
+
+        allNotices=
+            await response.json();
+
+        renderNotices(
+            allNotices
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        noticeContainer.innerHTML=`
+
+            <div
+                class="empty-box"
+                style="grid-column:1/-1"
+            >
+
+                <div class="empty-icon">
+                    ⚠️
+                </div>
+
+                Unable to load notices.
+
+            </div>
+
+        `;
+
+        pdfContainer.innerHTML=`
+
+            <div
+                class="empty-box"
+                style="grid-column:1/-1"
+            >
+
+                <div class="empty-icon">
+                    ⚠️
+                </div>
+
+                Unable to load documents.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+searchInput.addEventListener(
+    "input",
+    function(){
+
+        const query=
+            this.value
+            .trim()
+            .toLowerCase();
+
+        if(!query){
+
+            renderNotices(
+                allNotices
+            );
+
+            return;
+
+        }
+
+        const filtered=
+            allNotices.filter(
+                item=>
+                    String(
+                        item.title||""
+                    )
+                    .toLowerCase()
+                    .includes(query)
+
+                    ||
+
+                    String(
+                        item.description||""
+                    )
+                    .toLowerCase()
+                    .includes(query)
+            );
+
+        renderNotices(
+            filtered
+        );
+
+    }
+);
+
+
+/* ESC KEY */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key==="Escape"){
+            closeModal();
+        }
+
+    }
+);
+
+
+/* START */
+
+loadNotices();
+
+</script>
+
+</body>
+</html>
