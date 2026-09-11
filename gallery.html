@@ -39,6 +39,16 @@ header p{
   color:#aebdc7;
 }
 
+header a{
+  color:#00eaff;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+header a:hover{
+  text-decoration:underline;
+}
+
 /* GALLERY */
 .gallery{
   width:94%;
@@ -48,6 +58,20 @@ header p{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
   gap:25px;
+}
+
+/* SECTION TITLE */
+.gallery-title{
+  grid-column:1/-1;
+  text-align:center;
+  margin:10px 0 5px;
+  padding:18px;
+
+  color:#00eaff;
+  font-size:25px;
+
+  border-bottom:1px solid #00eaff33;
+  text-shadow:0 0 10px #00eaff;
 }
 
 /* CARD */
@@ -100,6 +124,29 @@ header p{
   font-size:13px;
 }
 
+.loading{
+  grid-column:1/-1;
+  text-align:center;
+  padding:40px;
+  color:#00eaff;
+  font-size:18px;
+}
+
+.no-photo{
+  grid-column:1/-1;
+  text-align:center;
+  padding:35px;
+  color:#91a4af;
+}
+
+.error-message{
+  grid-column:1/-1;
+  text-align:center;
+  padding:35px;
+  color:#ff7777;
+}
+
+/* ANIMATION */
 @keyframes show{
   from{
     opacity:0;
@@ -184,6 +231,15 @@ footer strong{
   color:#00eaff;
 }
 
+footer a{
+  color:#00eaff;
+  text-decoration:none;
+}
+
+footer a:hover{
+  text-decoration:underline;
+}
+
 /* MOBILE */
 @media(max-width:600px){
 
@@ -203,29 +259,44 @@ footer strong{
 
 <header>
 
-  <h1>📸 WELCOME TO GALLERY </h1>
+  <h1>📸 WELCOME TO GALLERY</h1>
 
   <p>
     Dibyajyoti Secondary School
   </p>
-<p1>
-  <a href="https://www.facebook.com/share/1F4swQFSuV/"
-   target="_blank"
-   rel="noopener noreferrer">
-   🌐 Follow On Facebook Now..!
-  </a>
-</p1>
-  <body> Dibya Jyoti Secondary School is a Professional and Habitual School in Nawalparasi West.Top Government School of Nawalparasi.
-  </body>
+
+  <p style="margin-top:15px;">
+    <a
+      href="https://www.facebook.com/share/1F4swQFSuV/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      🌐 Follow On Facebook Now..!
+    </a>
+  </p>
+
+  <p style="margin-top:15px;">
+    Dibya Jyoti Secondary School is a Professional and Habitual
+    School in Nawalparasi West. Top Government School of Nawalparasi.
+  </p>
+
 </header>
 
 
 <main class="gallery">
 
+<!-- ========================================= -->
+<!-- EXISTING GITHUB PHOTOS - DO NOT CHANGE -->
+<!-- ========================================= -->
+
+<div class="gallery-title">
+  📸 SCHOOL MEMORIES
+</div>
+
 
 <!-- PHOTO 1 -->
-  <div class="card">
-    
+<div class="card">
+
 <img
 src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG_20260910_203204_049.jpg"
 alt="Dibyajyoti School Photo 1"
@@ -241,7 +312,6 @@ onclick="openPhoto(this.src)"
 
 
 <!-- PHOTO 2 -->
-
 <div class="card">
 
 <img
@@ -259,7 +329,6 @@ onclick="openPhoto(this.src)"
 
 
 <!-- PHOTO 3 -->
-
 <div class="card">
 
 <img
@@ -277,7 +346,6 @@ onclick="openPhoto(this.src)"
 
 
 <!-- PHOTO 4 -->
-
 <div class="card">
 
 <img
@@ -295,7 +363,6 @@ onclick="openPhoto(this.src)"
 
 
 <!-- PHOTO 5 -->
-
 <div class="card">
 
 <img
@@ -313,7 +380,6 @@ onclick="openPhoto(this.src)"
 
 
 <!-- PHOTO 6 -->
-
 <div class="card">
 
 <img
@@ -330,20 +396,41 @@ onclick="openPhoto(this.src)"
 </div>
 
 
-  <!-- PHOTO 7 -->
-  <div class="card">
+<!-- PHOTO 7 -->
+<div class="card">
+
 <img
 src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/received_796389913529931.jpeg"
-alt="Dibyajyoti School Photo 1"
+alt="Dibyajyoti School Photo 7"
 onclick="openPhoto(this.src)"
 >
 
 <div class="info">
-<h2>School Memories 01</h2>
+<h2>School Memories 07</h2>
 <p>Dibyajyoti School Batch-2082</p>
 </div>
 
+</div>
+
+
+<!-- ========================================= -->
+<!-- ADMIN UPLOADED PHOTOS -->
+<!-- ========================================= -->
+
+<div class="gallery-title">
+  📤 ADMIN UPLOADED PHOTOS
+</div>
+
+<div
+  id="adminGallery"
+  style="display:contents;"
+>
+
+  <div class="loading">
+    ⏳ Loading admin photos...
   </div>
+
+</div>
 
 
 </main>
@@ -353,9 +440,18 @@ onclick="openPhoto(this.src)"
 
 <div class="viewer" id="viewer">
 
-<button class="close" onclick="closePhoto()">×</button>
+<button
+  class="close"
+  onclick="closePhoto()"
+>
+×
+</button>
 
-<img id="viewerImage" src="" alt="Full Screen Photo">
+<img
+  id="viewerImage"
+  src=""
+  alt="Full Screen Photo"
+>
 
 </div>
 
@@ -363,33 +459,47 @@ onclick="openPhoto(this.src)"
 <footer>
 
 © 2026
-<strong>Dibyajyoti Secondary School
 
+<strong>
+Dibyajyoti Secondary School
+<br>
 Website Developer: Team RedCSS
 </strong>
 
 <br><br>
 
 Official Photo Gallery
-  Powered By Team-RedCSS
-  For More Information Visit Out Website:<a href="https://www.jageshwarkushwaha.com.np"
-   target="_blank"
-   rel="noopener noreferrer">
-   🌐 REDCYBERSECURITYSOCIETY 
-</a> 
+<br>
+Powered By Team-RedCSS
+
+<br><br>
+
+For More Information Visit Our Website:
+
+<a
+  href="https://www.jageshwarkushwaha.com.np"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+🌐 REDCYBERSECURITYSOCIETY
+</a>
 
 </footer>
 
 
 <script>
 
+/* =========================================
+   FULLSCREEN PHOTO VIEWER
+========================================= */
+
 function openPhoto(src){
 
   document.getElementById("viewerImage").src = src;
 
   document
-  .getElementById("viewer")
-  .classList.add("active");
+    .getElementById("viewer")
+    .classList.add("active");
 
 }
 
@@ -397,22 +507,26 @@ function openPhoto(src){
 function closePhoto(){
 
   document
-  .getElementById("viewer")
-  .classList.remove("active");
+    .getElementById("viewer")
+    .classList.remove("active");
 
 }
 
 
+/* Close viewer by clicking background */
+
 document
-.getElementById("viewer")
-.addEventListener("click",function(e){
+  .getElementById("viewer")
+  .addEventListener("click",function(e){
 
-  if(e.target === this){
-    closePhoto();
-  }
+    if(e.target === this){
+      closePhoto();
+    }
 
-});
+  });
 
+
+/* Close viewer with ESC */
 
 document.addEventListener("keydown",function(e){
 
@@ -421,6 +535,175 @@ document.addEventListener("keydown",function(e){
   }
 
 });
+
+
+/* =========================================
+   LOAD ADMIN UPLOADED PHOTOS
+========================================= */
+
+async function loadAdminGallery(){
+
+  const container =
+    document.getElementById("adminGallery");
+
+  try{
+
+    const response =
+      await fetch("/api/gallery");
+
+    if(!response.ok){
+
+      throw new Error(
+        "Gallery API returned " + response.status
+      );
+
+    }
+
+    const items =
+      await response.json();
+
+
+    /* No photos */
+
+    if(!items || items.length === 0){
+
+      container.innerHTML = `
+        <div class="no-photo">
+          📸 No admin uploaded photos yet.
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    /* Clear loading */
+
+    container.innerHTML = "";
+
+
+    /* Add each admin photo */
+
+    items.forEach((item,index)=>{
+
+      /*
+       * Admin Panel saves the uploaded URL
+       * inside the "imageUrl" field.
+       */
+
+      const imageUrl =
+        item.imageUrl ||
+        item.image ||
+        item.url;
+
+
+      if(!imageUrl){
+
+        return;
+
+      }
+
+
+      const title =
+        item.title ||
+        `Admin Photo ${index + 1}`;
+
+
+      const caption =
+        item.caption ||
+        "Dibyajyoti Secondary School";
+
+
+      const card =
+        document.createElement("div");
+
+      card.className = "card";
+
+
+      const img =
+        document.createElement("img");
+
+      img.src = imageUrl;
+
+      img.alt = title;
+
+      img.loading = "lazy";
+
+      img.onclick = function(){
+
+        openPhoto(imageUrl);
+
+      };
+
+
+      const info =
+        document.createElement("div");
+
+      info.className = "info";
+
+
+      const heading =
+        document.createElement("h2");
+
+      heading.textContent = title;
+
+
+      const text =
+        document.createElement("p");
+
+      text.textContent = caption;
+
+
+      info.appendChild(heading);
+
+      info.appendChild(text);
+
+      card.appendChild(img);
+
+      card.appendChild(info);
+
+      container.appendChild(card);
+
+    });
+
+
+    /*
+     * If records existed but none had
+     * a valid image URL.
+     */
+
+    if(container.children.length === 0){
+
+      container.innerHTML = `
+        <div class="no-photo">
+          📸 No valid admin photos found.
+        </div>
+      `;
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Admin Gallery Error:",
+      error
+    );
+
+    container.innerHTML = `
+      <div class="error-message">
+        ❌ Unable to load admin uploaded photos.
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* Load admin photos when page opens */
+
+loadAdminGallery();
 
 </script>
 
