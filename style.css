@@ -1207,3 +1207,990 @@ button {
     }
 
 }
+/* =========================================================
+   DIBYA JYOTI — 3D EFFECT ADD-ON
+   Paste at the VERY END of style.css
+   Existing design/content remains unchanged
+   ========================================================= */
+
+:root {
+    --dj-blue: #062c63;
+    --dj-gold: #d5a51e;
+    --dj-glow: rgba(0, 210, 255, 0.22);
+    --dj-shadow: rgba(4, 25, 55, 0.28);
+}
+
+/* ---------- GLOBAL 3D ---------- */
+
+body {
+    overflow-x: hidden;
+}
+
+section,
+header,
+footer {
+    transform-style: preserve-3d;
+}
+
+
+/* ---------- TOP BAR ---------- */
+
+.top-bar {
+    position: relative;
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, .18);
+}
+
+.top-content span,
+.top-content a {
+    transition: transform .3s ease;
+}
+
+.top-content span:hover,
+.top-content a:hover {
+    transform: translateY(-2px) translateZ(10px);
+}
+
+
+/* ---------- HEADER ---------- */
+
+.header {
+    backdrop-filter: blur(12px);
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, .10),
+        0 2px 0 rgba(255, 255, 255, .8) inset;
+
+    transition:
+        box-shadow .35s ease,
+        transform .35s ease;
+}
+
+.header:hover {
+    box-shadow:
+        0 14px 35px rgba(0, 0, 0, .16);
+}
+
+
+/* ---------- LOGO ---------- */
+
+.school-logo {
+    position: relative;
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 8px 18px rgba(6, 44, 99, .30),
+        0 0 0 3px rgba(255,255,255,.15) inset;
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease;
+}
+
+.school-logo::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 4px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(255,255,255,.25);
+
+    transform: translateZ(8px);
+
+    pointer-events: none;
+}
+
+.school-logo:hover {
+    transform:
+        perspective(500px)
+        rotateX(12deg)
+        rotateY(-18deg)
+        translateZ(18px);
+
+    box-shadow:
+        0 18px 35px rgba(6, 44, 99, .35),
+        0 0 25px rgba(213, 165, 30, .25);
+}
+
+
+/* ---------- NAV ---------- */
+
+#mainNav > a {
+    transform-style: preserve-3d;
+
+    transition:
+        transform .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+}
+
+#mainNav > a:hover {
+    transform:
+        translateY(-3px)
+        translateZ(10px);
+
+    box-shadow:
+        0 8px 15px rgba(6, 44, 99, .10);
+}
+
+#mainNav .admin-button:hover {
+    transform:
+        translateY(-4px)
+        translateZ(15px);
+}
+
+
+/* ---------- HERO ---------- */
+
+.hero {
+    perspective: 1400px;
+    transform-style: preserve-3d;
+
+    box-shadow:
+        inset 0 -30px 70px rgba(0,0,0,.16);
+}
+
+.hero-overlay {
+    transform: translateZ(-20px) scale(1.04);
+}
+
+.hero-content {
+    transform-style: preserve-3d;
+}
+
+.hero-content > * {
+    transform-style: preserve-3d;
+}
+
+
+/* HERO BADGE */
+
+.hero-badge {
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.20);
+
+    transition:
+        transform .4s ease,
+        box-shadow .4s ease;
+}
+
+.hero-badge:hover {
+    transform:
+        translateY(-5px)
+        translateZ(25px)
+        rotateX(5deg);
+
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.25);
+}
+
+
+/* HERO TITLE */
+
+.hero h2 {
+    text-shadow:
+        0 5px 20px rgba(0,0,0,.28);
+
+    transform:
+        translateZ(25px);
+}
+
+.hero h2 span {
+    text-shadow:
+        0 5px 25px rgba(213,165,30,.25);
+}
+
+
+/* ---------- WELCOME IMAGE ---------- */
+
+.welcome-image {
+    position: relative;
+
+    border-radius: 18px;
+
+    transform:
+        perspective(1100px)
+        rotateX(3deg)
+        rotateY(-3deg)
+        translateZ(20px);
+
+    box-shadow:
+        0 25px 55px rgba(0,0,0,.38),
+        0 0 30px rgba(0,210,255,.10);
+
+    transition:
+        transform .55s ease,
+        box-shadow .55s ease;
+}
+
+.welcome-image:hover {
+    transform:
+        perspective(1100px)
+        rotateX(0deg)
+        rotateY(0deg)
+        translateY(-10px)
+        translateZ(45px)
+        scale(1.015);
+
+    box-shadow:
+        0 40px 80px rgba(0,0,0,.45),
+        0 0 35px var(--dj-glow);
+}
+
+
+/* ---------- BUTTONS ---------- */
+
+.btn {
+    position: relative;
+
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.15);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        background .3s ease;
+}
+
+.btn:hover {
+    transform:
+        translateY(-5px)
+        translateZ(15px)
+        rotateX(4deg);
+
+    box-shadow:
+        0 18px 35px rgba(0,0,0,.25);
+}
+
+.btn::after {
+    content: "";
+
+    position: absolute;
+
+    left: 10px;
+    right: 10px;
+    bottom: -7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: rgba(0,0,0,.18);
+
+    filter: blur(5px);
+
+    z-index: -1;
+}
+
+
+/* ---------- QUICK INFORMATION ---------- */
+
+.quick-section {
+    perspective: 1200px;
+}
+
+.quick-card {
+    position: relative;
+
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 15px 35px rgba(12,37,70,.14),
+        0 3px 0 rgba(213,165,30,.15);
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease;
+}
+
+.quick-card:hover {
+    transform:
+        perspective(900px)
+        rotateX(7deg)
+        rotateY(-6deg)
+        translateY(-12px)
+        translateZ(25px);
+
+    box-shadow:
+        0 30px 60px rgba(12,37,70,.24),
+        0 0 25px rgba(0,210,255,.10);
+}
+
+.quick-icon {
+    display: inline-block;
+
+    transform:
+        translateZ(25px);
+
+    transition:
+        transform .4s ease;
+}
+
+.quick-card:hover .quick-icon {
+    transform:
+        translateZ(45px)
+        rotateY(12deg)
+        scale(1.12);
+}
+
+.quick-card h3 {
+    transform: translateZ(12px);
+}
+
+
+/* ---------- SECTION HEADINGS ---------- */
+
+.section-heading {
+    transform-style: preserve-3d;
+}
+
+.section-heading h2 {
+    text-shadow:
+        0 4px 12px rgba(6,44,99,.08);
+
+    transform: translateZ(10px);
+}
+
+
+/* ---------- ABOUT IMAGE ---------- */
+
+.image-placeholder {
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 25px 55px rgba(6,44,99,.12);
+
+    transition:
+        transform .5s ease,
+        box-shadow .5s ease;
+}
+
+.image-placeholder:hover {
+    transform:
+        perspective(1000px)
+        rotateX(4deg)
+        rotateY(-5deg)
+        translateY(-8px)
+        translateZ(25px);
+
+    box-shadow:
+        0 35px 70px rgba(6,44,99,.20);
+}
+
+.image-placeholder span {
+    display: inline-block;
+    transform: translateZ(35px);
+}
+
+
+/* ---------- ABOUT STATS ---------- */
+
+.about-stats div {
+    transform-style: preserve-3d;
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+}
+
+.about-stats div:hover {
+    transform:
+        translateY(-5px)
+        translateZ(15px);
+
+    box-shadow:
+        0 15px 30px rgba(6,44,99,.12);
+}
+
+
+/* ---------- PROGRAMS ---------- */
+
+.program-grid {
+    perspective: 1300px;
+}
+
+.program-card {
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 10px 28px rgba(0,0,0,.06);
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease,
+        border-color .45s ease;
+}
+
+.program-card:hover {
+    transform:
+        perspective(1000px)
+        rotateX(6deg)
+        rotateY(-5deg)
+        translateY(-12px)
+        translateZ(30px);
+
+    box-shadow:
+        0 30px 65px rgba(6,44,99,.18),
+        0 0 25px rgba(0,210,255,.08);
+}
+
+.program-icon {
+    transform:
+        translateZ(25px);
+
+    box-shadow:
+        0 8px 18px rgba(6,44,99,.10);
+
+    transition:
+        transform .4s ease;
+}
+
+.program-card:hover .program-icon {
+    transform:
+        translateZ(55px)
+        rotateY(12deg)
+        rotateX(5deg)
+        scale(1.08);
+}
+
+.program-card h3 {
+    transform: translateZ(15px);
+}
+
+
+/* ---------- FACILITIES ---------- */
+
+.facility-grid {
+    perspective: 1200px;
+}
+
+.facility-card {
+    transform-style: preserve-3d;
+
+    transition:
+        transform .4s ease,
+        box-shadow .4s ease;
+}
+
+.facility-card:hover {
+    transform:
+        perspective(900px)
+        rotateX(5deg)
+        rotateY(5deg)
+        translateY(-9px)
+        translateZ(22px);
+
+    box-shadow:
+        0 25px 50px rgba(6,44,99,.16);
+}
+
+.facility-card > span {
+    display: inline-block;
+
+    transform: translateZ(30px);
+
+    transition:
+        transform .4s ease;
+}
+
+.facility-card:hover > span {
+    transform:
+        translateZ(55px)
+        rotateY(-12deg)
+        scale(1.12);
+}
+
+
+/* ---------- SCHOOL VIDEO ---------- */
+
+.school-photos {
+    perspective: 1400px;
+}
+
+.school-photos video {
+    transform:
+        perspective(1100px)
+        rotateX(2deg)
+        translateZ(15px);
+
+    box-shadow:
+        0 30px 65px rgba(0,0,0,.30);
+
+    transition:
+        transform .5s ease,
+        box-shadow .5s ease;
+}
+
+.school-photos video:hover {
+    transform:
+        perspective(1100px)
+        rotateX(0deg)
+        translateY(-8px)
+        translateZ(35px);
+
+    box-shadow:
+        0 40px 85px rgba(0,0,0,.40),
+        0 0 35px rgba(0,210,255,.12);
+}
+
+
+/* ---------- PHOTO GRID ---------- */
+
+.photo-grid {
+    perspective: 1400px;
+}
+
+.photo-grid img {
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,.12);
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease,
+        filter .45s ease;
+}
+
+.photo-grid img:hover {
+    transform:
+        perspective(850px)
+        rotateX(5deg)
+        rotateY(-5deg)
+        translateY(-10px)
+        translateZ(25px)
+        scale(1.03);
+
+    box-shadow:
+        0 30px 60px rgba(0,0,0,.30),
+        0 0 25px rgba(0,210,255,.10);
+
+    filter:
+        brightness(1.05)
+        saturate(1.08);
+
+    position: relative;
+    z-index: 5;
+}
+
+
+/* ---------- NOTICES ---------- */
+
+.notice-list {
+    perspective: 1200px;
+}
+
+.notice-loading,
+.notice-item,
+.notice-card {
+    transform-style: preserve-3d;
+
+    transition:
+        transform .4s ease,
+        box-shadow .4s ease;
+}
+
+.notice-loading:hover,
+.notice-item:hover,
+.notice-card:hover {
+    transform:
+        translateY(-6px)
+        translateZ(18px);
+
+    box-shadow:
+        0 20px 45px rgba(6,44,99,.14);
+}
+
+
+/* ---------- GALLERY ---------- */
+
+.gallery-grid {
+    perspective: 1400px;
+}
+
+.gallery-grid > * {
+    transform-style: preserve-3d;
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease;
+}
+
+.gallery-grid > *:hover {
+    transform:
+        perspective(900px)
+        rotateX(4deg)
+        rotateY(-5deg)
+        translateY(-10px)
+        translateZ(25px);
+
+    box-shadow:
+        0 30px 60px rgba(0,0,0,.25);
+}
+
+
+/* ---------- VIDEO CARDS ---------- */
+
+.video-grid {
+    perspective: 1300px;
+}
+
+.video-grid > * {
+    transform-style: preserve-3d;
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease;
+}
+
+.video-grid > *:hover {
+    transform:
+        perspective(900px)
+        rotateX(4deg)
+        rotateY(-4deg)
+        translateY(-8px)
+        translateZ(22px);
+
+    box-shadow:
+        0 25px 55px rgba(6,44,99,.16);
+}
+
+.play-button {
+    transform:
+        translateZ(30px);
+
+    box-shadow:
+        0 12px 25px rgba(6,44,99,.25);
+
+    transition:
+        transform .4s ease;
+}
+
+.video-placeholder:hover .play-button {
+    transform:
+        translateZ(55px)
+        scale(1.08)
+        rotateY(10deg);
+}
+
+
+/* ---------- CONTACT ---------- */
+
+.contact-section {
+    perspective: 1300px;
+}
+
+.contact-grid {
+    transform-style: preserve-3d;
+}
+
+.contact-item {
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.10);
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+}
+
+.contact-item:hover {
+    transform:
+        translateX(7px)
+        translateY(-4px)
+        translateZ(18px);
+
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.18);
+}
+
+.contact-item > span {
+    transform:
+        translateZ(25px);
+}
+
+
+/* ---------- MAP BUTTON ---------- */
+
+.map-btn {
+    transform-style: preserve-3d !important;
+
+    transition:
+        transform .35s ease !important,
+        box-shadow .35s ease !important;
+}
+
+.map-btn:hover {
+    transform:
+        translateY(-6px)
+        translateZ(20px)
+        rotateX(5deg) !important;
+
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.25),
+        0 0 30px rgba(0,234,255,.25) !important;
+}
+
+
+/* ---------- FOOTER ---------- */
+
+.footer {
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 -20px 55px rgba(0,0,0,.18);
+}
+
+.footer-grid > div {
+    transform-style: preserve-3d;
+}
+
+.footer-grid a {
+    transition:
+        transform .25s ease,
+        color .25s ease;
+}
+
+.footer-grid a:hover {
+    transform:
+        translateX(5px)
+        translateZ(8px);
+}
+
+
+/* ---------- BACK TO TOP ---------- */
+
+#backToTop {
+    transform-style: preserve-3d;
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease,
+        background .35s ease;
+}
+
+#backToTop:hover {
+    transform:
+        translateY(-6px)
+        translateZ(20px)
+        rotateX(8deg);
+
+    box-shadow:
+        0 18px 35px rgba(0,0,0,.30),
+        0 0 25px rgba(0,210,255,.18);
+}
+
+
+/* =========================================================
+   SCHOOL BANNER 3D
+   ========================================================= */
+
+.school-banner-section {
+    perspective: 1300px;
+    transform-style: preserve-3d;
+}
+
+.school-container {
+    transform-style: preserve-3d;
+}
+
+.school-main-title {
+    transform:
+        translateZ(20px);
+
+    text-shadow:
+        0 8px 25px rgba(0,0,0,.25);
+}
+
+.school-info-box {
+    transform:
+        perspective(1000px)
+        rotateX(2deg)
+        translateZ(15px);
+
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 25px 50px rgba(0,0,0,.25);
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease;
+}
+
+.school-info-box:hover {
+    transform:
+        perspective(1000px)
+        rotateX(0deg)
+        translateY(-7px)
+        translateZ(30px);
+
+    box-shadow:
+        0 35px 70px rgba(0,0,0,.30);
+}
+
+.school-image-wrapper {
+    transform:
+        perspective(1100px)
+        rotateX(3deg)
+        translateZ(15px);
+
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 30px 65px rgba(0,0,0,.25);
+
+    transition:
+        transform .5s ease,
+        box-shadow .5s ease;
+}
+
+.school-image-wrapper:hover {
+    transform:
+        perspective(1100px)
+        rotateX(0deg)
+        translateY(-8px)
+        translateZ(35px);
+
+    box-shadow:
+        0 40px 80px rgba(0,0,0,.35);
+}
+
+
+/* =========================================================
+   SOFT FLOATING EFFECT
+   ========================================================= */
+
+.quick-card:nth-child(1),
+.facility-card:nth-child(1) {
+    animation: djFloat1 6s ease-in-out infinite;
+}
+
+.quick-card:nth-child(2),
+.facility-card:nth-child(2) {
+    animation: djFloat2 7s ease-in-out infinite;
+}
+
+.quick-card:nth-child(3),
+.facility-card:nth-child(3) {
+    animation: djFloat3 6.5s ease-in-out infinite;
+}
+
+@keyframes djFloat1 {
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes djFloat2 {
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes djFloat3 {
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+
+/* =========================================================
+   MOBILE 3D
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .quick-card:hover,
+    .program-card:hover,
+    .facility-card:hover {
+        transform:
+            translateY(-7px)
+            translateZ(10px);
+    }
+
+    .welcome-image:hover {
+        transform:
+            translateY(-6px)
+            translateZ(15px)
+            scale(1.01);
+    }
+
+    .school-photos video:hover,
+    .school-image-wrapper:hover {
+        transform:
+            translateY(-5px)
+            translateZ(12px);
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .hero h2 {
+        text-shadow:
+            0 5px 15px rgba(0,0,0,.30);
+    }
+
+    .quick-card {
+        box-shadow:
+            0 10px 25px rgba(12,37,70,.14);
+    }
+
+    .program-card,
+    .facility-card {
+        box-shadow:
+            0 10px 25px rgba(0,0,0,.06);
+    }
+
+    .photo-grid img:hover {
+        transform:
+            translateY(-5px)
+            scale(1.015);
+    }
+
+    .school-info-box {
+        transform:
+            translateZ(8px);
+    }
+
+    .school-image-wrapper {
+        transform:
+            translateZ(8px);
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+   } 
