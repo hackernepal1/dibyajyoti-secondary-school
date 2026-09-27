@@ -1,1 +1,634 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Videos | Dibya Jyoti Secondary School</title><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/animation.css"></head><body><header class="header"><div class="container nav-wrapper"><a href="index.html" class="brand"><div class="school-logo">DJ</div><div><h1>DIBYA JYOTI</h1><small>SECONDARY SCHOOL</small></div></a><nav><a href="index.html">Home</a><a href="about.html">About</a><a href="academics.html">Academics</a><a href="programs.html">+2 Programs</a><a href="teachers.html">Teachers</a><a href="gallery.html">Gallery</a><a href="videos.html">Videos</a><a href="notices.html">Notices</a><a href="events.html">Events</a><a href="contact.html">Contact</a></nav></div></header><main class="section"><div class="container"><span class="section-label">DIBYA JYOTI SECONDARY SCHOOL</span><h2>Videos</h2><div id="content" class="videos">Loading...</div></div></main><script>const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); fetch('/api/videos').then(r=>r.json()).then(items=>document.getElementById('content').innerHTML=items.length?items.map(i => `<article><h3>${esc(i.title)}</h3><p>${esc(i.description||"")}</p><a class="btn primary" href="${esc(i.videoUrl)}" target="_blank" rel="noopener">Watch Video</a></article>`).join(""): 'No videos available.').catch(()=>document.getElementById('content').textContent='Unable to load videos.');</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Videos | Dibya Jyoti Secondary School</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animation.css">
+
+  <style>
+    /* ================================
+       VIDEOS PAGE
+    ================================= */
+
+    .videos-page {
+      min-height: 100vh;
+      background: #f5f7fb;
+    }
+
+    .video-heading {
+      text-align: center;
+      max-width: 750px;
+      margin: 0 auto 45px;
+    }
+
+    .video-heading .section-label {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+
+    .video-heading h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      margin: 0 0 12px;
+    }
+
+    .video-heading p {
+      color: #687386;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* Video Grid */
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .video-card {
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+      animation: videoFadeUp .7s ease both;
+    }
+
+    .video-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 18px 45px rgba(0,0,0,.14);
+    }
+
+    /* Thumbnail */
+
+    .video-thumbnail {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #111;
+      cursor: pointer;
+    }
+
+    .video-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .5s ease;
+    }
+
+    .video-card:hover .video-thumbnail img {
+      transform: scale(1.06);
+    }
+
+    /* Play Button */
+
+    .play-button {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+
+      background: rgba(255,255,255,.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      box-shadow: 0 8px 25px rgba(0,0,0,.25);
+      transition: .3s ease;
+    }
+
+    .play-button::after {
+      content: "";
+      margin-left: 5px;
+      border-left: 20px solid #e11d48;
+      border-top: 13px solid transparent;
+      border-bottom: 13px solid transparent;
+    }
+
+    .video-card:hover .play-button {
+      transform: translate(-50%, -50%) scale(1.12);
+    }
+
+    /* Video Information */
+
+    .video-info {
+      padding: 22px;
+    }
+
+    .video-info h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      line-height: 1.35;
+      color: #172033;
+    }
+
+    .video-info p {
+      margin: 0 0 18px;
+      color: #687386;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .watch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      padding: 11px 18px;
+      border-radius: 9px;
+
+      background: #e11d48;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+
+      transition: .3s ease;
+    }
+
+    .watch-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(.92);
+    }
+
+    /* Embedded Player */
+
+    .video-player {
+      display: none;
+      margin-top: 16px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      animation: playerOpen .4s ease;
+    }
+
+    .video-player.active {
+      display: block;
+    }
+
+    .video-player iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      display: block;
+    }
+
+    .close-video {
+      display: none;
+      width: 100%;
+      border: 0;
+      padding: 10px;
+      background: #111827;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .video-player.active + .close-video {
+      display: block;
+    }
+
+    /* Loading */
+
+    .loading {
+      text-align: center;
+      padding: 70px 20px;
+      color: #687386;
+    }
+
+    .loader {
+      width: 45px;
+      height: 45px;
+      border: 4px solid #ddd;
+      border-top-color: #e11d48;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 18px;
+    }
+
+    /* Empty */
+
+    .no-videos {
+      text-align: center;
+      background: white;
+      padding: 50px 20px;
+      border-radius: 18px;
+      color: #687386;
+      box-shadow: 0 8px 30px rgba(0,0,0,.06);
+    }
+
+    /* Animations */
+
+    @keyframes videoFadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes playerOpen {
+      from {
+        opacity: 0;
+        transform: scale(.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Tablet */
+
+    @media (max-width: 1000px) {
+      .videos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* Mobile */
+
+    @media (max-width: 650px) {
+      .videos-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+
+      .video-info {
+        padding: 18px;
+      }
+
+      .play-button {
+        width: 55px;
+        height: 55px;
+      }
+
+      .video-info h3 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container nav-wrapper">
+
+    <a href="index.html" class="brand">
+      <div class="school-logo">DJ</div>
+
+      <div>
+        <h1>DIBYA JYOTI</h1>
+        <small>SECONDARY SCHOOL</small>
+      </div>
+    </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="academics.html">Academics</a>
+      <a href="programs.html">+2 Programs</a>
+      <a href="teachers.html">Teachers</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="videos.html" class="active">Videos</a>
+      <a href="notices.html">Notices</a>
+      <a href="events.html">Events</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+  </div>
+</header>
+
+
+<main class="section videos-page">
+
+  <div class="container">
+
+    <div class="video-heading">
+
+      <span class="section-label">
+        DIBYA JYOTI SECONDARY SCHOOL
+      </span>
+
+      <h2>School Videos</h2>
+
+      <p>
+        Explore memorable moments, programs, activities and
+        achievements of Dibya Jyoti Secondary School.
+      </p>
+
+    </div>
+
+
+    <div id="content" class="videos-grid">
+
+      <div class="loading">
+        <div class="loader"></div>
+        Loading videos...
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+<script>
+
+  /* =================================
+     SECURITY
+  ================================= */
+
+  const esc = value =>
+    String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+
+
+  /* =================================
+     YOUTUBE ID
+  ================================= */
+
+  function getYouTubeId(url) {
+
+    if (!url) return null;
+
+    const patterns = [
+
+      /youtu\.be\/([^?&]+)/,
+
+      /youtube\.com\/watch\?v=([^&]+)/,
+
+      /youtube\.com\/embed\/([^?&]+)/,
+
+      /youtube\.com\/shorts\/([^?&]+)/
+
+    ];
+
+    for (const pattern of patterns) {
+
+      const match = url.match(pattern);
+
+      if (match) {
+        return match[1];
+      }
+
+    }
+
+    return null;
+  }
+
+
+  /* =================================
+     THUMBNAIL
+  ================================= */
+
+  function getThumbnail(videoUrl) {
+
+    const id = getYouTubeId(videoUrl);
+
+    if (!id) {
+
+      return 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80';
+
+    }
+
+    return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  }
+
+
+  /* =================================
+     EMBED URL
+  ================================= */
+
+  function getEmbedUrl(videoUrl) {
+
+    const id = getYouTubeId(videoUrl);
+
+    if (!id) return null;
+
+    return `https://www.youtube.com/embed/${id}?rel=0`;
+
+  }
+
+
+  /* =================================
+     OPEN VIDEO
+  ================================= */
+
+  function openVideo(card, url) {
+
+    const embedUrl = getEmbedUrl(url);
+
+    if (!embedUrl) {
+
+      window.open(url, '_blank', 'noopener');
+
+      return;
+
+    }
+
+    const player = card.querySelector('.video-player');
+
+    const iframe = player.querySelector('iframe');
+
+    iframe.src = embedUrl;
+
+    player.classList.add('active');
+
+    card.querySelector('.close-video').style.display = 'block';
+
+  }
+
+
+  /* =================================
+     CLOSE VIDEO
+  ================================= */
+
+  function closeVideo(card) {
+
+    const player = card.querySelector('.video-player');
+
+    const iframe = player.querySelector('iframe');
+
+    iframe.src = '';
+
+    player.classList.remove('active');
+
+    card.querySelector('.close-video').style.display = 'none';
+
+  }
+
+
+  /* =================================
+     LOAD VIDEOS
+  ================================= */
+
+  fetch('/api/videos')
+
+    .then(response => {
+
+      if (!response.ok) {
+        throw new Error('Failed to load videos');
+      }
+
+      return response.json();
+
+    })
+
+    .then(items => {
+
+      const content = document.getElementById('content');
+
+      if (!Array.isArray(items) || items.length === 0) {
+
+        content.className = '';
+
+        content.innerHTML = `
+          <div class="no-videos">
+            <h3>No videos available</h3>
+            <p>
+              School videos will appear here when they are added.
+            </p>
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      content.innerHTML = items.map((item, index) => {
+
+        const title = esc(item.title || 'School Video');
+
+        const description =
+          esc(item.description || 'Watch this video from Dibya Jyoti Secondary School.');
+
+        const videoUrl = esc(item.videoUrl || '#');
+
+        const thumbnail = esc(getThumbnail(item.videoUrl));
+
+        return `
+
+          <article
+            class="video-card"
+            style="animation-delay:${index * 0.08}s"
+          >
+
+            <div
+              class="video-thumbnail"
+              onclick="openVideo(this.closest('.video-card'), '${videoUrl}')"
+            >
+
+              <img
+                src="${thumbnail}"
+                alt="${title}"
+                loading="lazy"
+              >
+
+              <span class="play-button"></span>
+
+            </div>
+
+
+            <div class="video-info">
+
+              <h3>${title}</h3>
+
+              <p>${description}</p>
+
+              <a
+                href="javascript:void(0)"
+                class="watch-btn"
+                onclick="openVideo(this.closest('.video-card'), '${videoUrl}')"
+              >
+                ▶ Watch Video
+              </a>
+
+
+              <div class="video-player">
+
+                <iframe
+                  title="${title}"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                ></iframe>
+
+              </div>
+
+
+              <button
+                class="close-video"
+                onclick="closeVideo(this.closest('.video-card'))"
+              >
+                ✕ Close Video
+              </button>
+
+            </div>
+
+          </article>
+
+        `;
+
+      }).join('');
+
+    })
+
+
+    .catch(error => {
+
+      console.error(error);
+
+      document.getElementById('content').className = '';
+
+      document.getElementById('content').innerHTML = `
+
+        <div class="no-videos">
+
+          <h3>Unable to load videos</h3>
+
+          <p>
+            Please try again later.
+          </p>
+
+        </div>
+
+      `;
+
+    });
+
+</script>
+
+</body>
+</html>
