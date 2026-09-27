@@ -1,20 +1,60 @@
-
 const express = require("express");
+const mongoose = require("mongoose");
+
 const router = express.Router();
 
-const Video = require("../models/Video");
+// ===============================
+// VIDEO SCHEMA
+// ===============================
+
+const videoSchema = new mongoose.Schema(
+    {
+        title: {
+            type: String,
+            required: true
+        },
+
+        description: {
+            type: String,
+            default: ""
+        },
+
+        videoUrl: {
+            type: String,
+            required: true
+        },
+
+        thumbnail: {
+            type: String,
+            default: ""
+        }
+    },
+    {
+        timestamps: true
+    }
+);
+
+const Video =
+    mongoose.models.Video ||
+    mongoose.model("Video", videoSchema);
+
 
 // ===============================
 // GET ALL VIDEOS
 // ===============================
+
 router.get("/", async (req, res) => {
     try {
-        const videos = await Video.find().sort({ createdAt: -1 });
+
+        const videos = await Video
+            .find()
+            .sort({ createdAt: -1 });
 
         res.json(videos);
 
     } catch (error) {
-        console.error(error);
+
+        console.error("GET VIDEOS ERROR:", error);
 
         res.status(500).json({
             message: "Failed to load videos"
@@ -26,16 +66,28 @@ router.get("/", async (req, res) => {
 // ===============================
 // ADD VIDEO
 // ===============================
+
 router.post("/", async (req, res) => {
     try {
 
-        const { title, description, videoUrl, thumbnail } = req.body;
-
-        const video = new Video({
+        const {
             title,
             description,
             videoUrl,
             thumbnail
+        } = req.body;
+
+        if (!title || !videoUrl) {
+            return res.status(400).json({
+                message: "Title and video URL are required"
+            });
+        }
+
+        const video = new Video({
+            title,
+            description: description || "",
+            videoUrl,
+            thumbnail: thumbnail || ""
         });
 
         const savedVideo = await video.save();
@@ -43,7 +95,8 @@ router.post("/", async (req, res) => {
         res.status(201).json(savedVideo);
 
     } catch (error) {
-        console.error(error);
+
+        console.error("ADD VIDEO ERROR:", error);
 
         res.status(500).json({
             message: "Failed to add video"
@@ -55,12 +108,20 @@ router.post("/", async (req, res) => {
 // ===============================
 // DELETE VIDEO
 // ===============================
+
 router.delete("/:id", async (req, res) => {
     try {
 
-        const deletedVideo = await Video.findByIdAndDelete(
-            req.params.id
-        );
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                message: "Invalid video ID"
+            });
+        }
+
+        const deletedVideo =
+            await Video.findByIdAndDelete(id);
 
         if (!deletedVideo) {
             return res.status(404).json({
@@ -69,12 +130,14 @@ router.delete("/:id", async (req, res) => {
         }
 
         res.json({
+            success: true,
             message: "Video deleted successfully",
             video: deletedVideo
         });
 
     } catch (error) {
-        console.error(error);
+
+        console.error("DELETE VIDEO ERROR:", error);
 
         res.status(500).json({
             message: "Failed to delete video"
@@ -82,5 +145,9 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
+
+// ===============================
+// EXPORT
+// ===============================
 
 module.exports = router;
