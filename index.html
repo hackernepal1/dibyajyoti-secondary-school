@@ -1,889 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>Dibya Jyoti Secondary School | Chisapani, Bardaghat</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta name="description"
+          content="Dibya Jyoti Secondary School, Chisapani, Bardaghat-02, Nawalparasi West, Nepal. Nursery to Grade 12 and Plus Two programs.">
 
-<title>
-Dibya Jyoti Secondary School | Chisapani, Bardaghat
-</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="animation.css">
 
-<meta
-    name="description"
-    content="Dibya Jyoti Secondary School, Chisapani, Bardaghat-02, Nawalparasi West, Nepal. Nursery to Grade 12 and Plus Two programs."
->
-
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="animation.css">
-
-<link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
->
-
-<link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
->
-
-<link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet"
->
-
-<style>
-
-/* =====================================================
-   ADMISSION POPUP
-===================================================== */
-
-.dj-popup-overlay{
-
-    position:fixed;
-
-    inset:0;
-
-    z-index:99999;
-
-    display:none;
-
-    align-items:flex-start;
-
-    justify-content:center;
-
-    padding:25px 15px;
-
-    overflow-y:auto;
-
-    background:
-        rgba(2,15,35,.72);
-
-    backdrop-filter:blur(8px);
-
-}
-
-.dj-popup-overlay.active{
-
-    display:flex;
-
-}
-
-.dj-popup{
-
-    position:relative;
-
-    width:100%;
-
-    max-width:650px;
-
-    margin-top:20px;
-
-    padding:30px;
-
-    border-radius:25px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #ffffff,
-            #f4f9ff
-        );
-
-    box-shadow:
-        0 30px 90px
-        rgba(0,0,0,.35);
-
-    animation:
-        djPopupIn .45s ease;
-
-}
-
-@keyframes djPopupIn{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateY(-35px)
-            scale(.96);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            translateY(0)
-            scale(1);
-
-    }
-
-}
-
-.dj-close{
-
-    position:absolute;
-
-    top:13px;
-
-    right:15px;
-
-    width:38px;
-
-    height:38px;
-
-    border:0;
-
-    border-radius:50%;
-
-    background:#eef3f9;
-
-    color:#17345e;
-
-    font-size:25px;
-
-    line-height:38px;
-
-    cursor:pointer;
-
-    transition:.25s;
-
-}
-
-.dj-close:hover{
-
-    background:#063b8c;
-
-    color:#fff;
-
-    transform:rotate(90deg);
-
-}
-
-.dj-header{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    margin-bottom:18px;
-
-}
-
-.dj-school-icon{
-
-    width:60px;
-
-    height:60px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border-radius:17px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #063b8c,
-            #0b78df
-        );
-
-    color:white;
-
-    font-size:30px;
-
-}
-
-.dj-header h2{
-
-    margin:0;
-
-    color:#063b8c;
-
-    font-size:23px;
-
-}
-
-.dj-header p{
-
-    margin:2px 0 0;
-
-    color:#64748b;
-
-}
-
-.dj-badge{
-
-    display:inline-block;
-
-    padding:9px 14px;
-
-    border-radius:30px;
-
-    background:#fff1e8;
-
-    color:#b42318;
-
-    font-size:13px;
-
-    font-weight:800;
-
-    margin-bottom:14px;
-
-}
-
-.dj-popup h1{
-
-    margin:0 0 10px;
-
-    color:#102b50;
-
-    font-size:29px;
-
-}
-
-.dj-description{
-
-    color:#64748b;
-
-    line-height:1.7;
-
-    margin-bottom:20px;
-
-}
-
-.dj-info{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:10px;
-
-    margin:20px 0;
-
-}
-
-.dj-info div{
-
-    padding:14px 10px;
-
-    text-align:center;
-
-    border-radius:14px;
-
-    background:#edf5ff;
-
-}
-
-.dj-info span{
-
-    display:block;
-
-    font-size:25px;
-
-    margin-bottom:5px;
-
-}
-
-.dj-info strong{
-
-    font-size:12px;
-
-    color:#174477;
-
-}
-
-
-/* MULTI STEP */
-
-.dj-screen{
-
-    display:none;
-
-}
-
-.dj-screen.active{
-
-    display:block;
-
-}
-
-.dj-next{
-
-    width:100%;
-
-    padding:14px;
-
-    border:0;
-
-    border-radius:12px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #063b8c,
-            #0b5ed7
-        );
-
-    color:white;
-
-    font-weight:800;
-
-    cursor:pointer;
-
-}
-
-.dj-buttons{
-
-    display:flex;
-
-    gap:10px;
-
-    margin-top:20px;
-
-}
-
-.dj-apply{
-
-    flex:1;
-
-    display:block;
-
-    text-align:center;
-
-    padding:14px;
-
-    border-radius:12px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #063b8c,
-            #0b5ed7
-        );
-
-    color:white;
-
-    text-decoration:none;
-
-    font-weight:800;
-
-}
-
-.dj-later{
-
-    padding:14px 18px;
-
-    border:1px solid #dbe3ef;
-
-    border-radius:12px;
-
-    background:#fff;
-
-    color:#334155;
-
-    cursor:pointer;
-
-    font-weight:700;
-
-}
-
-
-/* SCHOOL DETAILS */
-
-.dj-detail-box{
-
-    padding:16px;
-
-    margin:12px 0;
-
-    border-radius:14px;
-
-    background:#f7faff;
-
-    border:1px solid #e3ecf8;
-
-}
-
-.dj-detail-box strong{
-
-    color:#063b8c;
-
-}
-
-.dj-detail-box p{
-
-    margin:6px 0 0;
-
-    color:#64748b;
-
-    line-height:1.6;
-
-}
-
-
-/* PHOTOS */
-
-.dj-photo-grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:8px;
-
-    margin:15px 0;
-
-}
-
-.dj-photo-grid img{
-
-    width:100%;
-
-    height:120px;
-
-    object-fit:cover;
-
-    border-radius:12px;
-
-}
-
-
-/* ADMISSION FORM */
-
-.dj-form-title{
-
-    margin-bottom:15px;
-
-}
-
-.dj-form-title h2{
-
-    margin:0 0 5px;
-
-    color:#063b8c;
-
-}
-
-.dj-form-title p{
-
-    margin:0;
-
-    color:#64748b;
-
-    font-size:14px;
-
-}
-
-.dj-input-group{
-
-    margin-bottom:12px;
-
-}
-
-.dj-input-group label{
-
-    display:block;
-
-    margin-bottom:6px;
-
-    color:#334155;
-
-    font-size:13px;
-
-    font-weight:700;
-
-}
-
-.dj-input-group input,
-.dj-input-group select,
-.dj-input-group textarea{
-
-    width:100%;
-
-    padding:12px 13px;
-
-    border:1px solid #dbe3ef;
-
-    border-radius:10px;
-
-    outline:none;
-
-    background:#fff;
-
-    font-family:inherit;
-
-}
-
-.dj-input-group input:focus,
-.dj-input-group select:focus,
-.dj-input-group textarea:focus{
-
-    border-color:#1769d1;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(23,105,209,.10);
-
-}
-
-.dj-two-input{
-
-    display:grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap:10px;
-
-}
-
-.dj-submit{
-
-    width:100%;
-
-    padding:14px;
-
-    border:0;
-
-    border-radius:12px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #063b8c,
-            #0b5ed7
-        );
-
-    color:white;
-
-    font-weight:800;
-
-    cursor:pointer;
-
-}
-
-.dj-submit:disabled{
-
-    opacity:.6;
-
-    cursor:not-allowed;
-
-}
-
-.dj-message{
-
-    display:none;
-
-    padding:13px;
-
-    margin-bottom:15px;
-
-    border-radius:10px;
-
-    font-size:14px;
-
-    font-weight:700;
-
-}
-
-.dj-message.success{
-
-    display:block;
-
-    background:#eafaf0;
-
-    color:#137333;
-
-}
-
-.dj-message.error{
-
-    display:block;
-
-    background:#fff0f0;
-
-    color:#b42318;
-
-}
-
-.dj-back{
-
-    margin-top:10px;
-
-    width:100%;
-
-    padding:11px;
-
-    border:1px solid #dbe3ef;
-
-    background:white;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    font-weight:700;
-
-}
-
-
-/* MOBILE */
-
-@media(max-width:600px){
-
-    .dj-popup{
-
-        padding:22px 18px;
-
-        margin-top:5px;
-
-        border-radius:20px;
-
-    }
-
-    .dj-popup h1{
-
-        font-size:23px;
-
-    }
-
-    .dj-info{
-
-        grid-template-columns:1fr;
-
-    }
-
-    .dj-photo-grid{
-
-        grid-template-columns:
-            repeat(2,1fr);
-
-    }
-
-    .dj-two-input{
-
-        grid-template-columns:1fr;
-
-    }
-
-    .dj-buttons{
-
-        flex-direction:column;
-
-    }
-
-}
-
-
-/* MAP BUTTON */
-
-.map-btn{
-
-    display:inline-block;
-
-    padding:14px 26px;
-
-    margin:10px;
-
-    border-radius:30px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #00eaff,
-            #008cff
-        );
-
-    color:white;
-
-    text-decoration:none;
-
-    font-weight:bold;
-
-    box-shadow:
-        0 0 15px
-        rgba(0,234,255,.35);
-
-    transition:.35s;
-
-}
-
-.map-btn:hover{
-
-    transform:
-        translateY(-4px)
-        scale(1.03);
-
-    box-shadow:
-        0 0 30px
-        rgba(0,234,255,.7);
-
-}
-
-</style>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 
 <body>
 
+<!-- LOADING SCREEN -->
+<!-- <div id="loader">
+    <div class="loader-logo">DJSS</div>
+    <div class="loader-text">Loading School Website...</div>
+</div> -->
 
-<!-- =====================================================
-     TOP BAR
-===================================================== -->
-
+<!-- TOP BAR -->
 <div class="top-bar">
-
     <div class="container top-content">
-
-        <span>
-            📍 Chisapani, Bardaghat-02,
-            Nawalparasi West, Nepal
-        </span>
-
-        <span>
-            📞 +977-78-580207
-        </span>
-
-        <span>
-            ✉️ dibyass034@gmail.com
-        </span>
-
-        <a
-            href="https://www.jageshwarkushwaha.com.np"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            Visit WebDeveloper-Site Now
-        </a>
-
+        <span>📍 Chisapani, Bardaghat-02, Nawalparasi West, Nepal</span>
+        <span>📞 +977-78-580207</span>
+        <span>✉️ dibyass034@gmail.com</span>
+         <a href="https://www.jageshwarkushwaha.com.np" target="_blank">Visit WebDeveloper-Site Now</a>
+            
     </div>
-
 </div>
 
-
-<!-- =====================================================
-     NAVIGATION
-===================================================== -->
-
+<!-- NAVIGATION -->
 <header class="header" id="header">
 
     <div class="container nav-wrapper">
 
-        <a
-            href="index.html"
-            class="brand"
-        >
+        <a href="index.html" class="brand">
 
             <div class="school-logo">
                 DJ
             </div>
 
             <div>
-
                 <h1>DIBYA JYOTI</h1>
-
-                <small>
-                    SECONDARY SCHOOL
-                </small>
-
+                <small>SECONDARY SCHOOL</small>
             </div>
 
         </a>
 
-
-        <button
-            class="menu-toggle"
-            id="menuToggle"
-            type="button"
-        >
+        <button class="menu-toggle" id="menuToggle">
             ☰
         </button>
 
-
         <nav id="mainNav">
 
-            <a
-                href="index.html"
-                class="active"
-            >
-                Home
-            </a>
-
-            <a href="about.html">
-                Abo ut
-            </a>
-
-            <a href="academics.html">
-                Academics
-            </a>
-
-            <a href="programs.html">
-                +2 Programs
-            </a>
-
-            <a href="teachers.html">
-                Teachers
-            </a>
-
-            <a href="gallery.html">
-                Gallery
-            </a>
-
-            <a href="videos.html">
-                Videos
-            </a>
-
-            <a href="notices.html">
-                Notices
-            </a>
-
-            <a href="events.html">
-                Events
-            </a>
-
-            <a href="contact.html">
-                Contact
-            </a>
-
-            <a href="School.html">
-                School
-            </a>
-
-            <a
-                href="https://www.jageshwarkushwaha.com.np"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                Developer
-            </a>
-
-            <a href="bigAnnouncementHackingProgram.html">
-                Big Announcement
-            </a>
-
-            <a
-                href="login.html"
-                class="admin-button"
-            >
+            <a href="index.html" class="active">Home</a>
+            <a href="about.html">About</a>
+            <a href="academics.html">Academics</a>
+            <a href="programs.html">+2 Programs</a>
+            <a href="teachers.html">Teachers</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="videos.html">Videos</a>
+            <a href="notices.html">Notices</a>
+            <a href="events.html">Events</a>
+            <a href="contact.html">Contact</a>
+            <a href="School.html">School</a> 
+ <a href="https://www.jageshwarkushwaha.com.np" target="_blank">Visit WebDeveloper-Site Now</a>
+   <a href="bigAnnouncementHackingProgram.html">bigAnnouncementHackingProgram"</a>     
+            <a href="login.html" class="admin-button">
                 🔐 Admin
             </a>
 
@@ -894,9 +84,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 </header>
 
 
-<!-- =====================================================
-     HERO
-===================================================== -->
+<!-- HERO -->
 
 <section class="hero">
 
@@ -908,264 +96,122 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
             🏫 ESTABLISHED COMMUNITY SCHOOL
         </div>
 
-
         <h2>
-
             Welcome to
-
-            <span>
-                Dibya Jyoti
-            </span>
-
+            <span>Dibya Jyoti</span>
             Secondary School
-
         </h2>
-
-
-        <img
-            src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788861427845.jpg"
-            alt="Dibya Jyoti Secondary School"
-            class="welcome-image"
-        >
-
-
-        <div
-            style="
-            width:100%;
-            max-width:1000px;
-            margin:20px auto;
-            overflow:hidden;
-            border-radius:8px;
-            box-shadow:
-            0 4px 15px rgba(0,0,0,.3);
-            "
-        >
-
-            <img
-                src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788861427845.jpg"
-                alt="Dibya Jyoti School Panorama"
-                style="
-                width:100%;
-                height:auto;
-                display:block;
-                object-fit:cover;
-                "
-            >
-
+<img 
+    src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788861427845.jpg"
+    alt="Dibya Jyoti Secondary School"
+    class="welcome-image">
+        <p>
+        
+        </p>
+        
+                <!-- SCHOOL PANORAMA PHOTO -->
+        <div style="width: 100%; max-width: 1000px; margin: 20px auto; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <img src="https://githubusercontent.com" alt="Dibya Jyoti School Panorama" style="width: 100%; height: auto; display: block; object-fit: cover;">
         </div>
-
-
+        
         <div class="hero-buttons">
 
-            <a
-                href="about.html"
-                class="btn primary"
-            >
-                Through quality education,
-                character, knowledge,
-                and opportunity.
+            <a href="about.html" class="btn primary">
+                through quality education, character, knowledge, and opportunity.
             </a>
 
-
-            <a
-                href="programs.html"
-                class="btn secondary"
-            >
-
+            <a href="programs.html" class="btn secondary">
                 View Programs
-
-                <br>
-
-                1. +2 COMPUTER SCIENCE
-                <br>
-                2. HOTEL MANAGEMENT
-                <br>
+                1. +2 COMPUTER SCIENCE 
+                2. HOTEL MANAGEMENT 
                 3. FINANCE
-                <br>
-                4. AGRICULTURE
-
+                4. AGRICULTURE 
             </a>
 
         </div>
 
     </div>
 
-
     <div class="scroll-indicator">
-
         ↓ Scroll to Explore
-
     </div>
 
 </section>
 
 
-<!-- =====================================================
-     QUICK INFORMATION
-===================================================== -->
+<!-- QUICK INFORMATION -->
 
 <section class="quick-section">
 
     <div class="container quick-grid">
 
         <div class="quick-card">
-
-            <div class="quick-icon">
-                🎓
-            </div>
-
-            <h3>
-                Nursery - 12
-            </h3>
-
-            <p>
-                School Education
-            </p>
-
+            <div class="quick-icon">🎓</div>
+            <h3>Nursery - 12</h3>
+            <p>School Education</p>
         </div>
-
 
         <div class="quick-card">
-
-            <div class="quick-icon">
-                📚
-            </div>
-
-            <h3>
-                +2 Programs
-            </h3>
-
-            <p>
-                Higher Secondary Education
-            </p>
-
+            <div class="quick-icon">📚</div>
+            <h3>+2 Programs</h3>
+            <p>Higher Secondary Education</p>
         </div>
-
 
         <div class="quick-card">
-
-            <div class="quick-icon">
-                👨‍🎓
-            </div>
-
-            <h3>
-                Co-Educational
-            </h3>
-
-            <p>
-                Education for All
-            </p>
-
+            <div class="quick-icon">👨‍🎓</div>
+            <h3>Co-Educational</h3>
+            <p>Education for All</p>
         </div>
-
 
         <div class="quick-card">
-
-            <div class="quick-icon">
-                🏛️
-            </div>
-
-            <h3>
-                Public School
-            </h3>
-
-            <p>
-                Community Education
-            </p>
-
+            <div class="quick-icon">🏛️</div>
+            <h3>Public School</h3>
+            <p>Community Education</p>
         </div>
-
-    </div>
 
 </section>
 
-
-<!-- =====================================================
-     OUR SCHOOL
-===================================================== -->
+<!-- OUR SCHOOL -->
 
 <section class="school-photos">
-
+    </div>
+<section class="school-photos">
     <div class="container">
 
-        <h2>
-            Our School
-        </h2>
-
-        <p>
-            Glimpses of Dibya Jyoti Secondary School
-        </p>
-
-
+        <h2>Our School</h2>
+        <p>Glimpses of Dibya Jyoti Secondary School</p>
         <!-- ADMISSION OPEN VIDEO -->
+<div style="width:100%; max-width:900px; margin:25px auto 35px; border-radius:18px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25);">
+    <video
+        src="ADMISSION OPEN in grade 11 !!! DIVYA JYOTI SECONDARY SCHOOL Bardaghat -2 chisapani. चौधरी 𐙚 ˚.mp4"
+        controls
+        autoplay
+        muted
+        loop
+        playsinline
+        style="width:100%; height:420px;object-fit:cover;display:block;">
+    </video>
+</div>
 
-        <div
-            style="
-            width:100%;
-            max-width:900px;
-            margin:25px auto 35px;
-            border-radius:18px;
-            overflow:hidden;
-            box-shadow:
-            0 10px 30px rgba(0,0,0,.25);
-            "
-        >
-
-            <video
-                src="ADMISSION OPEN in grade 11 !!! DIVYA JYOTI SECONDARY SCHOOL Bardaghat -2 chisapani. चौधरी 𐙚 ˚.mp4"
-                controls
-                autoplay
-                muted
-                loop
-                playsinline
-                style="
-                width:100%;
-                height:420px;
-                object-fit:cover;
-                display:block;
-                "
-            ></video>
-
-        </div>
-
+<div class="photo-grid">
 
         <div class="photo-grid">
 
-            <img
-                src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788887756987.jpg"
-                alt="Dibya Jyoti School"
-            >
+             <img src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788887756987.jpg">
 
-            <img
-                src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788887784290.jpg"
-                alt="Dibya Jyoti School"
-            >
+            <img src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788887784290.jpg">
 
-            <img
-                src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788887835123.jpg"
-                alt="Dibya Jyoti School"
-            >
+            <img src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788887835123.jpg">
 
-            <img
-                src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788887867040.jpg"
-                alt="Dibya Jyoti School"
-            >
+            <img src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/FB_IMG_1788887867040.jpg">
 
-            <img
-                src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG-20260518-WA0018.jpg"
-                alt="Dibya Jyoti School"
-            >
+            <img src="https://raw.githubusercontent.com/hackernepal1/dibyajyoti-secondary-school/main/IMG-20260518-WA0018.jpg">
 
         </div>
-
     </div>
-
 </section>
 
-
-<!-- =====================================================
-     ABOUT
-===================================================== -->
+<!-- ABOUT -->
 
 <section class="section about-section">
 
@@ -1176,20 +222,12 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
             <div class="image-placeholder">
 
                 <div>
-
-                    <span>
-                        🏫
-                    </span>
-
-                    <h3>
-                        School Campus
-                    </h3>
-
+                    <span>🏫</span>
+                    <h3>School Campus</h3>
                     <p>
                         Upload the official school photo
                         from the Admin Panel.
                     </p>
-
                 </div>
 
             </div>
@@ -1203,85 +241,43 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
                 ABOUT OUR SCHOOL
             </span>
 
-
             <h2>
-
                 Learning Today,
-
-                <span>
-                    Leading Tomorrow.
-                </span>
-
+                <span>Leading Tomorrow.</span>
             </h2>
 
-
             <p>
-
-                Dibya Jyoti Secondary School is a
-                public/community educational institution
-                located at Chisapani, Bardaghat-02,
-                Nawalparasi West, Nepal.
-
+                Dibya Jyoti Secondary School is a public/community
+                educational institution located at Chisapani,
+                Bardaghat-02, Nawalparasi West, Nepal.
             </p>
 
-
             <p>
-
-                The school provides education from
-                early childhood through Grade 12 and
-                also offers Plus Two programs affiliated
-                with the National Examination Board.
-
+                The school provides education from early childhood
+                through Grade 12 and also offers Plus Two programs
+                affiliated with the National Examination Board.
             </p>
-
 
             <div class="about-stats">
 
                 <div>
-
-                    <strong>
-                        Nursery–12
-                    </strong>
-
-                    <span>
-                        Education Level
-                    </span>
-
+                    <strong>Nursery–12</strong>
+                    <span>Education Level</span>
                 </div>
 
-
                 <div>
-
-                    <strong>
-                        +2
-                    </strong>
-
-                    <span>
-                        Higher Education
-                    </span>
-
+                    <strong>+2</strong>
+                    <span>Higher Education</span>
                 </div>
 
-
                 <div>
-
-                    <strong>
-                        NEB
-                    </strong>
-
-                    <span>
-                        Affiliation
-                    </span>
-
+                    <strong>NEB</strong>
+                    <span>Affiliation</span>
                 </div>
 
             </div>
 
-
-            <a
-                href="about.html"
-                class="read-more"
-            >
+            <a href="about.html" class="read-more">
                 Read More →
             </a>
 
@@ -1291,10 +287,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 
 </section>
 
-
-<!-- =====================================================
-     PROGRAMS
-===================================================== -->
+<!-- PROGRAMS -->
 
 <section class="section programs-section">
 
@@ -1307,20 +300,13 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
             </span>
 
             <h2>
-
                 Education for
-
-                <span>
-                    Every Future
-                </span>
-
+                <span>Every Future</span>
             </h2>
 
             <p>
-
-                Explore the educational opportunities
-                available at Dibya Jyoti Secondary School.
-
+                Explore the educational opportunities available
+                at Dibya Jyoti Secondary School.
             </p>
 
         </div>
@@ -1334,13 +320,11 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
                     🧒
                 </div>
 
-                <h3>
-                    School Education
-                </h3>
+                <h3>School Education</h3>
 
                 <p>
-                    Early childhood, basic and secondary
-                    education from Nursery through Grade 12.
+                    Early childhood, basic and secondary education
+                    from Nursery through Grade 12.
                 </p>
 
                 <a href="academics.html">
@@ -1356,12 +340,10 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
                     🔬
                 </div>
 
-                <h3>
-                    +2 Science
-                </h3>
+                <h3>+2 Science</h3>
 
                 <p>
-                                    Higher secondary education for students
+                    Higher secondary education for students
                     interested in science and technology.
                 </p>
 
@@ -1378,9 +360,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
                     💼
                 </div>
 
-                <h3>
-                    +2 Management
-                </h3>
+                <h3>+2 Management</h3>
 
                 <p>
                     Develop knowledge and skills in business,
@@ -1400,9 +380,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
                     🌎
                 </div>
 
-                <h3>
-                    +2 Humanities
-                </h3>
+                <h3>+2 Humanities</h3>
 
                 <p>
                     Explore society, culture, communication
@@ -1422,9 +400,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
                     👨‍🏫
                 </div>
 
-                <h3>
-                    +2 Education
-                </h3>
+                <h3>+2 Education</h3>
 
                 <p>
                     Build foundational knowledge for education
@@ -1444,9 +420,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 </section>
 
 
-<!-- =========================
-     FACILITIES
-========================= -->
+<!-- FACILITIES -->
 
 <section class="section facilities-section">
 
@@ -1471,54 +445,37 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
             <div class="facility-card">
                 <span>📚</span>
                 <h3>Library</h3>
-                <p>
-                    Learning resources for students.
-                </p>
+                <p>Learning resources for students.</p>
             </div>
-
 
             <div class="facility-card">
                 <span>🔬</span>
                 <h3>Science Lab</h3>
-                <p>
-                    Practical scientific learning.
-                </p>
+                <p>Practical scientific learning.</p>
             </div>
-
 
             <div class="facility-card">
                 <span>💻</span>
                 <h3>Computer Lab</h3>
-                <p>
-                    Technology and digital learning.
-                </p>
+                <p>Technology and digital learning.</p>
             </div>
-
 
             <div class="facility-card">
                 <span>🎨</span>
                 <h3>Multimedia</h3>
-                <p>
-                    Modern classroom learning.
-                </p>
+                <p>Modern classroom learning.</p>
             </div>
-
 
             <div class="facility-card">
                 <span>⚽</span>
                 <h3>Sports</h3>
-                <p>
-                    Physical activity and teamwork.
-                </p>
+                <p>Physical activity and teamwork.</p>
             </div>
-
 
             <div class="facility-card">
                 <span>🎵</span>
                 <h3>Music & Dance</h3>
-                <p>
-                    Creative and cultural activities.
-                </p>
+                <p>Creative and cultural activities.</p>
             </div>
 
         </div>
@@ -1528,9 +485,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 </section>
 
 
-<!-- =========================
-     NOTICE BOARD
-========================= -->
+<!-- NOTICE SECTION -->
 
 <section class="section notices-section">
 
@@ -1572,9 +527,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 </section>
 
 
-<!-- =========================
-     GALLERY
-========================= -->
+<!-- GALLERY -->
 
 <section class="section gallery-section">
 
@@ -1601,13 +554,10 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
         <div id="galleryPreview" class="gallery-grid">
 
             <div class="gallery-placeholder">
-
                 📷
-
                 <p>
                     School photos will appear here.
                 </p>
-
             </div>
 
         </div>
@@ -1626,9 +576,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 </section>
 
 
-<!-- =========================
-     VIDEOS
-========================= -->
+<!-- VIDEO -->
 
 <section class="section video-section">
 
@@ -1683,9 +631,7 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 </section>
 
 
-<!-- =========================
-     CONTACT
-========================= -->
+<!-- CONTACT -->
 
 <section class="contact-section">
 
@@ -1713,82 +659,59 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 
         <div class="contact-items">
 
-
             <div class="contact-item">
-
                 <span>📍</span>
+              <a href="https://maps.app.goo.gl/anjn7vPQWSbMTW8D7"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="map-btn">
+   📍 Find Us on Google Maps
+</a>
 
-                <div>
+<style>
+.map-btn{
+    display:inline-block;
+    padding:14px 26px;
+    margin:10px;
+    border-radius:30px;
+    background:linear-gradient(135deg,#00eaff,#008cff);
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    box-shadow:0 0 15px #00eaff88;
+    transition:.35s;
+}
 
-                    <strong>Location</strong>
-
-                    <p>
-                        Chisapani, Bardaghat-02,
-                        Nawalparasi West, Nepal
-                    </p>
-
-                    <a
-                        href="https://maps.app.goo.gl/anjn7vPQWSbMTW8D7"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="map-btn"
-                    >
-                        📍 Find Us on Google Maps
-                    </a>
-
+.map-btn:hover{
+    transform:translateY(-4px) scale(1.05);
+    box-shadow:0 0 30px #00eaff;
+}
+</style>  
                 </div>
-
             </div>
 
-
             <div class="contact-item">
-
                 <span>📞</span>
-
                 <div>
-
                     <strong>Telephone</strong>
-
-                    <p>
-                        +977-78-580207
-                    </p>
-
+                    <p>+977-78-580207</p>
                 </div>
-
             </div>
 
-
             <div class="contact-item">
-
                 <span>📱</span>
-
                 <div>
-
                     <strong>Mobile</strong>
-
-                    <p>
-                        +977-9847026137
-                    </p>
-
+                    <p>+977-9847026137</p>
                 </div>
-
             </div>
 
-
             <div class="contact-item">
-
                 <span>✉️</span>
-
                 <div>
-
                     <strong>Email</strong>
-
-                    <p>
-                        dibyass034@gmail.com
-                    </p>
-
+                    <p>dibyass034@gmail.com</p>
                 </div>
-
             </div>
 
         </div>
@@ -1798,20 +721,15 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 </section>
 
 
-<!-- =========================
-     FOOTER
-========================= -->
+<!-- FOOTER -->
 
 <footer class="footer">
 
     <div class="container footer-grid">
 
-
         <div>
 
-            <h3>
-                Dibya Jyoti Secondary School
-            </h3>
+            <h3>Dibya Jyoti Secondary School</h3>
 
             <p>
                 Chisapani, Bardaghat-02,
@@ -1828,79 +746,26 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 
         <div>
 
-            <h4>
-                Quick Links
-            </h4>
+            <h4>Quick Links</h4>
 
-            <a href="about.html">
-                About
-            </a>
-
-            <a href="academics.html">
-                Academics
-            </a>
-
-            <a href="programs.html">
-                Programs
-            </a>
-
-            <a href="notices.html">
-                Notices
-            </a>
-
-            <a href="gallery.html">
-                Gallery
-            </a>
-
-            <a href="contact.html">
-                Contact
-            </a>
+            <a href="about.html">About</a>
+            <a href="academics.html">Academics</a>
+            <a href="programs.html">Programs</a>
+            <a href="notices.html">Notices</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="contact.html">Contact</a>
 
         </div>
 
 
         <div>
 
-            <h4>
-                Important
-            </h4>
+            <h4>Important</h4>
 
-            <a href="login.html">
-                Admin Login
-            </a>
-
-            <a href="notices.html">
-                Announcements
-            </a>
-
-            <a href="events.html">
-                Events
-            </a>
-
-            <a href="videos.html">
-                Videos
-            </a>
-
-        </div>
-
-
-        <div>
-
-            <h4>
-                Developer
-            </h4>
-
-            <a
-                href="https://www.jageshwarkushwaha.com.np"
-                target="_blank"
-                rel="noopener"
-            >
-                Developer Website
-            </a>
-
-            <a href="mailto:stylishcompanygame@gmail.com">
-                Contact Developer
-            </a>
+            <a href="login.html">Admin Login</a>
+            <a href="notices.html">Announcements</a>
+            <a href="events.html">Events</a>
+            <a href="videos.html">Videos</a>
 
         </div>
 
@@ -1910,36 +775,14 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
     <div class="footer-bottom">
 
         <p>
-
             © <span id="currentYear"></span>
-
             Dibya Jyoti Secondary School.
-
             All Rights Reserved.
-
-            <br>
-
-            Website Developer:
-            <strong>
-                Jageshwar Kushwaha
-            </strong>
-
-            #Student of DJSS
-
-            <br>
-
-            For More Information:
-
-            <a
-                href="https://www.jageshwarkushwaha.com.np"
-                target="_blank"
-                rel="noopener"
-            >
-                Visit Developer Website
-            </a>
-
+            Website Developer: Jageshwar Kushwaha #Student of DJSS
+            For More information 
+            Visit Official Sites : <a href="https://www.jageshwarkushwaha.com.np" target="_blank">Visit Now</a>
+            
         </p>
-
 
         <p>
             School Code: 480380002
@@ -1950,1145 +793,14 @@ Dibya Jyoti Secondary School | Chisapani, Bardaghat
 </footer>
 
 
-<!-- =========================
-     BACK TO TOP
-========================= -->
+<!-- BACK TO TOP -->
 
-<button
-    id="backToTop"
-    title="Back to top"
->
+<button id="backToTop" title="Back to top">
     ↑
 </button>
 
 
-<!-- =========================
-     ADMISSION POPUP
-========================= -->
+<script src="js/app.js"></script>
 
-<div
-    id="djAdmissionPopup"
-    class="dj-popup-overlay"
->
-
-    <div class="dj-popup">
-
-        <button
-            class="dj-close"
-            onclick="closeDJPopup()"
-        >
-            ×
-        </button>
-
-
-        <div class="dj-header">
-
-            <div class="dj-school-icon">
-                🎓
-            </div>
-
-            <div>
-
-                <h2>
-                    Dibya Jyoti
-                </h2>
-
-                <p>
-                    Secondary School
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="dj-badge">
-            🎉 ADMISSION OPEN 2083
-        </div>
-
-
-        <h1>
-            Shape Your Future With Us
-        </h1>
-
-
-        <p class="dj-description">
-
-            New admission is now open for the
-            academic session 2083.
-
-            Join Dibya Jyoti Secondary School
-            and take the next step toward a
-            bright and successful future.
-
-        </p>
-
-
-        <div class="dj-info">
-
-            <div>
-
-                <span>📚</span>
-
-                <strong>
-                    Quality Education
-                </strong>
-
-            </div>
-
-
-            <div>
-
-                <span>🏫</span>
-
-                <strong>
-                    Experienced Teachers
-                </strong>
-
-            </div>
-
-
-            <div>
-
-                <span>🌟</span>
-
-                <strong>
-                    Student Development
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="dj-buttons">
-
-            <button
-                class="dj-apply"
-                onclick="openAdmissionForm()"
-            >
-                Apply Now →
-            </button>
-
-
-            <button
-                class="dj-later"
-                onclick="closeDJPopup()"
-            >
-                Maybe Later
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
-     ADMISSION FORM POPUP
-========================= -->
-
-<div
-    id="djAdmissionFormPopup"
-    class="dj-popup-overlay"
->
-
-    <div class="dj-popup dj-form-popup">
-
-        <button
-            class="dj-close"
-            onclick="closeAdmissionForm()"
-        >
-            ×
-        </button>
-
-
-        <div class="dj-header">
-
-            <div class="dj-school-icon">
-                📝
-            </div>
-
-            <div>
-
-                <h2>
-                    Admission Enquiry
-                </h2>
-
-                <p>
-                    Dibya Jyoti Secondary School
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="dj-badge">
-            📚 ADMISSION SESSION 2083
-        </div>
-
-
-        <form
-            id="djAdmissionForm"
-            onsubmit="djSubmitAdmission(event)"
-        >
-
-            <div class="dj-input-group">
-
-                <label>
-                    Student Name
-                </label>
-
-                <input
-                    type="text"
-                    id="djStudentName"
-                    placeholder="Enter student name"
-                    required
-                >
-
-            </div>
-
-
-            <div class="dj-input-group">
-
-                <label>
-                    Parent / Guardian Name
-                </label>
-
-                <input
-                    type="text"
-                    id="djParentName"
-                    placeholder="Enter parent/guardian name"
-                    required
-                >
-
-            </div>
-
-
-            <div class="dj-two-input">
-
-
-                <div class="dj-input-group">
-
-                    <label>
-                        Phone Number
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="djPhone"
-                        placeholder="98XXXXXXXX"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="dj-input-group">
-
-                    <label>
-                        Grade
-                    </label>
-
-                    <select
-                        id="djGrade"
-                        required
-                    >
-
-                        <option value="">
-                            Select Grade
-                        </option>
-
-                        <option>
-                            Nursery
-                        </option>
-
-                        <option>
-                            KG
-                        </option>
-
-                        <option>
-                            Grade 1
-                        </option>
-
-                        <option>
-                            Grade 2
-                        </option>
-
-                        <option>
-                            Grade 3
-                        </option>
-
-                        <option>
-                            Grade 4
-                        </option>
-
-                        <option>
-                            Grade 5
-                        </option>
-
-                        <option>
-                            Grade 6
-                        </option>
-
-                        <option>
-                            Grade 7
-                        </option>
-
-                        <option>
-                            Grade 8
-                        </option>
-
-                        <option>
-                            Grade 9
-                        </option>
-
-                        <option>
-                            Grade 10
-                        </option>
-
-                        <option>
-                            Grade 11
-                        </option>
-
-                        <option>
-                            Grade 12
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <div class="dj-input-group">
-
-                <label>
-                    Interested Program
-                </label>
-
-                <select
-                    id="djProgram"
-                    required
-                >
-
-                    <option value="">
-                        Select Program
-                    </option>
-
-                    <option>
-                        Computer Science
-                    </option>
-
-                    <option>
-                        Hotel Management
-                    </option>
-
-                    <option>
-                        Finance
-                    </option>
-
-                    <option>
-                        Agriculture
-                    </option>
-
-                    <option>
-                        General Education
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="dj-input-group">
-
-                <label>
-                    Message
-                </label>
-
-                <textarea
-                    id="djMessage"
-                    rows="3"
-                    placeholder="Any message or enquiry..."
-                ></textarea>
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="dj-main-btn"
-                id="djSubmitButton"
-            >
-                Submit Admission Enquiry →
-            </button>
-
-        </form>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
-     POPUP CSS
-========================= -->
-
-<style>
-
-.dj-popup-overlay{
-
-    position:fixed;
-
-    inset:0;
-
-    background:
-        rgba(2,10,25,.72);
-
-    backdrop-filter:
-        blur(7px);
-
-    display:none;
-
-    align-items:flex-start;
-
-    justify-content:center;
-
-    padding:35px 15px;
-
-    overflow-y:auto;
-
-    z-index:99999;
-
-}
-
-.dj-popup{
-
-    width:100%;
-
-    max-width:620px;
-
-    background:#fff;
-
-    border-radius:24px;
-
-    padding:30px;
-
-    position:relative;
-
-    box-shadow:
-        0 25px 80px rgba(0,0,0,.35);
-
-    animation:
-        djPopupIn .35s ease;
-
-}
-
-@keyframes djPopupIn{
-
-    from{
-        opacity:0;
-        transform:translateY(-35px) scale(.97);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
-
-}
-
-.dj-close{
-
-    position:absolute;
-
-    top:14px;
-
-    right:15px;
-
-    width:38px;
-
-    height:38px;
-
-    border:0;
-
-    border-radius:50%;
-
-    background:#eef3f9;
-
-    color:#172033;
-
-    font-size:25px;
-
-    cursor:pointer;
-
-}
-
-.dj-header{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    margin-bottom:18px;
-
-}
-
-.dj-school-icon{
-
-    width:55px;
-
-    height:55px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    background:
-        linear-gradient(
-            135deg,
-            #063b8c,
-            #0b5ed7
-        );
-
-    border-radius:16px;
-
-    font-size:28px;
-
-}
-
-.dj-header h2{
-
-    margin:0;
-
-    color:#063b8c;
-
-}
-
-.dj-header p{
-    margin:0;
-    color:#64748b;
-    font-size:13px;
-}
-
-.dj-popup{
-    width:min(92%,520px);
-    max-height:90vh;
-    overflow-y:auto;
-    background:#ffffff;
-    border-radius:24px;
-    padding:28px;
-    position:relative;
-    box-shadow:
-        0 25px 80px rgba(0,0,0,.30);
-    animation:djPopupIn .45s ease;
-}
-
-@keyframes djPopupIn{
-    from{
-        opacity:0;
-        transform:translateY(-40px) scale(.94);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
-}
-
-.dj-popup-overlay{
-    position:fixed;
-    inset:0;
-    z-index:99999;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding-top:35px;
-    background:rgba(2,10,30,.72);
-    backdrop-filter:blur(7px);
-}
-
-.dj-close{
-    position:absolute;
-    right:15px;
-    top:15px;
-    width:38px;
-    height:38px;
-    border:0;
-    border-radius:50%;
-    background:#f1f5f9;
-    color:#334155;
-    font-size:25px;
-    line-height:1;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.dj-close:hover{
-    background:#063b8c;
-    color:white;
-    transform:rotate(90deg);
-}
-
-.dj-badge{
-    display:inline-block;
-    padding:9px 15px;
-    border-radius:30px;
-    background:linear-gradient(
-        135deg,
-        #e0f2fe,
-        #dbeafe
-    );
-    color:#075985;
-    font-size:13px;
-    font-weight:800;
-    margin-bottom:15px;
-}
-
-.dj-popup h1{
-    margin:8px 0 10px;
-    font-size:28px;
-    line-height:1.2;
-    color:#0f172a;
-}
-
-.dj-description{
-    color:#64748b;
-    line-height:1.7;
-    font-size:14px;
-}
-
-.dj-info{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin:20px 0;
-}
-
-.dj-info div{
-    padding:14px 8px;
-    text-align:center;
-    background:#f8fafc;
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-}
-
-.dj-info span{
-    display:block;
-    font-size:23px;
-    margin-bottom:6px;
-}
-
-.dj-info strong{
-    display:block;
-    font-size:11px;
-    color:#334155;
-}
-
-.dj-buttons{
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-}
-
-.dj-apply,
-.dj-later{
-    flex:1;
-    text-align:center;
-    padding:13px 15px;
-    border-radius:12px;
-    font-weight:800;
-    cursor:pointer;
-    text-decoration:none;
-    font-size:14px;
-}
-
-.dj-apply{
-    background:linear-gradient(
-        135deg,
-        #063b8c,
-        #0b5ed7
-    );
-    color:white;
-    box-shadow:0 8px 20px rgba(11,94,215,.25);
-}
-
-.dj-later{
-    border:1px solid #dbe3ef;
-    background:#f8fafc;
-    color:#334155;
-}
-
-.dj-apply:hover{
-    transform:translateY(-2px);
-}
-
-.dj-later:hover{
-    background:#e2e8f0;
-}
-
-
-/* =========================
-   ADMISSION FORM
-========================= */
-
-.dj-admission-form{
-    display:none;
-    margin-top:20px;
-    padding-top:20px;
-    border-top:1px solid #e2e8f0;
-}
-
-.dj-admission-form.active{
-    display:block;
-}
-
-.dj-form-title{
-    color:#063b8c;
-    margin:0 0 15px;
-    font-size:21px;
-}
-
-.dj-input-group{
-    margin-bottom:13px;
-}
-
-.dj-input-group label{
-    display:block;
-    margin-bottom:6px;
-    color:#334155;
-    font-size:13px;
-    font-weight:700;
-}
-
-.dj-input-group input,
-.dj-input-group select,
-.dj-input-group textarea{
-    width:100%;
-    padding:12px 13px;
-    border:1px solid #dbe3ef;
-    border-radius:10px;
-    outline:none;
-    font-family:inherit;
-    font-size:14px;
-    background:#fbfdff;
-}
-
-.dj-input-group input:focus,
-.dj-input-group select:focus,
-.dj-input-group textarea:focus{
-    border-color:#0b5ed7;
-    box-shadow:0 0 0 3px rgba(11,94,215,.10);
-}
-
-.dj-input-group textarea{
-    resize:vertical;
-    min-height:80px;
-}
-
-.dj-two-input{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-}
-
-.dj-submit{
-    width:100%;
-    border:0;
-    padding:13px;
-    border-radius:11px;
-    background:linear-gradient(
-        135deg,
-        #063b8c,
-        #0b5ed7
-    );
-    color:white;
-    font-weight:800;
-    cursor:pointer;
-    font-size:14px;
-}
-
-.dj-submit:hover{
-    box-shadow:0 8px 20px rgba(11,94,215,.25);
-    transform:translateY(-2px);
-}
-
-.dj-form-message{
-    margin-top:12px;
-    padding:10px;
-    border-radius:9px;
-    display:none;
-    font-size:13px;
-    font-weight:600;
-}
-
-.dj-form-message.success{
-    display:block;
-    background:#ecfdf5;
-    color:#047857;
-}
-
-.dj-form-message.error{
-    display:block;
-    background:#fef2f2;
-    color:#b91c1c;
-}
-
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:600px){
-
-    .dj-popup{
-        width:94%;
-        padding:22px;
-        border-radius:20px;
-    }
-
-    .dj-popup-overlay{
-        padding-top:20px;
-    }
-
-    .dj-popup h1{
-        font-size:23px;
-    }
-
-    .dj-info{
-        grid-template-columns:1fr;
-    }
-
-    .dj-info div{
-        display:flex;
-        align-items:center;
-        gap:10px;
-        text-align:left;
-    }
-
-    .dj-info span{
-        margin:0;
-    }
-
-    .dj-two-input{
-        grid-template-columns:1fr;
-        gap:0;
-    }
-
-    .dj-buttons{
-        flex-direction:column;
-    }
-
-}
-</style>
-
-
-<script>
-
-/* =====================================
-   DIBYA JYOTI ADMISSION POPUP
-===================================== */
-
-function openDJPopup(){
-
-    const popup =
-        document.getElementById(
-            "djAdmissionPopup"
-        );
-
-    if(popup){
-        popup.style.display = "flex";
-        document.body.style.overflow = "hidden";
-    }
-}
-
-
-function closeDJPopup(){
-
-    const popup =
-        document.getElementById(
-            "djAdmissionPopup"
-        );
-
-    if(popup){
-        popup.style.display = "none";
-        document.body.style.overflow = "";
-    }
-}
-
-
-/* =====================================
-   OPEN POPUP AUTOMATICALLY
-===================================== */
-
-window.addEventListener(
-    "load",
-    function(){
-
-        setTimeout(
-            function(){
-
-                openDJPopup();
-
-            },
-            1200
-        );
-
-    }
-);
-
-
-/* =====================================
-   CLOSE WHEN CLICK OUTSIDE
-===================================== */
-
-document.addEventListener(
-    "click",
-    function(event){
-
-        const popup =
-            document.getElementById(
-                "djAdmissionPopup"
-            );
-
-        if(
-            popup &&
-            event.target === popup
-        ){
-
-            closeDJPopup();
-
-        }
-
-    }
-);
-
-
-/* =====================================
-   ESC KEY CLOSE
-===================================== */
-
-document.addEventListener(
-    "keydown",
-    function(event){
-
-        if(event.key === "Escape"){
-
-            closeDJPopup();
-
-        }
-
-    }
-);
-
-
-/* =====================================
-   ADMISSION FORM
-===================================== */
-
-function showDJAdmissionForm(){
-
-    const form =
-        document.getElementById(
-            "djAdmissionForm"
-        );
-
-    if(form){
-
-        form.classList.add("active");
-
-        form.scrollIntoView({
-            behavior:"smooth",
-            block:"nearest"
-        });
-
-    }
-
-}
-
-
-/* =====================================
-   REAL ADMISSION SUBMIT
-===================================== */
-
-async function djSubmitAdmission(event){
-
-    event.preventDefault();
-
-    const message =
-        document.getElementById(
-            "djFormMessage"
-        );
-
-    const submitButton =
-        document.getElementById(
-            "djSubmitButton"
-        );
-
-    const studentName =
-        document.getElementById(
-            "djStudentName"
-        ).value.trim();
-
-    const parentName =
-        document.getElementById(
-            "djParentName"
-        ).value.trim();
-
-    const phone =
-        document.getElementById(
-            "djPhone"
-        ).value.trim();
-
-    const grade =
-        document.getElementById(
-            "djGrade"
-        ).value;
-
-    const program =
-        document.getElementById(
-            "djProgram"
-        ).value;
-
-    const admissionMessage =
-        document.getElementById(
-            "djMessage"
-        ).value.trim();
-
-
-    if(
-        !studentName ||
-        !parentName ||
-        !phone ||
-        !grade ||
-        !program
-    ){
-
-        message.className =
-            "dj-form-message error";
-
-        message.textContent =
-            "Please fill all required fields.";
-
-        return;
-
-    }
-
-
-    submitButton.disabled = true;
-
-    submitButton.textContent =
-        "Submitting...";
-
-
-    message.className =
-        "dj-form-message";
-
-    message.textContent = "";
-
-
-    try{
-
-        const response =
-            await fetch(
-                "/api/admissions",
-                {
-                    method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
-
-                    body:JSON.stringify({
-
-                        studentName:
-                            studentName,
-
-                        parentName:
-                            parentName,
-
-                        phone:
-                            phone,
-
-                        grade:
-                            grade,
-
-                        program:
-                            program,
-
-                        message:
-                            admissionMessage
-
-                    })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(!response.ok){
-
-            throw new Error(
-                data.message ||
-                "Admission submission failed."
-            );
-
-        }
-
-
-        message.className =
-            "dj-form-message success";
-
-        message.textContent =
-            "✅ Admission enquiry submitted successfully! School administration will contact you.";
-
-
-        document
-            .getElementById(
-                "djAdmissionForm"
-            )
-            .reset();
-
-
-        submitButton.textContent =
-            "✅ Submitted";
-
-
-    }catch(error){
-
-        console.error(
-            "Admission error:",
-            error
-        );
-
-
-        message.className =
-            "dj-form-message error";
-
-        message.textContent =
-            "❌ Submission failed. Please try again later.";
-
-
-        submitButton.disabled =
-            false;
-
-        submitButton.textContent =
-            "Submit Admission Enquiry";
-
-    }
-
-}
-
-</script>
+</body>
+</html>
