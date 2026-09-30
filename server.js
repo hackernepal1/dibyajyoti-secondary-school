@@ -1026,7 +1026,9 @@ app.patch(
                     message:
                         "Admission not found."
 
-                            }
+                                    });
+        
+            }
 
         res.json({
             message: "Admission status updated successfully.",
