@@ -2,1277 +2,2542 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Admin Dashboard | Dibya Jyoti</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<link rel="stylesheet" href="css/style.css">
+<title>Dibya Jyoti | Admin Control Panel</title>
 
 <style>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
 
 *{
     box-sizing:border-box;
 }
 
+:root{
+
+    --primary:#0b5ed7;
+    --primary-dark:#063b8c;
+    --primary-light:#e8f1ff;
+
+    --bg:#f4f7fb;
+    --card:#ffffff;
+
+    --text:#172033;
+    --muted:#64748b;
+
+    --border:#e2e8f0;
+
+    --success:#15803d;
+    --success-bg:#dcfce7;
+
+    --warning:#b45309;
+    --warning-bg:#fef3c7;
+
+    --danger:#b42318;
+    --danger-bg:#fee2e2;
+
+    --sidebar:270px;
+
+}
+
 body{
+
     margin:0;
-    background:
-        radial-gradient(circle at 10% 10%,rgba(37,99,235,.12),transparent 30%),
-        radial-gradient(circle at 90% 20%,rgba(14,165,233,.10),transparent 30%),
-        #f3f7fc;
-    font-family:Arial,sans-serif;
-    color:#172033;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
 }
 
-.admin-header{
-    background:
-        linear-gradient(135deg,#02265c,#063b8c,#0b5ed7);
-    color:white;
-    padding:22px 0;
-    box-shadow:0 8px 30px rgba(2,38,92,.25);
+a{
+    color:inherit;
 }
 
-.admin-header-inner{
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app{
+
     display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
+
+    min-height:100vh;
+
 }
 
-.admin-header h1{
-    margin:0 0 5px;
-    font-size:24px;
-}
 
-.admin-header small{
-    opacity:.85;
-}
+/* =========================================================
+   SIDEBAR
+========================================================= */
 
-.logout{
-    border:1px solid rgba(255,255,255,.5);
-    background:rgba(255,255,255,.08);
-    color:white;
-    padding:10px 17px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:700;
-}
+.sidebar{
 
-.logout:hover{
-    background:white;
-    color:#063b8c;
-}
+    width:var(--sidebar);
 
-.dashboard{
-    padding:35px 0 60px;
-}
-
-#status{
-    padding:15px 18px;
-    margin-bottom:25px;
-    border-radius:14px;
-    background:white;
-    box-shadow:0 8px 25px rgba(0,0,0,.06);
-    font-weight:600;
-    border-left:5px solid #063b8c;
-}
-
-.dashboard-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:22px;
-}
-
-.dashboard-card{
-    background:rgba(255,255,255,.95);
-    border-radius:20px;
-    padding:25px;
-    box-shadow:
-        0 12px 35px rgba(15,23,42,.08);
-    border:1px solid rgba(255,255,255,.8);
-    transition:.3s ease;
-}
-
-.dashboard-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 18px 40px rgba(15,23,42,.12);
-}
-
-.dashboard-card h2{
-    color:#063b8c;
-    font-size:20px;
-    margin:0 0 18px;
-}
-
-.dashboard-card input,
-.dashboard-card textarea{
-    width:100%;
-    padding:13px 14px;
-    border:1px solid #dbe3ef;
-    border-radius:11px;
-    margin-bottom:12px;
-    font-family:inherit;
-    outline:none;
-    background:#fbfdff;
-}
-
-.dashboard-card input:focus,
-.dashboard-card textarea:focus{
-    border-color:#1769d1;
-    box-shadow:0 0 0 3px rgba(23,105,209,.10);
-}
-
-.dashboard-card textarea{
-    min-height:110px;
-    resize:vertical;
-}
-
-.dashboard-card button{
-    background:linear-gradient(135deg,#063b8c,#0b5ed7);
-    color:white;
-    border:0;
-    padding:12px 18px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:700;
-    transition:.25s;
-}
-
-.dashboard-card button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 8px 18px rgba(6,59,140,.25);
-}
-
-.full-card{
-    grid-column:1/-1;
-}
-
-.pdf-card{
     background:
-        linear-gradient(135deg,#fff,#f0f7ff);
-    border:2px solid #d8e9ff;
+        linear-gradient(
+            180deg,
+            #02265c,
+            #063b8c 55%,
+            #075bc7
+        );
+
+    color:white;
+
+    position:fixed;
+
+    left:0;
+    top:0;
+    bottom:0;
+
+    z-index:1000;
+
+    overflow-y:auto;
+
+    transition:.3s;
+
 }
 
-.pdf-card h2{
-    color:#b42318;
+
+.brand{
+
+    padding:25px 20px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.15);
+
 }
 
-.pdf-note{
-    background:#fff7ed;
-    color:#9a3412;
-    padding:10px 12px;
-    border-radius:10px;
-    font-size:13px;
-    margin-bottom:15px;
+
+.brand-title{
+
+    font-size:21px;
+
+    font-weight:800;
+
 }
 
-.admin-list{
-    margin-top:15px;
-}
 
-.admin-list-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    padding:15px;
-    margin-bottom:10px;
-    border-radius:12px;
-    background:#f8fafc;
-    border:1px solid #e5eaf1;
-}
+.brand-sub{
 
-.admin-list-item strong{
-    color:#063b8c;
-}
-
-.admin-list-item p{
-    margin:6px 0 0;
-    color:#64748b;
-}
-
-.delete{
-    background:#b42318 !important;
-}
-
-.view-btn{
-    display:inline-block;
-    margin-top:8px;
-    padding:7px 11px;
-    border-radius:8px;
-    background:#e8f1ff;
-    color:#063b8c;
-    text-decoration:none;
     font-size:12px;
-    font-weight:700;
+
+    opacity:.7;
+
+    margin-top:5px;
+
 }
+
+
+.admin-profile{
+
+    padding:18px 20px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.12);
+
+}
+
+
+.profile-icon{
+
+    width:43px;
+    height:43px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.16);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:20px;
+
+}
+
+
+.profile-name{
+
+    font-weight:700;
+
+    font-size:14px;
+
+}
+
+
+.profile-role{
+
+    font-size:11px;
+
+    opacity:.65;
+
+    margin-top:3px;
+
+}
+
+
+.nav{
+
+    padding:15px 12px;
+
+}
+
+
+.nav-label{
+
+    font-size:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.2px;
+
+    opacity:.55;
+
+    padding:
+        12px
+        10px
+        7px;
+
+}
+
+
+.nav button{
+
+    width:100%;
+
+    border:0;
+
+    background:transparent;
+
+    color:white;
+
+    text-align:left;
+
+    padding:12px 13px;
+
+    margin-bottom:4px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+
+    transition:.2s;
+
+}
+
+
+.nav button:hover{
+
+    background:
+        rgba(255,255,255,.12);
+
+}
+
+
+.nav button.active{
+
+    background:white;
+
+    color:var(--primary-dark);
+
+    font-weight:700;
+
+}
+
+
+.nav-icon{
+
+    width:23px;
+
+    text-align:center;
+
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main{
+
+    margin-left:var(--sidebar);
+
+    width:
+        calc(100% - var(--sidebar));
+
+    min-width:0;
+
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar{
+
+    height:72px;
+
+    background:white;
+
+    border-bottom:
+        1px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:
+        0 25px;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:500;
+
+}
+
+
+.top-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+
+.menu-btn{
+
+    display:none;
+
+    border:0;
+
+    background:var(--primary-light);
+
+    color:var(--primary-dark);
+
+    width:40px;
+    height:40px;
+
+    border-radius:10px;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+}
+
+
+.page-title{
+
+    font-size:20px;
+
+    font-weight:800;
+
+}
+
+
+.page-subtitle{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:3px;
+
+}
+
+
+.top-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+
+.icon-btn{
+
+    border:1px solid var(--border);
+
+    background:white;
+
+    width:40px;
+    height:40px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+}
+
+
+.icon-btn:hover{
+
+    background:var(--primary-light);
+
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content{
+
+    padding:25px;
+
+}
+
+
+.module{
+
+    display:none;
+
+}
+
+
+.module.active{
+
+    display:block;
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status-bar{
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:13px;
+
+    padding:13px 16px;
+
+    margin-bottom:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:13px;
+
+    box-shadow:
+        0 4px 16px
+        rgba(15,23,42,.04);
+
+}
+
+
+.status-dot{
+
+    width:9px;
+    height:9px;
+
+    background:#22c55e;
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(34,197,94,.12);
+
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.card{
+
+    background:var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:17px;
+
+    padding:21px;
+
+    box-shadow:
+        0 7px 25px
+        rgba(15,23,42,.05);
+
+}
+
+
+.card-title{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:18px;
+
+}
+
+
+.card-title h2{
+
+    margin:0;
+
+    font-size:18px;
+
+}
+
+
+.card-title small{
+
+    color:var(--muted);
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:15px;
+
+    margin-bottom:22px;
+
+}
+
+
+.stat{
+
+    background:white;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:15px;
+
+    padding:18px;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+.stat::after{
+
+    content:"";
+
+    position:absolute;
+
+    right:-25px;
+    bottom:-30px;
+
+    width:80px;
+    height:80px;
+
+    background:
+        var(--primary-light);
+
+    border-radius:50%;
+
+}
+
+
+.stat-icon{
+
+    font-size:22px;
+
+}
+
+
+.stat-value{
+
+    font-size:27px;
+
+    font-weight:800;
+
+    margin-top:8px;
+
+}
+
+
+.stat-label{
+
+    font-size:12px;
+
+    color:var(--muted);
+
+    margin-top:3px;
+
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.grid-2{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:20px;
+
+}
+
+
+.grid-3{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:18px;
+
+}
+
+
+.full{
+
+    grid-column:1/-1;
+
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-group{
+
+    margin-bottom:13px;
+
+}
+
+
+.form-group label{
+
+    display:block;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    margin-bottom:6px;
+
+}
+
+
+input,
+textarea,
+select{
+
+    width:100%;
+
+    border:
+        1px solid var(--border);
+
+    background:#fbfdff;
+
+    border-radius:10px;
+
+    padding:12px 13px;
+
+    outline:none;
+
+    font-family:inherit;
+
+    font-size:13px;
+
+}
+
+
+textarea{
+
+    min-height:100px;
+
+    resize:vertical;
+
+}
+
+
+input:focus,
+textarea:focus,
+select:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(11,94,215,.10);
+
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn{
+
+    border:0;
+
+    padding:11px 16px;
+
+    border-radius:9px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    font-size:13px;
+
+    transition:.2s;
+
+    display:inline-block;
+
+}
+
+
+.btn:hover{
+
+    transform:translateY(-1px);
+
+}
+
+
+.btn-primary{
+
+    background:
+        linear-gradient(
+            135deg,
+            #063b8c,
+            #0b5ed7
+        );
+
+    color:white;
+
+}
+
+
+.btn-success{
+
+    background:var(--success-bg);
+
+    color:var(--success);
+
+}
+
+
+.btn-warning{
+
+    background:var(--warning-bg);
+
+    color:var(--warning);
+
+}
+
+
+.btn-danger{
+
+    background:var(--danger-bg);
+
+    color:var(--danger);
+
+}
+
+
+.btn-light{
+
+    background:#f1f5f9;
+
+    color:#334155;
+
+}
+
+
+.button-row{
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+}
+
+
+/* =========================================================
+   LIST
+========================================================= */
+
+.list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+
+.list-item{
+
+    border:
+        1px solid var(--border);
+
+    background:#f8fafc;
+
+    border-radius:12px;
+
+    padding:14px;
+
+}
+
+
+.list-item-head{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+}
+
+
+.list-item strong{
+
+    color:var(--primary-dark);
+
+}
+
+
+.list-item p{
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin:7px 0 0;
+
+    line-height:1.5;
+
+}
+
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.badge{
+
+    display:inline-block;
+
+    padding:5px 9px;
+
+    border-radius:20px;
+
+    font-size:10px;
+
+    font-weight:800;
+
+}
+
+
+.badge-new{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+}
+
+
+.badge-contacted{
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+}
+
+
+.badge-approved{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+
+.badge-rejected{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+
+/* =========================================================
+   ADMISSION
+========================================================= */
+
+.admission{
+
+    border-left:
+        4px solid var(--primary);
+
+}
+
+
+.admission-meta{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:5px 15px;
+
+    margin-top:10px;
+
+    font-size:12px;
+
+    color:#475569;
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search-row{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-bottom:15px;
+
+}
+
+
+.search-row input{
+
+    max-width:400px;
+
+}
+
+
+/* =========================================================
+   HEALTH
+========================================================= */
+
+.health{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:13px;
+
+    background:#f0fdf4;
+
+    color:#166534;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+}
+
+
+/* =========================================================
+   LINKS
+========================================================= */
+
+.view-link{
+
+    color:var(--primary);
+
+    font-weight:700;
+
+    text-decoration:none;
+
+}
+
+
+.view-link:hover{
+
+    text-decoration:underline;
+
+}
+
+
+/* =========================================================
+   MAP BOX
+========================================================= */
+
+.map-box{
+
+    min-height:300px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eaf3ff,
+            #f7fbff
+        );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    padding:25px;
+
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+body.dark{
+
+    --bg:#0f172a;
+
+    --card:#172033;
+
+    --text:#e5e7eb;
+
+    --muted:#94a3b8;
+
+    --border:#263449;
+
+}
+
+
+body.dark .topbar,
+body.dark .card,
+body.dark .stat,
+body.dark .status-bar,
+body.dark .icon-btn{
+
+    background:#172033;
+
+    color:#e5e7eb;
+
+}
+
+
+body.dark input,
+body.dark textarea,
+body.dark select{
+
+    background:#111827;
+
+    color:#e5e7eb;
+
+}
+
+
+body.dark .list-item{
+
+    background:#111827;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+.overlay{
+
+    display:none;
+
+}
+
+
+@media(max-width:1100px){
+
+    .stats{
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+    }
+
+    .grid-3{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
 
 @media(max-width:800px){
 
-    .dashboard-grid{
+    :root{
+
+        --sidebar:260px;
+
+    }
+
+    .sidebar{
+
+        transform:
+            translateX(-100%);
+
+    }
+
+    .sidebar.open{
+
+        transform:
+            translateX(0);
+
+    }
+
+    .main{
+
+        margin-left:0;
+
+        width:100%;
+
+    }
+
+    .menu-btn{
+
+        display:block;
+
+    }
+
+    .overlay{
+
+        position:fixed;
+
+        inset:0;
+
+        background:
+            rgba(0,0,0,.45);
+
+        z-index:900;
+
+    }
+
+    .overlay.show{
+
+        display:block;
+
+    }
+
+    .content{
+
+        padding:15px;
+
+    }
+
+    .stats{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+    .grid-2,
+    .grid-3{
+
         grid-template-columns:1fr;
+
     }
 
-    .full-card{
-        grid-column:auto;
+    .topbar{
+
+        padding:
+            0 14px;
+
     }
 
-    .admin-header-inner{
-        align-items:flex-start;
+    .page-subtitle{
+
+        display:none;
+
     }
 
-    .admin-header h1{
-        font-size:20px;
+}
+
+
+@media(max-width:480px){
+
+    .stats{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+        gap:9px;
+
+    }
+
+    .stat{
+
+        padding:13px;
+
+    }
+
+    .stat-value{
+
+        font-size:22px;
+
+    }
+
+    .content{
+
+        padding:10px;
+
+    }
+
+    .admission-meta{
+
+        grid-template-columns:1fr;
+
     }
 
 }
 
 </style>
+
 </head>
+
 
 <body>
 
-<header class="admin-header">
 
-<div class="container admin-header-inner">
+<div class="app">
 
-<div>
-<h1>🏫 Dibya Jyoti Admin</h1>
-<small>School Website Management System</small>
-</div>
 
-<button class="logout" id="logout">
-🚪 Logout
-</button>
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
 
-</div>
+<aside
+    class="sidebar"
+    id="sidebar"
+>
+
+    <div class="brand">
+
+        <div class="brand-title">
+            🏫 Dibya Jyoti
+        </div>
+
+        <div class="brand-sub">
+            School Administration System
+        </div>
+
+    </div>
+
+
+    <div class="admin-profile">
+
+        <div class="profile-icon">
+            👨‍💼
+        </div>
+
+        <div>
+
+            <div
+                class="profile-name"
+                id="adminUsername"
+            >
+                Administrator
+            </div>
+
+            <div class="profile-role">
+                Super Administrator
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <nav class="nav">
+
+
+        <div class="nav-label">
+            Control Panel
+        </div>
+
+
+        <button
+            class="active"
+            data-module="dashboard"
+        >
+
+            <span class="nav-icon">
+                📊
+            </span>
+
+            Dashboard
+
+        </button>
+
+
+        <button
+            data-module="admissions"
+        >
+
+            <span class="nav-icon">
+                🎓
+            </span>
+
+            Admissions
+
+        </button>
+
+
+        <button
+            data-module="notices"
+        >
+
+            <span class="nav-icon">
+                📢
+            </span>
+
+            Notices
+
+        </button>
+
+
+        <button
+            data-module="gallery"
+        >
+
+            <span class="nav-icon">
+                🖼️
+            </span>
+
+            Gallery
+
+        </button>
+
+
+        <button
+            data-module="videos"
+        >
+
+            <span class="nav-icon">
+                🎥
+            </span>
+
+            Videos
+
+        </button>
+
+
+        <button
+            data-module="documents"
+        >
+
+            <span class="nav-icon">
+                📄
+            </span>
+
+            School PDFs
+
+        </button>
+
+
+        <button
+            data-module="events"
+        >
+
+            <span class="nav-icon">
+                📅
+            </span>
+
+            Events
+
+        </button>
+
+
+        <button
+            data-module="feedback"
+        >
+
+            <span class="nav-icon">
+                💬
+            </span>
+
+            Feedback
+
+        </button>
+
+
+        <div class="nav-label">
+            Developer
+        </div>
+
+
+        <button
+            data-module="developer"
+        >
+
+            <span class="nav-icon">
+                🧑‍💻
+            </span>
+
+            Developer
+
+        </button>
+
+
+        <div class="nav-label">
+            System
+        </div>
+
+
+        <button
+            data-module="system"
+        >
+
+            <span class="nav-icon">
+                ⚙️
+            </span>
+
+            System Status
+
+        </button>
+
+
+        <button id="websiteButton">
+
+            <span class="nav-icon">
+                🌐
+            </span>
+
+            View Website
+
+        </button>
+
+
+        <button id="logoutButton">
+
+            <span class="nav-icon">
+                🚪
+            </span>
+
+            Logout
+
+        </button>
+
+
+    </nav>
+
+</aside>
+
+
+<div
+    class="overlay"
+    id="overlay"
+></div>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="main">
+
+
+<header class="topbar">
+
+
+    <div class="top-left">
+
+
+        <button
+            class="menu-btn"
+            id="menuButton"
+        >
+            ☰
+        </button>
+
+
+        <div>
+
+            <div
+                class="page-title"
+                id="pageTitle"
+            >
+                Dashboard
+            </div>
+
+            <div class="page-subtitle">
+                Dibya Jyoti Secondary School
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="top-actions">
+
+
+        <button
+            class="icon-btn"
+            id="refreshButton"
+            title="Refresh"
+        >
+            🔄
+        </button>
+
+
+        <button
+            class="icon-btn"
+            id="themeButton"
+            title="Dark Mode"
+        >
+            🌙
+        </button>
+
+
+    </div>
+
 
 </header>
 
 
-<main class="dashboard">
+<div class="content">
 
-<div class="container">
 
-<div id="status">
-Connecting to dashboard...
+<!-- STATUS -->
+
+<div class="status-bar">
+
+    <span class="status-dot"></span>
+
+    <span id="status">
+        Connecting to school server...
+    </span>
+
 </div>
 
 
-<div class="dashboard-grid">
+<!-- =========================================================
+     DASHBOARD
+========================================================= -->
 
-
-<!-- NOTICE -->
-
-<section class="dashboard-card">
-
-<h2>📢 Add Notice</h2>
-
-<input
-id="noticeTitle"
-placeholder="Notice title"
+<section
+    class="module active"
+    id="module-dashboard"
 >
 
-<textarea
-id="noticeDescription"
-placeholder="Write notice details here..."
-></textarea>
 
-<button onclick="addNotice()">
-📢 Publish Notice
-</button>
-
-</section>
+    <div class="stats">
 
 
-<!-- GALLERY -->
+        <div class="stat">
 
-<section class="dashboard-card">
+            <div class="stat-icon">
+                🎓
+            </div>
 
-<h2>🖼️ Upload Photo</h2>
+            <div
+                class="stat-value"
+                id="statAdmissions"
+            >
+                0
+            </div>
 
-<input
-id="photoTitle"
-type="text"
-placeholder="Photo title"
->
+            <div class="stat-label">
+                Admission Enquiries
+            </div>
 
-<input
-id="photoCaption"
-type="text"
-placeholder="Caption"
->
-
-<input
-id="photoFile"
-type="file"
-accept="image/jpeg,image/jpg,image/png,image/webp"
->
-
-<button
-type="button"
-onclick="uploadPhoto()"
->
-🖼️ Upload Photo
-</button>
-
-</section>
+        </div>
 
 
-<!-- VIDEO -->
+        <div class="stat">
 
-<section class="dashboard-card">
+            <div class="stat-icon">
+                📢
+            </div>
 
-<h2>🎥 Add Video</h2>
+            <div
+                class="stat-value"
+                id="statNotices"
+            >
+                0
+            </div>
 
-<input
-id="videoTitle"
-placeholder="Video title"
->
+            <div class="stat-label">
+                Notices
+            </div>
 
-<input
-id="videoUrl"
-placeholder="YouTube or video URL"
->
-
-<textarea
-id="videoDescription"
-placeholder="Description"
-></textarea>
-
-<button onclick="addVideo()">
-🎥 Add Video
-</button>
-
-</section>
+        </div>
 
 
-<!-- PDF -->
+        <div class="stat">
 
-<section class="dashboard-card pdf-card">
+            <div class="stat-icon">
+                🖼️
+            </div>
 
-<h2>📄 Add School PDF</h2>
+            <div
+                class="stat-value"
+                id="statGallery"
+            >
+                0
+            </div>
 
-<div class="pdf-note">
-💡 PDF upload ke baad ye automatically Notice Board ke
-<strong>School PDF Documents</strong> section mein appear hoga.
+            <div class="stat-label">
+                Gallery Photos
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">
+                🎥
+            </div>
+
+            <div
+                class="stat-value"
+                id="statVideos"
+            >
+                0
+            </div>
+
+            <div class="stat-label">
+                Videos
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">
+                📅
+            </div>
+
+            <div
+                class="stat-value"
+                id="statEvents"
+            >
+                0
+            </div>
+
+            <div class="stat-label">
+                Events
+            </div>
+
+        </div>
+
+
+    </div>
+
+        <!-- =========================
+     ADVANCED ADMIN MODULES
+========================= -->
+
+<div class="admin-modules">
+
+    <!-- QUICK ACTIONS -->
+    <section class="module-card">
+        <div class="module-icon">⚡</div>
+
+        <div class="module-content">
+            <h2>Quick Actions</h2>
+            <p>Website administration ke important shortcuts.</p>
+
+            <div class="quick-actions">
+
+                <a href="index.html" class="quick-btn">
+                    🌐 View Website
+                </a>
+
+                <a href="login.html" class="quick-btn">
+                    🔐 Login Page
+                </a>
+
+                <button
+                    class="quick-btn"
+                    onclick="location.reload()"
+                >
+                    🔄 Refresh Dashboard
+                </button>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- DEVELOPER -->
+    <section class="module-card developer-card">
+
+        <div class="module-icon">👨‍💻</div>
+
+        <div class="module-content">
+
+            <h2>Developer Information</h2>
+
+            <p>
+                Website development, technical support,
+                maintenance and other information.
+            </p>
+
+            <div class="developer-info">
+
+                <div class="info-row">
+                    <span>👤 Owner</span>
+                    <strong>Jageshwar Kushwaha</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>🌐 Developer Page</span>
+
+                    <a
+                        href="https://www.jageshwarkushwaha.com.np"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        www.jageshwarkushwaha.com.np
+                    </a>
+                </div>
+
+                <div class="info-row">
+                    <span>📧 Contact</span>
+
+                    <a href="mailto:stylishcompanygame@gmail.com">
+                        stylishcompanygame@gmail.com
+                    </a>
+                </div>
+
+                <div class="info-row">
+                    <span>💬 WhatsApp</span>
+
+                    <a
+                        href="https://wa.me/9779709413920"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        +977 9709413920
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- LOCATION -->
+    <section class="module-card">
+
+        <div class="module-icon">📍</div>
+
+        <div class="module-content">
+
+            <h2>Developer Location</h2>
+
+            <p>
+                Map location and related information.
+            </p>
+
+            <div class="map-box">
+
+                <iframe
+                    src="https://www.google.com/maps?q=28.0,82.3&output=embed"
+                    width="100%"
+                    height="260"
+                    style="border:0;border-radius:16px;"
+                    loading="lazy"
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+
+            </div>
+
+            <a
+                class="map-button"
+                href="https://maps.app.goo.gl/AiUV46gkMVrd2A8R9"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                🗺️ Open Location in Google Maps
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTACT -->
+    <section class="module-card contact-card">
+
+        <div class="module-icon">📞</div>
+
+        <div class="module-content">
+
+            <h2>Contact & Support</h2>
+
+            <p>
+                Website related information ke liye contact karein.
+            </p>
+
+            <div class="contact-buttons">
+
+                <a
+                    href="mailto:stylishcompanygame@gmail.com"
+                    class="contact-btn email"
+                >
+                    📧 Email Developer
+                </a>
+
+                <a
+                    href="https://wa.me/9779709413920"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="contact-btn whatsapp"
+                >
+                    💬 WhatsApp
+                </a>
+
+                <a
+                    href="https://www.jageshwarkushwaha.com.np"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="contact-btn website"
+                >
+                    🌐 Developer Website
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FEEDBACK -->
+    <section class="module-card feedback-card">
+
+        <div class="module-icon">💬</div>
+
+        <div class="module-content">
+
+            <h2>Admin Feedback</h2>
+
+            <p>
+                Website ya Admin Dashboard ke baare mein
+                feedback bhejein.
+            </p>
+
+            <form
+                onsubmit="sendAdminFeedback(event)"
+                class="feedback-form"
+            >
+
+                <input
+                    type="text"
+                    id="feedbackName"
+                    placeholder="Your name"
+                    required
+                >
+
+                <input
+                    type="email"
+                    id="feedbackEmail"
+                    placeholder="Your email"
+                >
+
+                <select
+                    id="feedbackType"
+                    required
+                >
+                    <option value="">
+                        Select feedback type
+                    </option>
+
+                    <option value="Website">
+                        🌐 Website
+                    </option>
+
+                    <option value="Admin Panel">
+                        🔐 Admin Panel
+                    </option>
+
+                    <option value="Bug Report">
+                        🐞 Bug Report
+                    </option>
+
+                    <option value="Suggestion">
+                        💡 Suggestion
+                    </option>
+
+                    <option value="Other">
+                        📌 Other
+                    </option>
+                </select>
+
+                <textarea
+                    id="feedbackMessage"
+                    placeholder="Write your feedback..."
+                    required
+                ></textarea>
+
+                <button
+                    type="submit"
+                    class="feedback-submit"
+                >
+                    🚀 Send Feedback
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- SYSTEM INFORMATION -->
+    <section class="module-card system-card">
+
+        <div class="module-icon">⚙️</div>
+
+        <div class="module-content">
+
+            <h2>System Information</h2>
+
+            <div class="system-grid">
+
+                <div class="system-item">
+                    <span>🖥️ Platform</span>
+                    <strong>Node.js / Express</strong>
+                </div>
+
+                <div class="system-item">
+                    <span>🗄️ Database</span>
+                    <strong>MongoDB</strong>
+                </div>
+
+                <div class="system-item">
+                    <span>☁️ Storage</span>
+                    <strong>Cloudinary / GridFS</strong>
+                </div>
+
+                <div class="system-item">
+                    <span>🔐 Authentication</span>
+                    <strong>JWT Admin Auth</strong>
+                </div>
+
+                <div class="system-item">
+                    <span>📱 Interface</span>
+                    <strong>Responsive</strong>
+                </div>
+
+                <div class="system-item">
+                    <span>🟢 Dashboard</span>
+                    <strong>Active</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- OWNER -->
+    <section class="owner-panel">
+
+        <div class="owner-avatar">
+            JK
+        </div>
+
+        <div>
+
+            <h2>Jageshwar Kushwaha</h2>
+
+            <p>
+                Owner & Developer
+            </p>
+
+            <small>
+                Dibya Jyoti Secondary School Website
+                Management System
+            </small>
+
+        </div>
+
+    </section>
+
 </div>
 
-<input
-id="documentTitle"
-type="text"
-placeholder="PDF title e.g. School Holiday Notice"
->
 
-<textarea
-id="documentDescription"
-placeholder="PDF description / details"
-></textarea>
+<!-- FOOTER -->
 
-<input
-id="documentFile"
-type="file"
-accept="application/pdf"
->
+<footer class="admin-footer">
 
-<button
-onclick="uploadDocument()"
->
-📄 Publish PDF Document
-</button>
+    <strong>
+        🏫 Dibya Jyoti Admin Dashboard
+    </strong>
 
-</section>
+    <span>
+        Developed & Maintained by Jageshwar Kushwaha
+    </span>
+
+    <span>
+        © <span id="adminYear"></span>
+    </span>
+
+</footer>
 
 
-<!-- EVENT -->
+<style>
 
-<section class="dashboard-card">
+/* =========================
+   ADVANCED MODULES
+========================= */
 
-<h2>📅 Add Event</h2>
+.admin-modules{
+    margin-top:30px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:22px;
+}
 
-<input
-id="eventTitle"
-placeholder="Event title"
->
+.module-card{
+    background:rgba(255,255,255,.96);
+    border:1px solid #e4ebf5;
+    border-radius:22px;
+    padding:25px;
+    display:flex;
+    gap:18px;
+    box-shadow:0 12px 35px rgba(15,23,42,.07);
+    transition:.3s ease;
+}
 
-<input
-id="eventDate"
-type="date"
->
+.module-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 42px rgba(15,23,42,.12);
+}
 
-<input
-id="eventLocation"
-placeholder="Location"
->
+.module-icon{
+    width:52px;
+    height:52px;
+    min-width:52px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e8f1ff;
+    font-size:25px;
+}
 
-<textarea
-id="eventDescription"
-placeholder="Description"
-></textarea>
+.module-content{
+    flex:1;
+}
 
-<button onclick="addEvent()">
-📅 Add Event
-</button>
+.module-content h2{
+    margin:0 0 8px;
+    color:#063b8c;
+}
 
-</section>
-
-
-<!-- WEBSITE -->
-
-<section class="dashboard-card">
-
-<h2>🌐 Website</h2>
-
-<p>
-Manage notices, photos, videos, PDF documents
-and events from this dashboard.
-</p>
-
-<br>
-
-<a
-href="index.html"
-class="btn primary"
->
-🌐 View Website
-</a>
-
-</section>
-
-
-<!-- NOTICE LIST -->
-
-<section class="dashboard-card full-card">
-
-<h2>📢 Current Notices</h2>
-
-<div
-id="noticeList"
-class="admin-list"
->
-Loading...
-</div>
-
-</section>
+.module-content p{
+    color:#64748b;
+    line-height:1.6;
+}
 
 
-<!-- GALLERY LIST -->
+/* QUICK ACTIONS */
 
-<section class="dashboard-card full-card">
+.quick-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:15px;
+}
 
-<h2>🖼️ Current Gallery</h2>
+.quick-btn{
+    display:inline-block;
+    padding:11px 15px;
+    border-radius:10px;
+    border:0;
+    background:#063b8c;
+    color:white;
+    text-decoration:none;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13px;
+}
 
-<div
-id="galleryList"
-class="admin-list"
->
-Loading...
-</div>
 
-</section>
+/* DEVELOPER */
+
+.developer-card{
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #eef6ff
+        );
+}
+
+.developer-info{
+    margin-top:18px;
+}
+
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    padding:13px 0;
+    border-bottom:1px solid #e5eaf1;
+}
+
+.info-row:last-child{
+    border-bottom:0;
+}
+
+.info-row span{
+    color:#64748b;
+    font-weight:600;
+}
+
+.info-row strong{
+    color:#172033;
+}
+
+.info-row a{
+    color:#0b5ed7;
+    font-weight:700;
+    text-decoration:none;
+    text-align:right;
+}
+
+.info-row a:hover{
+    text-decoration:underline;
+}
 
 
-</div>
-</div>
-</main>
+/* MAP */
+
+.map-box{
+    margin-top:15px;
+    overflow:hidden;
+    border-radius:16px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.map-button{
+    display:inline-block;
+    margin-top:12px;
+    padding:11px 15px;
+    background:#063b8c;
+    color:white;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+}
+
+
+/* CONTACT */
+
+.contact-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:18px;
+}
+
+.contact-btn{
+    display:inline-block;
+    padding:11px 15px;
+    border-radius:10px;
+    color:white;
+    text-decoration:none;
+    font-weight:700;
+    font-size:13px;
+    background:#063b8c;
+}
+
+
+/* FEEDBACK */
+
+.feedback-form{
+    margin-top:18px;
+}
+
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea{
+    width:100%;
+    padding:13px;
+    margin-bottom:12px;
+    border:1px solid #dbe3ef;
+    border-radius:11px;
+    outline:none;
+    font-family:inherit;
+    background:#fbfdff;
+}
+
+.feedback-form textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.feedback-form input:focus,
+.feedback-form select:focus,
+.feedback-form textarea:focus{
+    border-color:#1769d1;
+    box-shadow:
+        0 0 0 3px
+        rgba(23,105,209,.10);
+}
+
+.feedback-submit{
+    width:100%;
+    border:0;
+    padding:13px;
+    border-radius:11px;
+    background:
+        linear-gradient(
+            135deg,
+            #063b8c,
+            #0b5ed7
+        );
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+}
+
+
+/* SYSTEM */
+
+.system-card{
+    grid-column:1/-1;
+}
+
+.system-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(3,1fr);
+    gap:12px;
+    margin-top:18px;
+}
+
+.system-item{
+    background:#f8fafc;
+    border:1px solid #e5eaf1;
+    border-radius:12px;
+    padding:15px;
+}
+
+.system-item span{
+    display:block;
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:6px;
+}
+
+.system-item strong{
+    color:#063b8c;
+}
+
+
+/* OWNER */
+
+.owner-panel{
+    grid-column:1/-1;
+    margin-top:5px;
+    padding:25px;
+    border-radius:22px;
+    background:
+        linear-gradient(
+            135deg,
+            #02265c,
+            #063b8c,
+            #0b5ed7
+        );
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    box-shadow:
+        0 15px 40px
+        rgba(2,38,92,.25);
+}
+
+.owner-avatar{
+    width:65px;
+    height:65px;
+    min-width:65px;
+    border-radius:50%;
+    background:white;
+    color:#063b8c;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:21px;
+    font-weight:900;
+}
+
+.owner-panel h2{
+    margin:0 0 5px;
+}
+
+.owner-panel p{
+    margin:0 0 5px;
+    opacity:.9;
+}
+
+.owner-panel small{
+    opacity:.75;
+}
+
+
+/* FOOTER */
+
+.admin-footer{
+    margin-top:40px;
+    padding:25px 15px;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    color:#64748b;
+    font-size:13px;
+}
+
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    .admin-modules{
+        grid-template-columns:1fr;
+    }
+
+    .system-card,
+    .owner-panel{
+        grid-column:auto;
+    }
+
+    .system-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .info-row{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .info-row a{
+        text-align:left;
+    }
+
+    .owner-panel{
+        align-items:flex-start;
+    }
+
+}
+
+@media(max-width:500px){
+
+    .module-card{
+        padding:18px;
+    }
+
+    .system-grid{
+        grid-template-columns:1fr;
+    }
+
+    .owner-panel{
+        flex-direction:column;
+        text-align:center;
+        align-items:center;
+    }
+
+    .contact-buttons,
+    .quick-actions{
+        flex-direction:column;
+    }
+
+    .contact-btn,
+    .quick-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}
+
+</style>
 
 
 <script>
 
-const API="/api";
-
-const token=
-localStorage.getItem("djss_admin_token");
-
-if(!token){
-    window.location.href="login.html";
-}
-
-
-async function api(endpoint,options={}){
-
-    const headers={
-        ...(options.headers||{}),
-        Authorization:`Bearer ${token}`
-    };
-
-    const response=
-        await fetch(
-            `${API}${endpoint}`,
-            {
-                ...options,
-                headers
-            }
-        );
-
-    if(
-        response.status===401 ||
-        response.status===403
-    ){
-
-        localStorage.removeItem(
-            "djss_admin_token"
-        );
-
-        window.location.href="login.html";
-
-        return null;
-    }
-
-    return response;
-}
-
-
-function status(message){
-
-    const el=
-        document.getElementById("status");
-
-    if(el){
-        el.textContent=message;
-    }
-}
-
-
 /* =========================
-   ADD NOTICE
+   ADMIN FEEDBACK
 ========================= */
 
-async function addNotice(){
+function sendAdminFeedback(event){
 
-    const title=
+    event.preventDefault();
+
+    const name =
         document
-        .getElementById("noticeTitle")
+        .getElementById("feedbackName")
         .value
         .trim();
 
-    const description=
+    const email =
         document
-        .getElementById("noticeDescription")
+        .getElementById("feedbackEmail")
         .value
         .trim();
 
-    if(!title){
-        return status(
-            "Please enter a notice title."
-        );
-    }
-
-    status("Publishing notice...");
-
-    try{
-
-        const response=
-            await api(
-                "/notices",
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
-                    body:JSON.stringify({
-                        title,
-                        description,
-                        published:true
-                    })
-                }
-            );
-
-        if(!response)return;
-
-        const data=
-            await response.json();
-
-        if(!response.ok){
-
-            return status(
-                data.message||
-                "Could not publish notice."
-            );
-
-        }
-
-        status(
-            "✅ Notice published successfully!"
-        );
-
-        document.getElementById(
-            "noticeTitle"
-        ).value="";
-
-        document.getElementById(
-            "noticeDescription"
-        ).value="";
-
-        loadNotices();
-
-    }catch(error){
-
-        console.error(error);
-
-        status(
-            "Notice publishing failed."
-        );
-
-    }
-}
-
-
-/* =========================
-   PHOTO
-========================= */
-
-async function uploadPhoto(){
-
-    const fileInput=
-        document.getElementById(
-            "photoFile"
-        );
-
-    const file=
-        fileInput.files[0];
-
-    if(!file){
-        return status(
-            "Please select a photo first."
-        );
-    }
-
-    status("Uploading photo...");
-
-    try{
-
-        const form=
-            new FormData();
-
-        form.append("file",file);
-
-        const response=
-            await api(
-                "/upload",
-                {
-                    method:"POST",
-                    body:form
-                }
-            );
-
-        if(!response)return;
-
-        const data=
-            await response.json();
-
-        if(!response.ok){
-
-            return status(
-                data.message||
-                "Photo upload failed."
-            );
-
-        }
-
-        const save=
-            await api(
-                "/gallery",
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
-                    body:JSON.stringify({
-
-                        title:
-                        document
-                        .getElementById(
-                            "photoTitle"
-                        )
-                        .value
-                        .trim()
-                        ||
-                        "School Gallery",
-
-                        caption:
-                        document
-                        .getElementById(
-                            "photoCaption"
-                        )
-                        .value
-                        .trim(),
-
-                        imageUrl:data.url
-
-                    })
-                }
-            );
-
-        if(!save)return;
-
-        const saveData=
-            await save.json();
-
-        if(!save.ok){
-
-            return status(
-                saveData.message||
-                "Photo uploaded but could not be saved."
-            );
-
-        }
-
-        status(
-            "✅ Photo uploaded successfully!"
-        );
-
-        document.getElementById(
-            "photoTitle"
-        ).value="";
-
-        document.getElementById(
-            "photoCaption"
-        ).value="";
-
-        fileInput.value="";
-
-        loadGallery();
-
-    }catch(error){
-
-        console.error(error);
-
-        status(
-            "Photo upload failed."
-        );
-
-    }
-}
-
-
-/* =========================
-   PDF DOCUMENT
-========================= */
-
-async function uploadDocument(){
-
-    const title=
+    const type =
         document
-        .getElementById(
-            "documentTitle"
-        )
+        .getElementById("feedbackType")
+        .value;
+
+    const message =
+        document
+        .getElementById("feedbackMessage")
         .value
         .trim();
 
-    const description=
-        document
-        .getElementById(
-            "documentDescription"
-        )
-        .value
-        .trim();
 
-    const file=
-        document
-        .getElementById(
-            "documentFile"
-        )
-        .files[0];
+    if(!name || !type || !message){
 
-    if(!title){
-
-        return status(
-            "Please enter a PDF title."
+        alert(
+            "Please fill all required fields."
         );
 
+        return;
     }
 
-    if(!file){
 
-        return status(
-            "Please select a PDF first."
+    const subject =
+        encodeURIComponent(
+            "Dibya Jyoti Admin Feedback - " + type
         );
 
-    }
 
-    if(file.type!=="application/pdf"){
-
-        return status(
-            "Only PDF files are allowed."
+    const body =
+        encodeURIComponent(
+            "Name: " + name +
+            "\nEmail: " + (email || "Not provided") +
+            "\nFeedback Type: " + type +
+            "\n\nMessage:\n" + message
         );
 
-    }
 
-    status(
-        "Uploading PDF..."
-    );
-
-    try{
-
-        /* Upload PDF to GridFS */
-
-        const form=
-            new FormData();
-
-        form.append(
-            "file",
-            file
-        );
-
-        const uploadResponse=
-            await api(
-                "/upload",
-                {
-                    method:"POST",
-                    body:form
-                }
-            );
-
-        if(!uploadResponse)return;
-
-        const uploadData=
-            await uploadResponse.json();
-
-        if(!uploadResponse.ok){
-
-            return status(
-                uploadData.message||
-                "PDF upload failed."
-            );
-
-        }
-
-        /* Save PDF as Notice */
-
-        const saveResponse=
-            await api(
-                "/notices",
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
-                    body:JSON.stringify({
-
-                        title:title,
-
-                        description:
-                            description,
-
-                        documentUrl:
-                            uploadData.url,
-
-                        published:true
-
-                    })
-                }
-            );
-
-        if(!saveResponse)return;
-
-        const saveData=
-            await saveResponse.json();
-
-        if(!saveResponse.ok){
-
-            return status(
-                saveData.message||
-                "PDF uploaded but could not be saved."
-            );
-
-        }
-
-        status(
-            "✅ PDF published successfully!"
-        );
-
-        document.getElementById(
-            "documentTitle"
-        ).value="";
-
-        document.getElementById(
-            "documentDescription"
-        ).value="";
-
-        document.getElementById(
-            "documentFile"
-        ).value="";
-
-        loadNotices();
-
-    }catch(error){
-
-        console.error(
-            "PDF upload error:",
-            error
-        );
-
-        status(
-            "PDF upload failed. Please try again."
-        );
-
-    }
+    window.location.href =
+        "mailto:stylishcompanygame@gmail.com" +
+        "?subject=" + subject +
+        "&body=" + body;
 
 }
 
 
-/* =========================
-   VIDEO
-========================= */
-
-async function addVideo(){
-
-    const title=
-        document
-        .getElementById(
-            "videoTitle"
-        )
-        .value
-        .trim();
-
-    const videoUrl=
-        document
-        .getElementById(
-            "videoUrl"
-        )
-        .value
-        .trim();
-
-    const description=
-        document
-        .getElementById(
-            "videoDescription"
-        )
-        .value
-        .trim();
-
-    if(!title||!videoUrl){
-
-        return status(
-            "Video title and URL are required."
-        );
-
-    }
-
-    const response=
-        await api(
-            "/videos",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
-                body:JSON.stringify({
-                    title,
-                    videoUrl,
-                    description
-                })
-            }
-        );
-
-    if(response&&response.ok){
-
-        status(
-            "✅ Video added successfully."
-        );
-
-        document.getElementById(
-            "videoTitle"
-        ).value="";
-
-        document.getElementById(
-            "videoUrl"
-        ).value="";
-
-        document.getElementById(
-            "videoDescription"
-        ).value="";
-
-        loadVideos();
-
-    }
-
-}
-
-
-/* =========================
-   EVENT
-========================= */
-
-async function addEvent(){
-
-    const title=
-        document
-        .getElementById(
-            "eventTitle"
-        )
-        .value
-        .trim();
-
-    const eventDate=
-        document
-        .getElementById(
-            "eventDate"
-        ).value;
-
-    const location=
-        document
-        .getElementById(
-            "eventLocation"
-        )
-        .value
-        .trim();
-
-    const description=
-        document
-        .getElementById(
-            "eventDescription"
-        ).value
-        .trim();
-
-    if(!title||!eventDate){
-
-        return status(
-            "Event title and date are required."
-        );
-
-    }
-
-    const response=
-        await api(
-            "/events",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
-                body:JSON.stringify({
-                    title,
-                    eventDate,
-                    location,
-                    description
-                })
-            }
-        );
-
-    if(response&&response.ok){
-
-        status(
-            "✅ Event added successfully."
-        );
-
-        loadEvents();
-
-    }
-
-}
-
-
-/* =========================
-   LOAD NOTICES
-========================= */
-
-async function loadNotices(){
-
-    try{
-
-        const response=
-            await fetch(
-                "/api/notices"
-            );
-
-        const notices=
-            await response.json();
-
-        const container=
-            document.getElementById(
-                "noticeList"
-            );
-
-        if(!container)return;
-
-        if(!notices.length){
-
-            container.innerHTML=
-                "No notices.";
-
-            return;
-
-        }
-
-        container.innerHTML=
-            notices
-            .map(n=>`
-
-                <div class="admin-list-item">
-
-                    <div>
-
-                        <strong>
-                            ${escapeHTML(n.title)}
-                        </strong>
-
-                        <p>
-                            ${escapeHTML(
-                                n.description||""
-                            )}
-                        </p>
-
-                        ${
-                            n.documentUrl
-                            ?
-                            `
-                            <a
-                                class="view-btn"
-                                href="${escapeHTML(
-                                    n.documentUrl
-                                )}"
-                                target="_blank"
-                            >
-                                📄 View PDF
-                            </a>
-                            `
-                            :""
-                        }
-
-                    </div>
-
-                </div>
-
-            `)
-            .join("");
-
-    }catch{
-
-        status(
-            "Could not load notices."
-        );
-
-    }
-
-}
-
-
-/* =========================
-   LOAD GALLERY
-========================= */
-
-async function loadGallery(){
-
-    try{
-
-        const response=
-            await fetch(
-                "/api/gallery"
-            );
-
-        const items=
-            await response.json();
-
-        const container=
-            document.getElementById(
-                "galleryList"
-            );
-
-        if(!container)return;
-
-        container.innerHTML=
-            items.length
-
-            ?
-
-            items.map(i=>`
-
-                <div class="admin-list-item">
-
-                    <div>
-
-                        <strong>
-                            ${escapeHTML(i.title)}
-                        </strong>
-
-                        <p>
-                            ${escapeHTML(
-                                i.caption||""
-                            )}
-                        </p>
-
-                    </div>
-
-                </div>
-
-            `).join("")
-
-            :
-
-            "No photos uploaded.";
-
-    }catch{
-
-        status(
-            "Could not load gallery."
-        );
-
-    }
-
-}
-
-
-async function loadVideos(){
-
-    try{
-        await fetch("/api/videos");
-    }catch{}
-
-}
-
-
-async function loadEvents(){
-
-    try{
-        await fetch("/api/events");
-    }catch{}
-
-}
-
-
-function escapeHTML(value){
-
-    return String(value??"")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-
-}
-
-
-document
-.getElementById("logout")
-?.addEventListener(
-    "click",
-    ()=>{
-        localStorage.removeItem(
-            "djss_admin_token"
-        );
-
-        window.location.href=
-            "login.html";
-    }
-);
-
-
-status(
-    "✅ Admin dashboard connected."
-);
-
-loadNotices();
-loadGallery();
+/* YEAR */
+
+document.getElementById(
+    "adminYear"
+).textContent =
+    new Date().getFullYear();
 
 </script>
-
-</body>
-</html>
