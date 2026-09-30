@@ -7,9 +7,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-const {
-    CloudinaryStorage
-} = require("multer-storage-cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 const { GridFSBucket, ObjectId } = require("mongodb");
@@ -33,35 +31,26 @@ const Admission = require("./Admission");
 
 const app = express();
 
-const PORT =
-    process.env.PORT || 5000;
-
-const FRONTEND_DIR =
-    path.join(__dirname);
+const PORT = process.env.PORT || 5000;
+const FRONTEND_DIR = path.join(__dirname);
 
 
 /* =====================================================
    MIDDLEWARE
 ===================================================== */
 
-app.use(
-    cors()
-);
+app.use(cors());
 
-app.use(
-    express.json()
-);
+app.use(express.json({ limit: "10mb" }));
 
 app.use(
     express.urlencoded({
-        extended: true
+        extended: true,
+        limit: "10mb"
     })
 );
 
-app.set(
-    "trust proxy",
-    1
-);
+app.set("trust proxy", 1);
 
 
 /* =====================================================
@@ -69,61 +58,50 @@ app.set(
 ===================================================== */
 
 if (!process.env.MONGODB_URI) {
-
-    console.error(
-        "❌ MONGODB_URI is missing in .env"
-    );
-
+    console.error("❌ MONGODB_URI is missing in .env");
     process.exit(1);
 }
 
 if (!process.env.JWT_SECRET) {
-
-    console.error(
-        "❌ JWT_SECRET is missing in .env"
-    );
-
+    console.error("❌ JWT_SECRET is missing in .env");
     process.exit(1);
 }
 
 if (!process.env.ADMIN_USERNAME) {
-
-    console.error(
-        "❌ ADMIN_USERNAME is missing in .env"
-    );
-
+    console.error("❌ ADMIN_USERNAME is missing in .env");
     process.exit(1);
 }
 
 if (!process.env.ADMIN_PASSWORD) {
-
-    console.error(
-        "❌ ADMIN_PASSWORD is missing in .env"
-    );
-
+    console.error("❌ ADMIN_PASSWORD is missing in .env");
     process.exit(1);
 }
 
 
 /* =====================================================
-   AUTH RATE LIMIT
+   RATE LIMITERS
 ===================================================== */
 
-const authLimiter =
-    rateLimit({
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        message: "Too many requests. Please try again later."
+    }
+});
 
-        windowMs:
-            15 * 60 * 1000,
 
-        max: 20,
-
-        standardHeaders:
-            true,
-
-        legacyHeaders:
-            false
-
-    });
+const admissionLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        message: "Too many admission requests. Please try again later."
+    }
+});
 
 
 /* =====================================================
@@ -131,48 +109,31 @@ const authLimiter =
 ===================================================== */
 
 cloudinary.config({
-
-    cloud_name:
-        process.env.CLOUDINARY_CLOUD_NAME,
-
-    api_key:
-        process.env.CLOUDINARY_API_KEY,
-
-    api_secret:
-        process.env.CLOUDINARY_API_SECRET
-
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 
-const cloudinaryStorage =
-    new CloudinaryStorage({
+const cloudinaryStorage = new CloudinaryStorage({
+    cloudinary,
 
-        cloudinary,
+    params: {
+        folder: "dibya-jyoti-school",
 
-        params: {
-
-            folder:
-                "dibya-jyoti-school",
-
-            allowed_formats: [
-                "jpg",
-                "jpeg",
-                "png",
-                "webp"
-            ]
-
-        }
-
-    });
+        allowed_formats: [
+            "jpg",
+            "jpeg",
+            "png",
+            "webp"
+        ]
+    }
+});
 
 
-const uploadCloudinary =
-    multer({
-
-        storage:
-            cloudinaryStorage
-
-    });
+const uploadCloudinary = multer({
+    storage: cloudinaryStorage
+});
 
 
 /* =====================================================
@@ -186,72 +147,50 @@ let gridFSBucket = null;
    AUTH MIDDLEWARE
 ===================================================== */
 
-function requireAuth(
-    req,
-    res,
-    next
-) {
+function requireAuth(req, res, next) {
 
     try {
 
-        const authHeader =
-            req.headers.authorization;
+        const authHeader = req.headers.authorization;
 
         if (
             !authHeader ||
-            !authHeader.startsWith(
-                "Bearer "
-            )
+            !authHeader.startsWith("Bearer ")
         ) {
 
             return res.status(401).json({
-
-                message:
-                    "Authentication required."
-
+                message: "Authentication required."
             });
 
         }
 
 
-        const token =
-            authHeader.split(" ")[1];
+        const token = authHeader.split(" ")[1];
 
 
-        const decoded =
-            jwt.verify(
-                token,
-                process.env.JWT_SECRET
-            );
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
 
 
-        if (
-            decoded.role !== "admin"
-        ) {
+        if (decoded.role !== "admin") {
 
             return res.status(403).json({
-
-                message:
-                    "Admin access required."
-
+                message: "Admin access required."
             });
 
         }
 
 
-        req.user =
-            decoded;
-
+        req.user = decoded;
 
         next();
 
     } catch (error) {
 
         return res.status(401).json({
-
-            message:
-                "Invalid or expired token."
-
+            message: "Invalid or expired token."
         });
 
     }
@@ -268,12 +207,8 @@ app.get(
     (req, res) => {
 
         res.json({
-
             ok: true,
-
-            message:
-                "Dibya Jyoti backend is running."
-
+            message: "Dibya Jyoti backend is running."
         });
 
     }
@@ -297,34 +232,26 @@ app.post(
             } = req.body;
 
 
-            if (
-                !username ||
-                !password
-            ) {
+            if (!username || !password) {
 
                 return res.status(400).json({
-
                     message:
                         "Username and password are required."
-
                 });
 
             }
 
 
-            const user =
-                await User.findOne({
-                    username
-                });
+            const user = await User.findOne({
+                username
+            });
 
 
             if (!user) {
 
                 return res.status(401).json({
-
                     message:
                         "Invalid username or password."
-
                 });
 
             }
@@ -340,52 +267,38 @@ app.post(
             if (!passwordMatch) {
 
                 return res.status(401).json({
-
                     message:
                         "Invalid username or password."
-
                 });
 
             }
 
 
-            if (
-                user.role !== "admin"
-            ) {
+            if (user.role !== "admin") {
 
                 return res.status(403).json({
-
                     message:
                         "Admin access required."
-
                 });
 
             }
 
 
-            const token =
-                jwt.sign(
+            const token = jwt.sign(
 
-                    {
-                        id:
-                            user._id.toString(),
+                {
+                    id: user._id.toString(),
+                    username: user.username,
+                    role: user.role
+                },
 
-                        username:
-                            user.username,
+                process.env.JWT_SECRET,
 
-                        role:
-                            user.role
+                {
+                    expiresIn: "7d"
+                }
 
-                    },
-
-                    process.env.JWT_SECRET,
-
-                    {
-                        expiresIn:
-                            "7d"
-                    }
-
-                );
+            );
 
 
             res.json({
@@ -397,14 +310,9 @@ app.post(
 
                 user: {
 
-                    id:
-                        user._id,
-
-                    username:
-                        user.username,
-
-                    role:
-                        user.role
+                    id: user._id,
+                    username: user.username,
+                    role: user.role
 
                 }
 
@@ -418,10 +326,7 @@ app.post(
             );
 
             res.status(500).json({
-
-                message:
-                    "Login failed."
-
+                message: "Login failed."
             });
 
         }
@@ -456,10 +361,8 @@ app.get(
             console.error(error);
 
             res.status(500).json({
-
                 message:
                     "Could not load notices."
-
             });
 
         }
@@ -491,10 +394,8 @@ app.get(
             console.error(error);
 
             res.status(500).json({
-
                 message:
                     "Could not load latest notices."
-
             });
 
         }
@@ -525,10 +426,8 @@ app.post(
             if (!title) {
 
                 return res.status(400).json({
-
                     message:
                         "Notice title is required."
-
                 });
 
             }
@@ -554,9 +453,7 @@ app.post(
                 });
 
 
-            res.status(201).json(
-                notice
-            );
+            res.status(201).json(notice);
 
         } catch (error) {
 
@@ -566,10 +463,8 @@ app.post(
             );
 
             res.status(500).json({
-
                 message:
                     "Could not create notice."
-
             });
 
         }
@@ -602,10 +497,8 @@ app.get(
             console.error(error);
 
             res.status(500).json({
-
                 message:
                     "Could not load gallery."
-
             });
 
         }
@@ -635,10 +528,8 @@ app.post(
             if (!imageUrl) {
 
                 return res.status(400).json({
-
                     message:
                         "Image URL is required."
-
                 });
 
             }
@@ -659,9 +550,7 @@ app.post(
                 });
 
 
-            res.status(201).json(
-                gallery
-            );
+            res.status(201).json(gallery);
 
         } catch (error) {
 
@@ -671,10 +560,8 @@ app.post(
             );
 
             res.status(500).json({
-
                 message:
                     "Could not save gallery image."
-
             });
 
         }
@@ -707,10 +594,8 @@ app.get(
             console.error(error);
 
             res.status(500).json({
-
                 message:
                     "Could not load videos."
-
             });
 
         }
@@ -737,16 +622,11 @@ app.post(
             } = req.body;
 
 
-            if (
-                !title ||
-                !videoUrl
-            ) {
+            if (!title || !videoUrl) {
 
                 return res.status(400).json({
-
                     message:
                         "Video title and URL are required."
-
                 });
 
             }
@@ -769,9 +649,7 @@ app.post(
                 });
 
 
-            res.status(201).json(
-                video
-            );
+            res.status(201).json(video);
 
         } catch (error) {
 
@@ -781,10 +659,8 @@ app.post(
             );
 
             res.status(500).json({
-
                 message:
                     "Could not add video."
-
             });
 
         }
@@ -813,20 +689,16 @@ app.delete(
             if (!video) {
 
                 return res.status(404).json({
-
                     message:
                         "Video not found."
-
                 });
 
             }
 
 
             res.json({
-
                 message:
                     "Video deleted successfully."
-
             });
 
         } catch (error) {
@@ -837,10 +709,8 @@ app.delete(
             );
 
             res.status(500).json({
-
                 message:
                     "Could not delete video."
-
             });
 
         }
@@ -873,10 +743,8 @@ app.get(
             console.error(error);
 
             res.status(500).json({
-
                 message:
                     "Could not load events."
-
             });
 
         }
@@ -904,16 +772,11 @@ app.post(
             } = req.body;
 
 
-            if (
-                !title ||
-                !eventDate
-            ) {
+            if (!title || !eventDate) {
 
                 return res.status(400).json({
-
                     message:
                         "Event title and date are required."
-
                 });
 
             }
@@ -940,9 +803,7 @@ app.post(
                 });
 
 
-            res.status(201).json(
-                event
-            );
+            res.status(201).json(event);
 
         } catch (error) {
 
@@ -952,10 +813,8 @@ app.post(
             );
 
             res.status(500).json({
-
                 message:
                     "Could not add event."
-
             });
 
         }
@@ -965,321 +824,12 @@ app.post(
 
 
 /* =====================================================
-   CLOUDINARY IMAGE UPLOAD
+   ADMISSION - PUBLIC SUBMISSION
 ===================================================== */
-
-app.post(
-    "/api/cloudinary-upload",
-    requireAuth,
-    uploadCloudinary.single("file"),
-    async (req, res) => {
-
-        try {
-
-            if (!req.file) {
-
-                return res.status(400).json({
-
-                    message:
-                        "No file uploaded."
-
-                });
-
-            }
-
-
-            res.json({
-
-                message:
-                    "File uploaded successfully.",
-
-                url:
-                    req.file.path,
-
-                public_id:
-                    req.file.filename
-
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Cloudinary upload error:",
-                error
-            );
-
-            res.status(500).json({
-
-                message:
-                    "Cloudinary upload failed."
-
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   GRIDFS UPLOAD
-===================================================== */
-
-const memoryUpload =
-    multer({
-        storage:
-            multer.memoryStorage()
-    });
-
-
-app.post(
-    "/api/upload",
-    requireAuth,
-    memoryUpload.single("file"),
-    async (req, res) => {
-
-        try {
-
-            if (!req.file) {
-
-                return res.status(400).json({
-
-                    message:
-                        "No file uploaded."
-
-                });
-
-            }
-
-
-            if (!gridFSBucket) {
-
-                return res.status(500).json({
-
-                    message:
-                        "File storage is not ready."
-
-                });
-
-            }
-
-
-            const filename =
-                `${Date.now()}-${req.file.originalname}`;
-
-
-            const uploadStream =
-                gridFSBucket.openUploadStream(
-                    filename,
-                    {
-                        contentType:
-                            req.file.mimetype
-                    }
-                );
-
-
-            uploadStream.end(
-                req.file.buffer
-            );
-
-
-            uploadStream.on(
-                "finish",
-                () => {
-
-                    res.status(201).json({
-
-                        message:
-                            "File uploaded successfully.",
-
-                        id:
-                            uploadStream.id.toString(),
-
-                        url:
-                            `/api/uploads/${uploadStream.id.toString()}`
-
-                    });
-
-                }
-            );
-
-
-            uploadStream.on(
-                "error",
-                (error) => {
-
-                        console.error(
-        "Upload error:",
-        error
-    );
-
-    if (!res.headersSent) {
-
-        res.status(500).json({
-
-            message:
-                "File upload failed."
-
-        });
-
-    }
-
-}
-);
-
-
-/* =====================================================
-   GRIDFS FILE VIEW
-===================================================== */
-
-app.get(
-    "/api/uploads/:id",
-    async (req, res) => {
-
-        try {
-
-            if (!gridFSBucket) {
-
-                return res.status(500).json({
-
-                    message:
-                        "File storage is not ready."
-
-                });
-
-            }
-
-
-            if (
-                !ObjectId.isValid(
-                    req.params.id
-                )
-            ) {
-
-                return res.status(400).json({
-
-                    message:
-                        "Invalid file ID."
-
-                });
-
-            }
-
-
-            const fileId =
-                new ObjectId(
-                    req.params.id
-                );
-
-
-            const files =
-                await gridFSBucket
-                    .find({
-                        _id: fileId
-                    })
-                    .toArray();
-
-
-            if (!files.length) {
-
-                return res.status(404).json({
-
-                    message:
-                        "File not found."
-
-                });
-
-            }
-
-
-            const file =
-                files[0];
-
-
-            if (file.contentType) {
-
-                res.set(
-                    "Content-Type",
-                    file.contentType
-                );
-
-            }
-
-
-            res.set(
-                "Content-Disposition",
-                `inline; filename="${file.filename}"`
-            );
-
-
-            const downloadStream =
-                gridFSBucket.openDownloadStream(
-                    fileId
-                );
-
-
-            downloadStream.on(
-                "error",
-                (error) => {
-
-                    console.error(
-                        "GridFS download error:",
-                        error
-                    );
-
-                    if (!res.headersSent) {
-
-                        res.status(500).json({
-
-                            message:
-                                "Could not read file."
-
-                        });
-
-                    }
-
-                }
-            );
-
-
-            downloadStream.pipe(res);
-
-        } catch (error) {
-
-            console.error(
-                "File view error:",
-                error
-            );
-
-            if (!res.headersSent) {
-
-                res.status(500).json({
-
-                    message:
-                        "Could not open file."
-
-                });
-
-            }
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMISSION SYSTEM
-===================================================== */
-
-
-/* =========================
-   PUBLIC: SUBMIT ADMISSION
-========================= */
 
 app.post(
     "/api/admissions",
-    authLimiter,
+    admissionLimiter,
     async (req, res) => {
 
         try {
@@ -1343,10 +893,13 @@ app.post(
 
             res.status(201).json({
 
+                success: true,
+
                 message:
                     "Admission enquiry submitted successfully.",
 
-                admission
+                admissionId:
+                    admission._id
 
             });
 
@@ -1359,6 +912,8 @@ app.post(
 
             res.status(500).json({
 
+                success: false,
+
                 message:
                     "Could not submit admission enquiry."
 
@@ -1370,9 +925,9 @@ app.post(
 );
 
 
-/* =========================
-   ADMIN: GET ADMISSIONS
-========================= */
+/* =====================================================
+   ADMIN - GET ADMISSIONS
+===================================================== */
 
 app.get(
     "/api/admissions",
@@ -1388,10 +943,7 @@ app.get(
                         createdAt: -1
                     });
 
-
-            res.json(
-                admissions
-            );
+            res.json(admissions);
 
         } catch (error) {
 
@@ -1413,9 +965,9 @@ app.get(
 );
 
 
-/* =========================
-   ADMIN: UPDATE ADMISSION
-========================= */
+/* =====================================================
+   ADMIN - UPDATE ADMISSION STATUS
+===================================================== */
 
 app.patch(
     "/api/admissions/:id/status",
@@ -1438,9 +990,7 @@ app.patch(
 
 
             if (
-                !allowedStatuses.includes(
-                    status
-                )
+                !allowedStatuses.includes(status)
             ) {
 
                 return res.status(400).json({
@@ -1474,45 +1024,34 @@ app.patch(
                 return res.status(404).json({
 
                     message:
-                        "Admission enquiry not found."
+                        "Admission not found."
 
-                });
+                            }
 
-            }
+        res.json({
+            message: "Admission status updated successfully.",
+            admission
+        });
 
+    } catch (error) {
 
-            res.json({
+        console.error(
+            "Admission status update error:",
+            error
+        );
 
-                message:
-                    "Admission status updated.",
-
-                admission
-
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Admission status error:",
-                error
-            );
-
-            res.status(500).json({
-
-                message:
-                    "Could not update admission status."
-
-            });
-
-        }
+        res.status(500).json({
+            message: "Could not update admission status."
+        });
 
     }
-);
+
+});
 
 
-/* =========================
-   ADMIN: DELETE ADMISSION
-========================= */
+/* =====================================================
+   ADMIN DELETE ADMISSION
+===================================================== */
 
 app.delete(
     "/api/admissions/:id",
@@ -1526,24 +1065,16 @@ app.delete(
                     req.params.id
                 );
 
-
             if (!admission) {
 
                 return res.status(404).json({
-
-                    message:
-                        "Admission enquiry not found."
-
+                    message: "Admission not found."
                 });
 
             }
 
-
             res.json({
-
-                message:
-                    "Admission enquiry deleted."
-
+                message: "Admission deleted successfully."
             });
 
         } catch (error) {
@@ -1554,10 +1085,7 @@ app.delete(
             );
 
             res.status(500).json({
-
-                message:
-                    "Could not delete admission."
-
+                message: "Could not delete admission."
             });
 
         }
@@ -1574,9 +1102,7 @@ app.use(
     express.static(
         FRONTEND_DIR,
         {
-            extensions: [
-                "html"
-            ]
+            extensions: ["html"]
         }
     )
 );
@@ -1591,20 +1117,14 @@ app.get(
     (req, res) => {
 
         if (
-            req.path.startsWith(
-                "/api/"
-            )
+            req.path.startsWith("/api/")
         ) {
 
             return res.status(404).json({
-
-                message:
-                    "API route not found."
-
+                message: "API route not found."
             });
 
         }
-
 
         res.sendFile(
             path.join(
@@ -1622,28 +1142,19 @@ app.get(
 ===================================================== */
 
 app.use(
-    (err, req, res, next) => {
+    (error, req, res, next) => {
 
         console.error(
             "Server error:",
-            err
+            error
         );
 
-
-        if (
-            res.headersSent
-        ) {
-
-            return next(err);
-
+        if (res.headersSent) {
+            return next(error);
         }
 
-
         res.status(500).json({
-
-            message:
-                "Internal server error."
-
+            message: "Internal server error."
         });
 
     }
@@ -1658,45 +1169,23 @@ async function start() {
 
     try {
 
-        console.log(
-            "🔄 Connecting to MongoDB..."
+        await mongoose.connect(
+            process.env.MONGODB_URI
         );
 
-
-        const connection =
-            await mongoose.connect(
-                process.env.MONGODB_URI
-            );
-
-
         console.log(
-            "✅ MongoDB connected:",
-            connection.connection.name
+            "✅ MongoDB connected."
         );
 
-
-        /* =========================
-           GRIDFS
-        ========================= */
 
         gridFSBucket =
             new GridFSBucket(
-                connection.connection.db,
+                mongoose.connection.db,
                 {
-                    bucketName:
-                        "uploads"
+                    bucketName: "uploads"
                 }
             );
 
-
-        console.log(
-            "✅ GridFS ready."
-        );
-
-
-        /* =========================
-           CREATE ADMIN
-        ========================= */
 
         let admin =
             await User.findOne({
@@ -1713,7 +1202,6 @@ async function start() {
                     12
                 );
 
-
             admin =
                 await User.create({
 
@@ -1728,23 +1216,12 @@ async function start() {
 
                 });
 
-
             console.log(
                 "✅ Initial admin created."
             );
 
-        } else {
-
-            console.log(
-                "✅ Admin user already exists."
-            );
-
         }
 
-
-        /* =========================
-           START
-        ========================= */
 
         app.listen(
             PORT,
@@ -1770,10 +1247,5 @@ async function start() {
     }
 
 }
-
-
-/* =====================================================
-   RUN
-===================================================== */
 
 start();
