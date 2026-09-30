@@ -802,5 +802,463 @@
 
 <script src="js/app.js"></script>
 
+    <!-- ===== DIBYA JYOTI ADMISSION POPUP ===== -->
+
+<div id="djAdmissionPopup" class="dj-popup-overlay">
+
+  <div class="dj-popup">
+
+    <!-- Close Button -->
+    <button class="dj-close" onclick="closeDJPopup()">×</button>
+
+    <!-- School Header -->
+    <div class="dj-header">
+      <div class="dj-school-icon">🎓</div>
+
+      <div>
+        <h2>Dibya Jyoti</h2>
+        <p>Secondary School</p>
+      </div>
+    </div>
+
+    <!-- Admission Badge -->
+    <div class="dj-badge">
+      🎉 ADMISSION OPEN 2083
+    </div>
+
+    <h1>Shape Your Future With Us</h1>
+
+    <p class="dj-description">
+      New admission is now open for the academic session 2083.
+      Join Dibya Jyoti Secondary School and take the next step
+      toward a bright and successful future.
+    </p>
+
+    <!-- Information -->
+    <div class="dj-info">
+
+      <div>
+        <span>📚</span>
+        <strong>Quality Education</strong>
+      </div>
+
+      <div>
+        <span>🏫</span>
+        <strong>Experienced Teachers</strong>
+      </div>
+
+      <div>
+        <span>🌟</span>
+        <strong>Student Development</strong>
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div class="dj-buttons">
+
+      <!-- Change this link to your admission page -->
+      <a href="/admission" class="dj-apply">
+        Apply Now →
+      </a>
+
+      <button onclick="closeDJPopup()" class="dj-later">
+        Maybe Later
+      </button>
+
+    </div>
+
+    <p class="dj-footer">
+      Dibya Jyoti Secondary School
+    </p>
+
+  </div>
+</div>
+
+
+<style>
+
+/* ===== POPUP BACKGROUND ===== */
+
+.dj-popup-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.72);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999999;
+
+  padding: 15px;
+
+  box-sizing: border-box;
+}
+
+
+/* ===== POPUP BOX ===== */
+
+.dj-popup {
+  width: 100%;
+  max-width: 480px;
+
+  background: #ffffff;
+
+  border-radius: 22px;
+
+  padding: 30px 25px 22px;
+
+  text-align: center;
+
+  position: relative;
+
+  box-shadow:
+    0 25px 70px rgba(0,0,0,0.35);
+
+  animation: djPopupAnimation 0.45s ease;
+}
+
+
+/* ===== ANIMATION ===== */
+
+@keyframes djPopupAnimation {
+
+  from {
+    opacity: 0;
+    transform: translateY(35px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+}
+
+
+/* ===== CLOSE BUTTON ===== */
+
+.dj-close {
+  position: absolute;
+
+  top: 12px;
+  right: 14px;
+
+  width: 36px;
+  height: 36px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #f1f3f5;
+
+  color: #333;
+
+  font-size: 25px;
+
+  cursor: pointer;
+
+  line-height: 30px;
+
+  transition: 0.2s;
+}
+
+.dj-close:hover {
+  background: #e63946;
+  color: white;
+}
+
+
+/* ===== SCHOOL HEADER ===== */
+
+.dj-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+
+}
+
+.dj-school-icon {
+
+  width: 55px;
+  height: 55px;
+
+  border-radius: 15px;
+
+  background: #0b5ed7;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 27px;
+
+}
+
+.dj-header h2 {
+
+  margin: 0;
+
+  color: #0b5ed7;
+
+  font-size: 25px;
+
+}
+
+.dj-header p {
+
+  margin: 2px 0 0;
+
+  color: #555;
+
+  font-size: 14px;
+
+}
+
+
+/* ===== ADMISSION BADGE ===== */
+
+.dj-badge {
+
+  display: inline-block;
+
+  padding: 9px 16px;
+
+  border-radius: 50px;
+
+  background: #fff1f1;
+
+  color: #d90429;
+
+  font-size: 13px;
+
+  font-weight: bold;
+
+  margin-bottom: 15px;
+
+}
+
+
+/* ===== TITLE ===== */
+
+.dj-popup h1 {
+
+  margin: 5px 0 12px;
+
+  color: #172b4d;
+
+  font-size: 27px;
+
+}
+
+
+/* ===== DESCRIPTION ===== */
+
+.dj-description {
+
+  color: #666;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+
+  margin-bottom: 20px;
+
+}
+
+
+/* ===== INFORMATION ===== */
+
+.dj-info {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+
+  margin-bottom: 22px;
+
+}
+
+.dj-info div {
+
+  background: #f5f8ff;
+
+  border-radius: 12px;
+
+  padding: 12px 5px;
+
+}
+
+.dj-info span {
+
+  display: block;
+
+  font-size: 21px;
+
+  margin-bottom: 5px;
+
+}
+
+.dj-info strong {
+
+  display: block;
+
+  color: #444;
+
+  font-size: 11px;
+
+}
+
+
+/* ===== BUTTONS ===== */
+
+.dj-buttons {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+}
+
+
+/* APPLY BUTTON */
+
+.dj-apply {
+
+  display: block;
+
+  padding: 14px;
+
+  border-radius: 12px;
+
+  background: #0b5ed7;
+
+  color: white !important;
+
+  text-decoration: none !important;
+
+  font-size: 16px;
+
+  font-weight: bold;
+
+  transition: 0.2s;
+
+}
+
+.dj-apply:hover {
+
+  background: #084298;
+
+  transform: translateY(-1px);
+
+}
+
+
+/* MAYBE LATER */
+
+.dj-later {
+
+  border: none;
+
+  background: transparent;
+
+  color: #777;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  padding: 7px;
+
+}
+
+
+/* ===== FOOTER ===== */
+
+.dj-footer {
+
+  margin: 18px 0 0;
+
+  font-size: 12px;
+
+  color: #999;
+
+}
+
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 480px) {
+
+  .dj-popup {
+
+    padding: 25px 18px 18px;
+
+    border-radius: 19px;
+
+  }
+
+  .dj-popup h1 {
+
+    font-size: 23px;
+
+  }
+
+  .dj-description {
+
+    font-size: 14px;
+
+  }
+
+  .dj-info strong {
+
+    font-size: 10px;
+
+  }
+
+}
+
+</style>
+
+
+<script>
+
+function closeDJPopup() {
+
+  document.getElementById("djAdmissionPopup").style.display = "none";
+
+}
+
+
+/* Open popup after 1 second */
+
+window.addEventListener("load", function() {
+
+  setTimeout(function() {
+
+    document.getElementById("djAdmissionPopup").style.display = "flex";
+
+  }, 1000);
+
+});
+
+</script>
+
 </body>
 </html>
