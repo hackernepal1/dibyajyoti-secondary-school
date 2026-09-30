@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 
 const express = require("express");
@@ -10,1243 +11,1108 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
-const { GridFSBucket, ObjectId } = require("mongodb");
 
+// ===============================
+// CLOUDINARY CONFIGURATION
+// ===============================
 
-/* =====================================================
-   MODELS
-===================================================== */
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// ===============================
+// MODELS
+// ===============================
 
 const User = require("./User");
 const Notice = require("./Notice");
 const Gallery = require("./Gallery");
 const Video = require("./Video");
 const Event = require("./Event");
-const Admission = require("./Admission");
 
-
-/* =====================================================
-   APP
-===================================================== */
+// ===============================
+// APP
+// ===============================
 
 const app = express();
 
 const PORT = process.env.PORT || 5000;
+
 const FRONTEND_DIR = path.join(__dirname);
-
-
-/* =====================================================
-   MIDDLEWARE
-===================================================== */
 
 app.use(cors());
 
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json());
 
 app.use(
-    express.urlencoded({
-        extended: true,
-        limit: "10mb"
-    })
+  express.urlencoded({
+    extended: true
+  })
 );
 
-app.set("trust proxy", 1);
-
-
-/* =====================================================
-   ENVIRONMENT CHECK
-===================================================== */
+// ===============================
+// REQUIRED ENVIRONMENT VARIABLES
+// ===============================
 
 if (!process.env.MONGODB_URI) {
-    console.error("❌ MONGODB_URI is missing in .env");
-    process.exit(1);
+  throw new Error("MONGODB_URI is required");
 }
 
 if (!process.env.JWT_SECRET) {
-    console.error("❌ JWT_SECRET is missing in .env");
-    process.exit(1);
+  throw new Error("JWT_SECRET is required");
 }
 
-if (!process.env.ADMIN_USERNAME) {
-    console.error("❌ ADMIN_USERNAME is missing in .env");
-    process.exit(1);
+if (
+  !process.env.ADMIN_USERNAME ||
+  !process.env.ADMIN_PASSWORD
+) {
+  throw new Error(
+    "ADMIN_USERNAME and ADMIN_PASSWORD are required"
+  );
 }
 
-if (!process.env.ADMIN_PASSWORD) {
-    console.error("❌ ADMIN_PASSWORD is missing in .env");
-    process.exit(1);
-}
+// ===============================
+// SERVER SETTINGS
+// ===============================
 
+app.set("trust proxy", 1);
 
-/* =====================================================
-   RATE LIMITERS
-===================================================== */
+// ===============================
+// RATE LIMIT
+// ===============================
 
 const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 20,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-        message: "Too many requests. Please try again later."
-    }
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false
 });
 
+// ===============================
+// CLOUDINARY UPLOAD
+// ===============================
 
-const admissionLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 30,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-        message: "Too many admission requests. Please try again later."
-    }
-});
-
-
-/* =====================================================
-   CLOUDINARY
-===================================================== */
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-
-const cloudinaryStorage = new CloudinaryStorage({
-    cloudinary,
+const upload = multer({
+  storage: new CloudinaryStorage({
+    cloudinary: cloudinary,
 
     params: {
-        folder: "dibya-jyoti-school",
-
-        allowed_formats: [
-            "jpg",
-            "jpeg",
-            "png",
-            "webp"
-        ]
+      folder: "school_gallery",
+      upload_preset: "ml_default"
     }
+  }),
+
+  limits: {
+    fileSize: 30 * 1024 * 1024
+  },
+
+  fileFilter: (req, file, cb) => {
+
+    const allowed = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+      "image/heic",
+      "image/heif",
+      "application/pdf"
+    ];
+
+    if (
+      !allowed.includes(
+        file.mimetype.toLowerCase()
+      )
+    ) {
+
+      return cb(
+        new Error(
+          "Only JPG, JPEG, PNG, WEBP, GIF, HEIC, HEIF images and PDF files are allowed."
+        )
+      );
+    }
+
+    cb(null, true);
+  }
 });
 
+// ===============================
+// GRIDFS UPLOAD
+// ===============================
 
-const uploadCloudinary = multer({
-    storage: cloudinaryStorage
+const gridfsUpload = multer({
+  storage: multer.memoryStorage(),
+
+  limits: {
+    fileSize: 30 * 1024 * 1024
+  },
+
+  fileFilter: (req, file, cb) => {
+
+    const allowed = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+      "image/heic",
+      "image/heif",
+      "application/pdf"
+    ];
+
+    if (
+      !allowed.includes(
+        file.mimetype.toLowerCase()
+      )
+    ) {
+
+      return cb(
+        new Error(
+          "Only JPG, JPEG, PNG, WEBP, GIF, HEIC, HEIF images and PDF files are allowed."
+        )
+      );
+    }
+
+    cb(null, true);
+  }
 });
 
-
-/* =====================================================
-   MONGODB / GRIDFS
-===================================================== */
-
-let gridFSBucket = null;
-
-
-/* =====================================================
-   AUTH MIDDLEWARE
-===================================================== */
+// ===============================
+// AUTHENTICATION
+// ===============================
 
 function requireAuth(req, res, next) {
 
-    try {
+  const header =
+    req.headers.authorization || "";
 
-        const authHeader = req.headers.authorization;
+  const token =
+    header.startsWith("Bearer ")
+      ? header.slice(7)
+      : null;
 
-        if (
-            !authHeader ||
-            !authHeader.startsWith("Bearer ")
-        ) {
+  if (!token) {
 
-            return res.status(401).json({
-                message: "Authentication required."
-            });
+    return res.status(401).json({
+      message: "Authentication required"
+    });
+  }
 
-        }
+  try {
 
+    req.user = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
 
-        const token = authHeader.split(" ")[1];
+    if (req.user.role !== "admin") {
 
-
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
-
-
-        if (decoded.role !== "admin") {
-
-            return res.status(403).json({
-                message: "Admin access required."
-            });
-
-        }
-
-
-        req.user = decoded;
-
-        next();
-
-    } catch (error) {
-
-        return res.status(401).json({
-            message: "Invalid or expired token."
-        });
-
+      return res.status(403).json({
+        message: "Admin access required"
+      });
     }
 
+    next();
+
+  } catch {
+
+    return res.status(401).json({
+      message: "Invalid or expired token"
+    });
+  }
 }
 
+// ===============================
+// GRIDFS
+// ===============================
 
-/* =====================================================
-   HEALTH
-===================================================== */
+function getGridFS() {
 
-app.get(
-    "/api/health",
-    (req, res) => {
+  if (!mongoose.connection.db) {
 
-        res.json({
-            ok: true,
-            message: "Dibya Jyoti backend is running."
-        });
+    throw new Error(
+      "Database is not ready"
+    );
+  }
 
+  return new mongoose.mongo.GridFSBucket(
+    mongoose.connection.db,
+    {
+      bucketName: "uploads"
     }
-);
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-app.post(
-    "/api/auth/login",
-    authLimiter,
-    async (req, res) => {
-
-        try {
-
-            const {
-                username,
-                password
-            } = req.body;
-
-
-            if (!username || !password) {
-
-                return res.status(400).json({
-                    message:
-                        "Username and password are required."
-                });
-
-            }
-
-
-            const user = await User.findOne({
-                username
-            });
-
-
-            if (!user) {
-
-                return res.status(401).json({
-                    message:
-                        "Invalid username or password."
-                });
-
-            }
-
-
-            const passwordMatch =
-                await bcrypt.compare(
-                    password,
-                    user.password
-                );
-
-
-            if (!passwordMatch) {
-
-                return res.status(401).json({
-                    message:
-                        "Invalid username or password."
-                });
-
-            }
-
-
-            if (user.role !== "admin") {
-
-                return res.status(403).json({
-                    message:
-                        "Admin access required."
-                });
-
-            }
-
-
-            const token = jwt.sign(
-
-                {
-                    id: user._id.toString(),
-                    username: user.username,
-                    role: user.role
-                },
-
-                process.env.JWT_SECRET,
-
-                {
-                    expiresIn: "7d"
-                }
-
-            );
-
-
-            res.json({
-
-                message:
-                    "Login successful.",
-
-                token,
-
-                user: {
-
-                    id: user._id,
-                    username: user.username,
-                    role: user.role
-
-                }
-
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Login error:",
-                error
-            );
-
-            res.status(500).json({
-                message: "Login failed."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   PUBLIC NOTICES
-===================================================== */
-
-app.get(
-    "/api/notices",
-    async (req, res) => {
-
-        try {
-
-            const notices =
-                await Notice
-                    .find({
-                        published: true
-                    })
-                    .sort({
-                        createdAt: -1
-                    });
-
-            res.json(notices);
-
-        } catch (error) {
-
-            console.error(error);
-
-            res.status(500).json({
-                message:
-                    "Could not load notices."
-            });
-
-        }
-
-    }
-);
-
-
-app.get(
-    "/api/notices/latest",
-    async (req, res) => {
-
-        try {
-
-            const notices =
-                await Notice
-                    .find({
-                        published: true
-                    })
-                    .sort({
-                        createdAt: -1
-                    })
-                    .limit(5);
-
-            res.json(notices);
-
-        } catch (error) {
-
-            console.error(error);
-
-            res.status(500).json({
-                message:
-                    "Could not load latest notices."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMIN ADD NOTICE
-===================================================== */
-
-app.post(
-    "/api/notices",
-    requireAuth,
-    async (req, res) => {
-
-        try {
-
-            const {
-                title,
-                description,
-                documentUrl,
-                published
-            } = req.body;
-
-
-            if (!title) {
-
-                return res.status(400).json({
-                    message:
-                        "Notice title is required."
-                });
-
-            }
-
-
-            const notice =
-                await Notice.create({
-
-                    title:
-                        title.trim(),
-
-                    description:
-                        description
-                            ? description.trim()
-                            : "",
-
-                    documentUrl:
-                        documentUrl || "",
-
-                    published:
-                        published !== false
-
-                });
-
-
-            res.status(201).json(notice);
-
-        } catch (error) {
-
-            console.error(
-                "Notice creation error:",
-                error
-            );
-
-            res.status(500).json({
-                message:
-                    "Could not create notice."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   PUBLIC GALLERY
-===================================================== */
-
-app.get(
-    "/api/gallery",
-    async (req, res) => {
-
-        try {
-
-            const gallery =
-                await Gallery
-                    .find()
-                    .sort({
-                        createdAt: -1
-                    });
-
-            res.json(gallery);
-
-        } catch (error) {
-
-            console.error(error);
-
-            res.status(500).json({
-                message:
-                    "Could not load gallery."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMIN ADD GALLERY
-===================================================== */
-
-app.post(
-    "/api/gallery",
-    requireAuth,
-    async (req, res) => {
-
-        try {
-
-            const {
-                title,
-                caption,
-                imageUrl
-            } = req.body;
-
-
-            if (!imageUrl) {
-
-                return res.status(400).json({
-                    message:
-                        "Image URL is required."
-                });
-
-            }
-
-
-            const gallery =
-                await Gallery.create({
-
-                    title:
-                        title ||
-                        "School Gallery",
-
-                    caption:
-                        caption || "",
-
-                    imageUrl
-
-                });
-
-
-            res.status(201).json(gallery);
-
-        } catch (error) {
-
-            console.error(
-                "Gallery creation error:",
-                error
-            );
-
-            res.status(500).json({
-                message:
-                    "Could not save gallery image."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   PUBLIC VIDEOS
-===================================================== */
-
-app.get(
-    "/api/videos",
-    async (req, res) => {
-
-        try {
-
-            const videos =
-                await Video
-                    .find()
-                    .sort({
-                        createdAt: -1
-                    });
-
-            res.json(videos);
-
-        } catch (error) {
-
-            console.error(error);
-
-            res.status(500).json({
-                message:
-                    "Could not load videos."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMIN ADD VIDEO
-===================================================== */
-
-app.post(
-    "/api/videos",
-    requireAuth,
-    async (req, res) => {
-
-        try {
-
-            const {
-                title,
-                videoUrl,
-                description
-            } = req.body;
-
-
-            if (!title || !videoUrl) {
-
-                return res.status(400).json({
-                    message:
-                        "Video title and URL are required."
-                });
-
-            }
-
-
-            const video =
-                await Video.create({
-
-                    title:
-                        title.trim(),
-
-                    videoUrl:
-                        videoUrl.trim(),
-
-                    description:
-                        description
-                            ? description.trim()
-                            : ""
-
-                });
-
-
-            res.status(201).json(video);
-
-        } catch (error) {
-
-            console.error(
-                "Video creation error:",
-                error
-            );
-
-            res.status(500).json({
-                message:
-                    "Could not add video."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMIN DELETE VIDEO
-===================================================== */
-
-app.delete(
-    "/api/videos/:id",
-    requireAuth,
-    async (req, res) => {
-
-        try {
-
-            const video =
-                await Video.findByIdAndDelete(
-                    req.params.id
-                );
-
-
-            if (!video) {
-
-                return res.status(404).json({
-                    message:
-                        "Video not found."
-                });
-
-            }
-
-
-            res.json({
-                message:
-                    "Video deleted successfully."
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Video delete error:",
-                error
-            );
-
-            res.status(500).json({
-                message:
-                    "Could not delete video."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   PUBLIC EVENTS
-===================================================== */
-
-app.get(
-    "/api/events",
-    async (req, res) => {
-
-        try {
-
-            const events =
-                await Event
-                    .find()
-                    .sort({
-                        eventDate: 1
-                    });
-
-            res.json(events);
-
-        } catch (error) {
-
-            console.error(error);
-
-            res.status(500).json({
-                message:
-                    "Could not load events."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMIN ADD EVENT
-===================================================== */
-
-app.post(
-    "/api/events",
-    requireAuth,
-    async (req, res) => {
-
-        try {
-
-            const {
-                title,
-                eventDate,
-                location,
-                description
-            } = req.body;
-
-
-            if (!title || !eventDate) {
-
-                return res.status(400).json({
-                    message:
-                        "Event title and date are required."
-                });
-
-            }
-
-
-            const event =
-                await Event.create({
-
-                    title:
-                        title.trim(),
-
-                    eventDate,
-
-                    location:
-                        location
-                            ? location.trim()
-                            : "",
-
-                    description:
-                        description
-                            ? description.trim()
-                            : ""
-
-                });
-
-
-            res.status(201).json(event);
-
-        } catch (error) {
-
-            console.error(
-                "Event creation error:",
-                error
-            );
-
-            res.status(500).json({
-                message:
-                    "Could not add event."
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMISSION - PUBLIC SUBMISSION
-===================================================== */
-
-app.post(
-    "/api/admissions",
-    admissionLimiter,
-    async (req, res) => {
-
-        try {
-
-            const {
-                studentName,
-                parentName,
-                phone,
-                grade,
-                program,
-                message
-            } = req.body;
-
-
-            if (
-                !studentName ||
-                !parentName ||
-                !phone ||
-                !grade ||
-                !program
-            ) {
-
-                return res.status(400).json({
-
-                    message:
-                        "Student name, parent name, phone, grade and program are required."
-
-                });
-
-            }
-
-
-            const admission =
-                await Admission.create({
-
-                    studentName:
-                        studentName.trim(),
-
-                    parentName:
-                        parentName.trim(),
-
-                    phone:
-                        phone.trim(),
-
-                    grade:
-                        grade.trim(),
-
-                    program:
-                        program.trim(),
-
-                    message:
-                        message
-                            ? message.trim()
-                            : "",
-
-                    status:
-                        "new"
-
-                });
-
-
-            res.status(201).json({
-
-                success: true,
-
-                message:
-                    "Admission enquiry submitted successfully.",
-
-                admissionId:
-                    admission._id
-
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Admission submission error:",
-                error
-            );
-
-            res.status(500).json({
-
-                success: false,
-
-                message:
-                    "Could not submit admission enquiry."
-
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMIN - GET ADMISSIONS
-===================================================== */
-
-app.get(
-    "/api/admissions",
-    requireAuth,
-    async (req, res) => {
-
-        try {
-
-            const admissions =
-                await Admission
-                    .find()
-                    .sort({
-                        createdAt: -1
-                    });
-
-            res.json(admissions);
-
-        } catch (error) {
-
-            console.error(
-                "Admission fetch error:",
-                error
-            );
-
-            res.status(500).json({
-
-                message:
-                    "Could not load admissions."
-
-            });
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ADMIN - UPDATE ADMISSION STATUS
-===================================================== */
-
-app.patch(
-    "/api/admissions/:id/status",
-    requireAuth,
-    async (req, res) => {
-
-        try {
-
-            const {
-                status
-            } = req.body;
-
-
-            const allowedStatuses = [
-                "new",
-                "contacted",
-                "approved",
-                "rejected"
-            ];
-
-
-            if (
-                !allowedStatuses.includes(status)
-            ) {
-
-                return res.status(400).json({
-
-                    message:
-                        "Invalid admission status."
-
-                });
-
-            }
-
-
-            const admission =
-                await Admission.findByIdAndUpdate(
-
-                    req.params.id,
-
-                    {
-                        status
-                    },
-
-                    {
-                        new: true
-                    }
-
-                );
-
-
-            if (!admission) {
-
-                return res.status(404).json({
-
-                    message:
-                        "Admission not found."
-
-                });
-        
-            }
-
-        res.json({
-            message: "Admission status updated successfully.",
-            admission
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Admission status update error:",
-            error
-        );
-
-        res.status(500).json({
-            message: "Could not update admission status."
-        });
-
-    }
-
+  );
+}
+
+// ===============================
+// HEALTH
+// ===============================
+
+app.get("/api/health", (req, res) => {
+
+  res.json({
+    ok: true,
+    database:
+      mongoose.connection.readyState === 1
+  });
 });
 
-/* =====================================================
-   ADMIN DELETE ADMISSION
-===================================================== */
+// ===============================
+// LOGIN
+// ADMIN 1 + ADMIN 2
+// ===============================
 
-app.delete(
-    "/api/admissions/:id",
-    requireAuth,
-    async (req, res) => {
+app.post(
+  "/api/auth/login",
+  authLimiter,
+  async (req, res) => {
 
-        try {
+    const {
+      username,
+      password
+    } = req.body || {};
 
-            const admission =
-                await Admission.findByIdAndDelete(
-                    req.params.id
-                );
+    if (!username || !password) {
 
-            if (!admission) {
-
-                return res.status(404).json({
-                    message: "Admission not found."
-                });
-
-            }
-
-            res.json({
-                message: "Admission deleted successfully."
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Admission delete error:",
-                error
-            );
-
-            res.status(500).json({
-                message: "Could not delete admission."
-            });
-
-        }
-
+      return res.status(400).json({
+        message:
+          "Username and password are required"
+      });
     }
-);
 
+    try {
 
-/* =====================================================
-   STATIC FRONTEND
-===================================================== */
+      // =========================
+      // ADMIN 1
+      // DATABASE USER
+      // =========================
 
-app.use(
-    express.static(
-        FRONTEND_DIR,
-        {
-            extensions: ["html"]
-        }
-    )
-);
-
-
-/* =====================================================
-   FRONTEND FALLBACK
-===================================================== */
-
-app.get(
-    "/{*splat}",
-    (req, res) => {
-
-        if (
-            req.path.startsWith("/api/")
-        ) {
-
-            return res.status(404).json({
-                message: "API route not found."
-            });
-
-        }
-
-        res.sendFile(
-            path.join(
-                FRONTEND_DIR,
-                "index.html"
-            )
-        );
-
-    }
-);
-
-
-/* =====================================================
-   ERROR HANDLER
-===================================================== */
-
-app.use(
-    (error, req, res, next) => {
-
-        console.error(
-            "Server error:",
-            error
-        );
-
-        if (res.headersSent) {
-            return next(error);
-        }
-
-        res.status(500).json({
-            message: "Internal server error."
+      const user =
+        await User.findOne({
+          username: username
         });
 
+      if (user) {
+
+        const passwordMatch =
+          await bcrypt.compare(
+            password,
+            user.password
+          );
+
+        if (
+          passwordMatch &&
+          user.role === "admin"
+        ) {
+
+          const token =
+            jwt.sign(
+              {
+                id:
+                  user._id.toString(),
+
+                role: "admin",
+
+                username:
+                  user.username
+              },
+
+              process.env.JWT_SECRET,
+
+              {
+                expiresIn: "1d"
+              }
+            );
+
+          return res.json({
+
+            token,
+
+            user: {
+              id: user._id,
+
+              username:
+                user.username,
+
+              role: "admin"
+            }
+
+          });
+        }
+      }
+
+      // =========================
+      // ADMIN 2
+      // RENDER ENVIRONMENT
+      // =========================
+
+      if (
+        process.env.ADMIN_USERNAME02 &&
+        process.env.ADMIN_PASSWORD02 &&
+        username ===
+          process.env.ADMIN_USERNAME02 &&
+        password ===
+          process.env.ADMIN_PASSWORD02
+      ) {
+
+        const token =
+          jwt.sign(
+            {
+              id: "admin02",
+
+              role: "admin",
+
+              username:
+                process.env
+                  .ADMIN_USERNAME02
+            },
+
+            process.env.JWT_SECRET,
+
+            {
+              expiresIn: "1d"
+            }
+          );
+
+        return res.json({
+
+          token,
+
+          user: {
+            id: "admin02",
+
+            username:
+              process.env
+                .ADMIN_USERNAME02,
+
+            role: "admin"
+          }
+
+        });
+      }
+
+      // =========================
+      // INVALID
+      // =========================
+
+      return res.status(401).json({
+        message:
+          "Invalid credentials"
+      });
+
+    } catch (err) {
+
+      console.error(
+        "Login error:",
+        err
+      );
+
+      return res.status(500).json({
+        message:
+          "Server error"
+      });
     }
+  }
 );
 
+// ===============================
+// PUBLIC - NOTICES
+// ===============================
 
-/* =====================================================
-   START SERVER
-===================================================== */
+app.get(
+  "/api/notices",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Notice.find({
+          published: true
+        }).sort({
+          createdAt: -1
+        })
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load notices"
+      });
+    }
+  }
+);
+
+// ===============================
+// PUBLIC - LATEST NOTICES
+// ===============================
+
+app.get(
+  "/api/notices/latest",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Notice.find({
+          published: true
+        })
+          .sort({
+            createdAt: -1
+          })
+          .limit(5)
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load notices"
+      });
+    }
+  }
+);
+
+// ===============================
+// PUBLIC - GALLERY
+// ===============================
+
+app.get(
+  "/api/gallery",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Gallery.find().sort({
+          createdAt: -1
+        })
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load gallery"
+      });
+    }
+  }
+);
+
+// ===============================
+// PUBLIC - VIDEOS
+// ===============================
+
+app.get(
+  "/api/videos",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Video.find().sort({
+          createdAt: -1
+        })
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load videos"
+      });
+    }
+  }
+);
+
+// ===============================
+// PUBLIC - EVENTS
+// ===============================
+
+app.get(
+  "/api/events",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Event.find().sort({
+          eventDate: 1
+        })
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load events"
+      });
+    }
+  }
+);
+
+// ===============================
+// ADMIN - ADD NOTICE
+// ===============================
+
+app.post(
+  "/api/notices",
+  requireAuth,
+  upload.single("image"),
+
+  async (req, res) => {
+
+    try {
+
+      const noticeData = {
+        ...req.body
+      };
+
+      if (req.file) {
+
+        noticeData.image =
+          req.file.path;
+      }
+
+      const newNotice =
+        await Notice.create(
+          noticeData
+        );
+
+      res.status(201).json(
+        newNotice
+      );
+
+    } catch (err) {
+
+      res.status(400).json({
+        message:
+          err.message
+      });
+    }
+  }
+);
+
+// ===============================
+// ADMIN - ADD GALLERY
+// ===============================
+
+app.post(
+  "/api/gallery",
+  requireAuth,
+  upload.single("image"),
+
+  async (req, res) => {
+
+    try {
+
+      const galleryData = {
+        ...req.body
+      };
+
+      if (req.file) {
+
+        galleryData.image =
+          req.file.path;
+      }
+
+      const newGallery =
+        await Gallery.create(
+          galleryData
+        );
+
+      res.status(201).json(
+        newGallery
+      );
+
+    } catch (err) {
+
+      res.status(400).json({
+        message:
+          err.message
+      });
+    }
+  }
+);
+
+// ===============================
+// ADMIN - ADD VIDEO
+// ===============================
+
+app.post(
+  "/api/videos",
+  requireAuth,
+
+  async (req, res) => {
+
+    try {
+
+      const newVideo =
+        await Video.create(
+          req.body
+        );
+
+      res.status(201).json(
+        newVideo
+      );
+
+    } catch (err) {
+
+      res.status(400).json({
+        message:
+          err.message
+      });
+    }
+  }
+);
+
+// ===============================
+// ADMIN - DELETE VIDEO
+// ===============================
+
+app.delete(
+  "/api/videos/:id",
+  requireAuth,
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        id
+      } = req.params;
+
+      if (
+        !mongoose.Types.ObjectId.isValid(
+          id
+        )
+      ) {
+
+        return res.status(400).json({
+          message:
+            "Invalid video ID"
+        });
+      }
+
+      const deletedVideo =
+        await Video.findByIdAndDelete(
+          id
+        );
+
+      if (!deletedVideo) {
+
+        return res.status(404).json({
+          message:
+            "Video not found"
+        });
+      }
+
+      res.json({
+
+        success: true,
+
+        message:
+          "Video deleted successfully",
+
+        video:
+          deletedVideo
+
+      });
+
+    } catch (err) {
+
+      console.error(
+        "Delete video error:",
+        err
+      );
+
+      res.status(500).json({
+        message:
+          "Failed to delete video"
+      });
+    }
+  }
+);
+
+// ===============================
+// ADMIN - ADD EVENT
+// ===============================
+
+app.post(
+  "/api/events",
+  requireAuth,
+
+  async (req, res) => {
+
+    try {
+
+      res.status(201).json(
+        await Event.create(
+          req.body
+        )
+      );
+
+    } catch (err) {
+
+      res.status(400).json({
+        message:
+          err.message
+      });
+    }
+  }
+);
+
+// ===============================
+// GRIDFS FILE UPLOAD
+// ===============================
+
+app.post(
+  "/api/upload",
+  requireAuth,
+
+  gridfsUpload.single("file"),
+
+  async (req, res) => {
+
+    if (!req.file) {
+
+      return res.status(400).json({
+        message:
+          "No file selected"
+      });
+    }
+
+    try {
+
+      const bucket =
+        getGridFS();
+
+      const safeName =
+        req.file.originalname.replace(
+          /[^a-zA-Z0-9._-]/g,
+          "_"
+        );
+
+      const filename =
+        `${Date.now()}-${safeName}`;
+
+      const stream =
+        bucket.openUploadStream(
+          filename,
+          {
+            contentType:
+              req.file.mimetype,
+
+            metadata: {
+              originalName:
+                req.file.originalname
+            }
+          }
+        );
+
+      stream.on(
+        "error",
+        (err) => {
+
+          console.error(
+            "GridFS upload error:",
+            err
+          );
+
+          if (!res.headersSent) {
+
+            res.status(500).json({
+              message:
+                "Upload failed",
+
+              error:
+                err.message
+            });
+          }
+        }
+      );
+
+      stream.on(
+        "finish",
+        () => {
+
+          const id =
+            stream.id.toString();
+
+          res.status(201).json({
+
+            message:
+              "File uploaded successfully",
+
+            url:
+              `/api/uploads/${id}`,
+
+            id: id,
+
+            contentType:
+              req.file.mimetype
+
+          });
+        }
+      );
+
+      stream.end(
+        req.file.buffer
+      );
+
+    } catch (err) {
+
+      console.error(
+        "Upload error:",
+        err
+      );
+
+      if (!res.headersSent) {
+
+        res.status(500).json({
+
+          message:
+            "Upload failed",
+
+          error:
+            err.message
+
+        });
+      }
+    }
+  }
+);
+
+// ===============================
+// GRIDFS FILE VIEW
+// ===============================
+
+app.get(
+  "/api/uploads/:id",
+  async (req, res) => {
+
+    try {
+
+      if (!mongoose.connection.db) {
+
+        return res.status(500).send(
+          "Database is not ready"
+        );
+      }
+
+      const id =
+        new mongoose.mongo.ObjectId(
+          req.params.id
+        );
+
+      const files =
+        await mongoose.connection.db
+          .collection(
+            "uploads.files"
+          )
+          .find({
+            _id: id
+          })
+          .limit(1)
+          .toArray();
+
+      if (!files.length) {
+
+        return res.status(404).send(
+          "File not found"
+        );
+      }
+
+      res.set(
+        "Content-Type",
+        files[0].contentType ||
+          "application/octet-stream"
+      );
+
+      res.set(
+        "Cache-Control",
+        "public, max-age=31536000, immutable"
+      );
+
+      getGridFS()
+        .openDownloadStream(id)
+
+        .on(
+          "error",
+          () => {
+
+            if (!res.headersSent) {
+              res.status(404).end();
+            }
+          }
+        )
+
+        .pipe(res);
+
+    } catch (err) {
+
+      console.error(
+        "GridFS download error:",
+        err
+      );
+
+      res.status(400).send(
+        "Invalid file id"
+      );
+    }
+  }
+);
+
+// ===============================
+// FRONTEND
+// ===============================
+
+app.use(
+  express.static(
+    FRONTEND_DIR,
+    {
+      extensions: ["html"]
+    }
+  )
+);
+
+app.get(
+  "/{*splat}",
+  (req, res) => {
+
+    if (
+      req.path.startsWith(
+        "/api/"
+      )
+    ) {
+
+      return res.status(404).json({
+        message:
+          "API route not found"
+      });
+    }
+
+    res.sendFile(
+      path.join(
+        FRONTEND_DIR,
+        "index.html"
+      )
+    );
+  }
+);
+
+// ===============================
+// ERROR HANDLER
+// ===============================
+
+app.use(
+  (
+    err,
+    req,
+    res,
+    next
+  ) => {
+
+    console.error(err);
+
+    if (
+      err instanceof
+      multer.MulterError
+    ) {
+
+      return res.status(400).json({
+        message:
+          err.message
+      });
+    }
+
+    res.status(400).json({
+      message:
+        err.message ||
+        "Request failed"
+    });
+  }
+);
+
+// ===============================
+// START SERVER
+// ===============================
 
 async function start() {
 
-    try {
+  await mongoose.connect(
+    process.env.MONGODB_URI
+  );
 
-        await mongoose.connect(
-            process.env.MONGODB_URI
-        );
+  console.log(
+    "MongoDB connected"
+  );
 
-        console.log(
-            "✅ MongoDB connected."
-        );
+  // =============================
+  // CREATE ADMIN 1 IF NOT EXISTS
+  // =============================
 
+  const adminExists =
+    await User.findOne({
+      role: "admin"
+    });
 
-        gridFSBucket =
-            new GridFSBucket(
-                mongoose.connection.db,
-                {
-                    bucketName: "uploads"
-                }
-            );
+  if (!adminExists) {
 
+    const hashedPassword =
+      await bcrypt.hash(
+        process.env.ADMIN_PASSWORD,
+        12
+      );
 
-        let admin =
-            await User.findOne({
-                username:
-                    process.env.ADMIN_USERNAME
-            });
+    await User.create({
 
+      username:
+        process.env.ADMIN_USERNAME,
 
-        if (!admin) {
+      password:
+        hashedPassword,
 
-            const hashedPassword =
-                await bcrypt.hash(
-                    process.env.ADMIN_PASSWORD,
-                    12
-                );
+      role: "admin"
 
-            admin =
-                await User.create({
+    });
 
-                    username:
-                        process.env.ADMIN_USERNAME,
+    console.log(
+      `Initial admin '${process.env.ADMIN_USERNAME}' created.`
+    );
+  }
 
-                    password:
-                        hashedPassword,
+  // =============================
+  // START SERVER
+  // =============================
 
-                    role:
-                        "admin"
+  app.listen(
+    PORT,
+    "0.0.0.0",
 
-                });
+    () => {
 
-            console.log(
-                "✅ Initial admin created."
-            );
-
-        }
-
-
-        app.listen(
-            PORT,
-            "0.0.0.0",
-            () => {
-
-                console.log(
-                    `🚀 Server running on port ${PORT}`
-                );
-
-            }
-        );
-
-    } catch (error) {
-
-        console.error(
-            "❌ Server startup failed:",
-            error
-        );
-
-        process.exit(1);
+      console.log(
+        `Server running on port ${PORT}`
+      );
 
     }
-
+  );
 }
 
-start();
+// ===============================
+// START
+// ===============================
+
+start().catch(
+  (err) => {
+
+    console.error(
+      "Startup failed:",
+      err
+    );
+
+    process.exit(1);
+  }
+);
