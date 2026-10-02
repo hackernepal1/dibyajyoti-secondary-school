@@ -801,40 +801,29 @@
 
 
 <script src="js/app.js"></script>
-<!-- ================= DJSS 3D WELCOME POPUP ================= -->
+<!-- DJSS WELCOME POPUP START -->
 
-<div id="djssWelcome" class="djss-welcome">
+<div id="djssPopup">
 
-    <div class="djss-card">
+    <div class="djss-popup-box">
 
-        <button class="djss-close" onclick="closeDJSS()">
-            ×
-        </button>
+        <button class="djss-close" onclick="closeDJSS()">×</button>
 
-        <div class="djss-glow"></div>
+        <div class="djss-icon">🏫</div>
 
-        <div class="djss-icon">
-            🏫
-        </div>
-
-        <div class="djss-small">
-            WELCOME TO
-        </div>
+        <div class="djss-welcome">WELCOME TO</div>
 
         <h1>
             DJSS
             <span>PORTAL</span>
         </h1>
 
-        <div class="djss-line"></div>
-
-        <p>
+        <div class="djss-school">
             Dibya Jyoti Secondary School
-        </p>
+        </div>
 
         <button class="djss-enter" onclick="closeDJSS()">
-            ENTER PORTAL
-            <span>→</span>
+            ENTER PORTAL →
         </button>
 
     </div>
@@ -844,493 +833,181 @@
 
 <style>
 
-/* ================= POPUP ================= */
+#djssPopup{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:999999999;
 
-.djss-welcome {
-    position: fixed;
-    inset: 0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
 
-    width: 100%;
-    height: 100vh;
+    pointer-events:none;
+    perspective:1200px;
+}
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.djss-popup-box{
+    position:relative;
+
+    width:min(600px,94%);
+
+    margin-top:15px;
+
+    padding:25px 25px 22px;
+
+    text-align:center;
+
+    border-radius:22px;
 
     background:
-        radial-gradient(circle at center,
-        rgba(0, 119, 255, 0.20),
-        rgba(0, 0, 0, 0.92) 70%);
+    linear-gradient(135deg,#082b52,#0078bd);
 
-    backdrop-filter: blur(8px);
-
-    z-index: 999999999;
-
-    perspective: 1200px;
-
-    overflow: hidden;
-}
-
-
-/* ================= 3D CARD ================= */
-
-.djss-card {
-
-    position: relative;
-
-    width: min(440px, 90%);
-
-    padding: 48px 30px 38px;
-
-    text-align: center;
-
-    border-radius: 25px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.16),
-            rgba(255,255,255,0.04)
-        );
-
-    border: 1px solid rgba(255,255,255,0.25);
+    color:white;
 
     box-shadow:
-        0 30px 80px rgba(0,0,0,0.7),
-        inset 0 0 30px rgba(255,255,255,0.04);
+    0 20px 60px rgba(0,0,0,.5);
 
-    backdrop-filter: blur(20px);
+    pointer-events:auto;
 
-    transform-style: preserve-3d;
+    transform-style:preserve-3d;
 
-    animation:
-        djssEnter 1.5s cubic-bezier(.16,1,.3,1) forwards,
-        djssFloat 4s ease-in-out 1.5s infinite;
-
-    overflow: hidden;
+    animation:djssIn 1.4s
+    cubic-bezier(.16,1,.3,1);
 }
 
+.djss-close{
+    position:absolute;
+    top:8px;
+    right:12px;
 
-/* ================= 3D LIGHT ================= */
+    width:32px;
+    height:32px;
 
-.djss-glow {
+    border:0;
+    border-radius:50%;
 
-    position: absolute;
+    background:rgba(255,255,255,.15);
 
-    width: 220px;
-    height: 220px;
+    color:white;
 
-    top: -100px;
-    left: 50%;
+    font-size:24px;
 
-    transform: translateX(-50%);
-
-    background: #00aaff;
-
-    filter: blur(80px);
-
-    opacity: 0.35;
-
-    pointer-events: none;
+    cursor:pointer;
 }
 
-
-/* ================= CLOSE ================= */
-
-.djss-close {
-
-    position: absolute;
-
-    top: 12px;
-    right: 15px;
-
-    width: 36px;
-    height: 36px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: rgba(255,255,255,0.08);
-
-    color: white;
-
-    font-size: 27px;
-
-    cursor: pointer;
-
-    transition: 0.3s;
-
-    z-index: 10;
+.djss-icon{
+    font-size:45px;
 }
 
-.djss-close:hover {
+.djss-welcome{
+    margin-top:5px;
 
-    background: rgba(255,255,255,0.2);
+    font-size:12px;
 
-    transform: rotate(90deg) scale(1.1);
+    letter-spacing:6px;
+
+    opacity:.85;
 }
 
+.djss-popup-box h1{
+    margin:5px 0;
 
-/* ================= SCHOOL ICON ================= */
+    font-size:48px;
 
-.djss-icon {
+    font-weight:900;
 
-    position: relative;
-
-    font-size: 65px;
-
-    margin-bottom: 10px;
-
-    transform: translateZ(60px);
-
-    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
-
-    animation: iconPulse 2s ease-in-out infinite;
-}
-
-
-/* ================= SMALL TEXT ================= */
-
-.djss-small {
-
-    position: relative;
-
-    color: rgba(255,255,255,0.7);
-
-    font-size: 13px;
-
-    letter-spacing: 7px;
-
-    margin-bottom: 5px;
-
-    transform: translateZ(50px);
-}
-
-
-/* ================= MAIN TITLE ================= */
-
-.djss-card h1 {
-
-    position: relative;
-
-    margin: 5px 0;
-
-    font-size: clamp(42px, 12vw, 65px);
-
-    font-weight: 900;
-
-    letter-spacing: 4px;
-
-    color: white;
+    letter-spacing:3px;
 
     text-shadow:
-        0 5px 0 #07528c,
-        0 10px 20px rgba(0,0,0,0.7);
-
-    transform: translateZ(70px);
-
-    animation: titleGlow 2s ease-in-out infinite alternate;
+    0 5px 0 #03466f,
+    0 10px 20px rgba(0,0,0,.5);
 }
 
+.djss-popup-box h1 span{
+    display:block;
 
-.djss-card h1 span {
+    font-size:20px;
 
-    display: block;
+    letter-spacing:10px;
 
-    font-size: 0.42em;
-
-    letter-spacing: 12px;
-
-    margin-top: 3px;
-
-    color: #5edbff;
-
-    text-shadow:
-        0 0 10px #00aeff,
-        0 0 25px rgba(0,174,255,0.6);
+    color:#5edcff;
 }
 
+.djss-school{
+    margin-top:10px;
 
-/* ================= LINE ================= */
-
-.djss-line {
-
-    width: 90px;
-
-    height: 3px;
-
-    margin: 17px auto;
-
-    border-radius: 10px;
-
-    background: linear-gradient(
-        90deg,
-        transparent,
-        #00bfff,
-        transparent
-    );
-
-    box-shadow: 0 0 15px #00bfff;
-
-    animation: lineMove 2s infinite;
+    font-size:14px;
 }
 
+.djss-enter{
+    margin-top:15px;
 
-/* ================= SCHOOL NAME ================= */
+    padding:10px 22px;
 
-.djss-card p {
+    border:0;
 
-    position: relative;
+    border-radius:30px;
 
-    color: rgba(255,255,255,0.85);
+    background:#00aaff;
 
-    font-size: 15px;
+    color:white;
 
-    letter-spacing: 1px;
+    font-weight:bold;
 
-    margin: 15px 0 25px;
+    cursor:pointer;
 
-    transform: translateZ(40px);
+    transition:.3s;
 }
 
-
-/* ================= ENTER BUTTON ================= */
-
-.djss-enter {
-
-    position: relative;
-
-    padding: 13px 28px;
-
-    border: 1px solid rgba(255,255,255,0.3);
-
-    border-radius: 50px;
-
-    background: linear-gradient(
-        135deg,
-        #008cff,
-        #0047ab
-    );
-
-    color: white;
-
-    font-weight: bold;
-
-    letter-spacing: 2px;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 10px 25px rgba(0,100,255,0.35);
-
-    transform: translateZ(60px);
-
-    transition: 0.3s;
+.djss-enter:hover{
+    transform:scale(1.08);
 }
 
+@keyframes djssIn{
 
-.djss-enter span {
-
-    display: inline-block;
-
-    margin-left: 8px;
-
-    font-size: 18px;
-
-    transition: 0.3s;
-}
-
-
-.djss-enter:hover {
-
-    transform:
-        translateZ(70px)
-        scale(1.06);
-
-    box-shadow:
-        0 15px 35px rgba(0,150,255,0.55);
-}
-
-
-.djss-enter:hover span {
-
-    transform: translateX(5px);
-}
-
-
-/* ================= ANIMATIONS ================= */
-
-
-/* दूरबाट अगाडि आउने */
-
-@keyframes djssEnter {
-
-    0% {
-
-        opacity: 0;
+    0%{
+        opacity:0;
 
         transform:
-            translateZ(-1000px)
-            scale(0.05)
-            rotateX(55deg)
-            rotateY(-25deg);
+        translateY(-500px)
+        translateZ(-800px)
+        rotateX(70deg)
+        scale(.1);
     }
 
-    60% {
-
-        opacity: 1;
+    60%{
+        opacity:1;
 
         transform:
-            translateZ(100px)
-            scale(1.08)
-            rotateX(-5deg)
-            rotateY(5deg);
+        translateY(20px)
+        translateZ(80px)
+        rotateX(-8deg)
+        scale(1.05);
     }
 
-    100% {
-
-        opacity: 1;
+    100%{
+        opacity:1;
 
         transform:
-            translateZ(0)
-            scale(1)
-            rotateX(0)
-            rotateY(0);
+        translateY(0)
+        translateZ(0)
+        rotateX(0)
+        scale(1);
     }
 }
 
+@media(max-width:500px){
 
-/* हल्का floating */
-
-@keyframes djssFloat {
-
-    0%,100% {
-
-        transform:
-            translateY(0)
-            rotateX(0deg)
-            rotateY(0deg);
+    .djss-popup-box h1{
+        font-size:40px;
     }
 
-    50% {
-
-        transform:
-            translateY(-10px)
-            rotateX(1deg)
-            rotateY(-1deg);
-    }
-}
-
-
-/* Icon */
-
-@keyframes iconPulse {
-
-    0%,100% {
-
-        transform:
-            translateZ(60px)
-            scale(1);
+    .djss-school{
+        font-size:13px;
     }
 
-    50% {
-
-        transform:
-            translateZ(60px)
-            scale(1.08);
-    }
-}
-
-
-/* Title glow */
-
-@keyframes titleGlow {
-
-    from {
-
-        text-shadow:
-            0 5px 0 #07528c,
-            0 10px 20px rgba(0,0,0,0.7);
-    }
-
-    to {
-
-        text-shadow:
-            0 5px 0 #07528c,
-            0 0 25px rgba(0,174,255,0.7),
-            0 15px 30px rgba(0,0,0,0.8);
-    }
-}
-
-
-/* Line */
-
-@keyframes lineMove {
-
-    0%,100% {
-        width: 70px;
-    }
-
-    50% {
-        width: 150px;
-    }
-}
-
-
-/* ================= MOBILE ================= */
-
-@media(max-width:500px) {
-
-    .djss-card {
-
-        padding: 40px 20px 30px;
-
-        border-radius: 22px;
-    }
-
-    .djss-icon {
-
-        font-size: 55px;
-    }
-
-    .djss-small {
-
-        font-size: 11px;
-
-        letter-spacing: 5px;
-    }
-
-    .djss-card h1 {
-
-        font-size: 48px;
-    }
-
-    .djss-card p {
-
-        font-size: 13px;
-    }
-
-}
-
-
-/* ================= CLOSE ANIMATION ================= */
-
-.djss-welcome.djss-hide {
-
-    animation: popupClose 0.5s ease forwards;
-}
-
-@keyframes popupClose {
-
-    to {
-
-        opacity: 0;
-
-        transform: scale(1.15);
-
-        pointer-events: none;
-    }
 }
 
 </style>
@@ -1338,21 +1015,14 @@
 
 <script>
 
-function closeDJSS() {
+function closeDJSS(){
 
-    const popup = document.getElementById("djssWelcome");
+    document.getElementById("djssPopup").style.display="none";
 
-    popup.classList.add("djss-hide");
-
-    setTimeout(function() {
-
-        popup.style.display = "none";
-
-    }, 500);
 }
 
 </script>
 
-<!-- ================= END DJSS POPUP ================= -->
+<!-- DJSS WELCOME POPUP END -->
 </body>
 </html>
