@@ -19,6 +19,22 @@
             background: #f4f7fb;
         }
 
+        /* Hide dashboard until authentication is verified */
+        #adminApp {
+            display: none;
+        }
+
+        #authChecking {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            color: #063b8c;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
         .admin-header {
             background: #02265c;
             color: white;
@@ -51,8 +67,7 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns:
-                repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
 
@@ -60,8 +75,7 @@
             background: white;
             border-radius: 15px;
             padding: 25px;
-            box-shadow:
-                0 8px 25px rgba(0,0,0,.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,.05);
         }
 
         .dashboard-card h2 {
@@ -145,6 +159,16 @@
 
 <body>
 
+<!-- Authentication checking screen -->
+
+<div id="authChecking">
+    🔐 Checking admin authentication...
+</div>
+
+
+<!-- Actual dashboard -->
+
+<div id="adminApp">
 
 <header class="admin-header">
 
@@ -162,11 +186,9 @@
 
         </div>
 
-
         <button
             class="logout"
-            id="logout"
-        >
+            id="logout">
             Logout
         </button>
 
@@ -180,7 +202,7 @@
     <div class="container">
 
         <div id="status">
-            Loading dashboard...
+            Admin dashboard connected.
         </div>
 
 
@@ -197,17 +219,14 @@
 
                 <input
                     id="noticeTitle"
-                    placeholder="Notice title"
-                >
+                    placeholder="Notice title">
 
                 <textarea
                     id="noticeDescription"
-                    placeholder="Description"
-                ></textarea>
+                    placeholder="Description"></textarea>
 
                 <button
-                    onclick="addNotice()"
-                >
+                    onclick="addNotice()">
                     Publish Notice
                 </button>
 
@@ -215,39 +234,35 @@
 
 
             <!-- GALLERY -->
-            
-<section class="dashboard-card">
 
-    <h2>
-        🖼️ Upload Photo
-    </h2>
+            <section class="dashboard-card">
 
-    <input
-        id="photoTitle"
-        type="text"
-        placeholder="Photo title"
-    >
+                <h2>
+                    🖼️ Upload Photo
+                </h2>
 
-    <input
-        id="photoCaption"
-        type="text"
-        placeholder="Caption"
-    >
+                <input
+                    id="photoTitle"
+                    type="text"
+                    placeholder="Photo title">
 
-    <input
-        id="photoFile"
-        type="file"
-        accept="image/jpeg,image/jpg,image/png,image/webp"
-    >
+                <input
+                    id="photoCaption"
+                    type="text"
+                    placeholder="Caption">
 
-    <button
-        type="button"
-        onclick="uploadPhoto()"
-    >
-        Upload Photo
-    </button>
+                <input
+                    id="photoFile"
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp">
 
-</section>
+                <button
+                    type="button"
+                    onclick="uploadPhoto()">
+                    Upload Photo
+                </button>
+
+            </section>
 
 
             <!-- VIDEO -->
@@ -260,22 +275,18 @@
 
                 <input
                     id="videoTitle"
-                    placeholder="Video title"
-                >
+                    placeholder="Video title">
 
                 <input
                     id="videoUrl"
-                    placeholder="YouTube or video URL"
-                >
+                    placeholder="YouTube or video URL">
 
                 <textarea
                     id="videoDescription"
-                    placeholder="Description"
-                ></textarea>
+                    placeholder="Description"></textarea>
 
                 <button
-                    onclick="addVideo()"
-                >
+                    onclick="addVideo()">
                     Add Video
                 </button>
 
@@ -293,12 +304,10 @@
                 <input
                     id="documentFile"
                     type="file"
-                    accept="application/pdf"
-                >
+                    accept="application/pdf">
 
                 <button
-                    onclick="uploadDocument()"
-                >
+                    onclick="uploadDocument()">
                     Upload Document
                 </button>
 
@@ -315,34 +324,29 @@
 
                 <input
                     id="eventTitle"
-                    placeholder="Event title"
-                >
+                    placeholder="Event title">
 
                 <input
                     id="eventDate"
-                    type="date"
-                >
+                    type="date">
 
                 <input
                     id="eventLocation"
-                    placeholder="Location"
-                >
+                    placeholder="Location">
 
                 <textarea
                     id="eventDescription"
-                    placeholder="Description"
-                ></textarea>
+                    placeholder="Description"></textarea>
 
                 <button
-                    onclick="addEvent()"
-                >
+                    onclick="addEvent()">
                     Add Event
                 </button>
 
             </section>
 
 
-            <!-- CONTENT -->
+            <!-- WEBSITE -->
 
             <section class="dashboard-card">
 
@@ -359,8 +363,7 @@
 
                 <a
                     href="index.html"
-                    class="btn primary"
-                >
+                    class="btn primary">
                     View Website
                 </a>
 
@@ -377,8 +380,7 @@
 
                 <div
                     id="noticeList"
-                    class="admin-list"
-                >
+                    class="admin-list">
                     Loading...
                 </div>
 
@@ -395,8 +397,7 @@
 
                 <div
                     id="galleryList"
-                    class="admin-list"
-                >
+                    class="admin-list">
                     Loading...
                 </div>
 
@@ -408,190 +409,871 @@
 
 </main>
 
+</div>
+
 
 <script>
-const API = "/api";
-const token = localStorage.getItem("djss_admin_token");
 
-if (!token) window.location.href = "login.html";
+const API = "/api";
+
+let token = null;
+
+
+/* =========================================
+   AUTHENTICATION
+========================================= */
+
+async function verifyAdmin() {
+
+    token = localStorage.getItem("djss_admin_token");
+
+    /* No token */
+
+    if (!token) {
+
+        window.location.replace("login.html");
+
+        return false;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `${API}/auth/verify`,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+
+                cache: "no-store"
+            }
+        );
+
+
+        /* Invalid / expired token */
+
+        if (!response.ok) {
+
+            localStorage.removeItem("djss_admin_token");
+
+            window.location.replace("login.html");
+
+            return false;
+        }
+
+
+        const data = await response.json();
+
+        if (!data.valid) {
+
+            localStorage.removeItem("djss_admin_token");
+
+            window.location.replace("login.html");
+
+            return false;
+        }
+
+
+        /* Authentication successful */
+
+        document.getElementById("authChecking").style.display = "none";
+
+        document.getElementById("adminApp").style.display = "block";
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error("Authentication error:", error);
+
+        localStorage.removeItem("djss_admin_token");
+
+        window.location.replace("login.html");
+
+        return false;
+    }
+}
+
+
+/* =========================================
+   API HELPER
+========================================= */
 
 async function api(endpoint, options = {}) {
-    const headers = { ...(options.headers || {}), Authorization: `Bearer ${token}` };
-    const response = await fetch(`${API}${endpoint}`, { ...options, headers });
-    if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem("djss_admin_token");
-        window.location.href = "login.html";
+
+    if (!token) {
+
+        window.location.replace("login.html");
+
         return null;
     }
-    return response;
+
+
+    const headers = {
+        ...(options.headers || {}),
+        "Authorization": `Bearer ${token}`
+    };
+
+
+    try {
+
+        const response = await fetch(
+            `${API}${endpoint}`,
+            {
+                ...options,
+                headers
+            }
+        );
+
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+
+            localStorage.removeItem("djss_admin_token");
+
+            window.location.replace("login.html");
+
+            return null;
+        }
+
+
+        return response;
+
+    } catch (error) {
+
+        console.error("API error:", error);
+
+        status("Server connection failed.");
+
+        return null;
+    }
 }
+
+
+/* =========================================
+   STATUS
+========================================= */
 
 function status(message) {
+
     const el = document.getElementById("status");
-    if (el) el.textContent = message;
+
+    if (el) {
+
+        el.textContent = message;
+    }
 }
 
+
+/* =========================================
+   ADD NOTICE
+========================================= */
+
 async function addNotice() {
-    const title = document.getElementById("noticeTitle").value.trim();
-    const description = document.getElementById("noticeDescription").value.trim();
-    if (!title) return status("Please enter a notice title.");
-    const response = await api("/notices", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, published: true })
-    });
-    if (response && response.ok) {
-        status("Notice published successfully.");
-        document.getElementById("noticeTitle").value = "";
-        document.getElementById("noticeDescription").value = "";
+
+    const title =
+        document.getElementById("noticeTitle")
+        .value
+        .trim();
+
+    const description =
+        document.getElementById("noticeDescription")
+        .value
+        .trim();
+
+
+    if (!title) {
+
+        return status(
+            "Please enter a notice title."
+        );
+    }
+
+
+    const response = await api(
+        "/notices",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify({
+                title,
+                description,
+                published: true
+            })
+        }
+    );
+
+
+    if (!response) return;
+
+
+    if (response.ok) {
+
+        status(
+            "Notice published successfully."
+        );
+
+        document.getElementById(
+            "noticeTitle"
+        ).value = "";
+
+        document.getElementById(
+            "noticeDescription"
+        ).value = "";
+
         loadNotices();
-    } else if (response) status((await response.json()).message || "Could not publish notice.");
+
+    } else {
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {}
+
+        status(
+            data.message ||
+            "Could not publish notice."
+        );
+    }
 }
+
+
+/* =========================================
+   UPLOAD PHOTO
+========================================= */
 
 async function uploadPhoto() {
 
-    const fileInput = document.getElementById("photoFile");
-    const file = fileInput.files[0];
+    const fileInput =
+        document.getElementById("photoFile");
+
+    const file =
+        fileInput.files[0];
+
 
     if (!file) {
-        return status("Please select a photo first.");
+
+        return status(
+            "Please select a photo first."
+        );
     }
 
+
     status("Uploading photo...");
+
 
     try {
 
         const form = new FormData();
+
         form.append("file", file);
 
-        const response = await api("/upload", {
-            method: "POST",
-            body: form
-        });
+
+        const response = await api(
+            "/upload",
+            {
+                method: "POST",
+                body: form
+            }
+        );
+
 
         if (!response) return;
 
-        const data = await response.json();
+
+        const data =
+            await response.json();
+
 
         if (!response.ok) {
-            return status(data.message || "Photo upload failed.");
-        }
 
-        const save = await api("/gallery", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                title:
-                    document.getElementById("photoTitle").value.trim()
-                    || "School Gallery",
-
-                caption:
-                    document.getElementById("photoCaption").value.trim(),
-
-                imageUrl: data.url
-            })
-        });
-
-        if (!save) return;
-
-        const saveData = await save.json();
-
-        if (!save.ok) {
             return status(
-                saveData.message || "Photo uploaded but could not be saved to gallery."
+                data.message ||
+                "Photo upload failed."
             );
         }
 
-        status("✅ Photo uploaded successfully!");
 
-        document.getElementById("photoTitle").value = "";
-        document.getElementById("photoCaption").value = "";
+        const save =
+            await api(
+                "/gallery",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        title:
+                            document
+                            .getElementById(
+                                "photoTitle"
+                            )
+                            .value
+                            .trim()
+                            ||
+                            "School Gallery",
+
+                        caption:
+                            document
+                            .getElementById(
+                                "photoCaption"
+                            )
+                            .value
+                            .trim(),
+
+                        imageUrl:
+                            data.url
+                    })
+                }
+            );
+
+
+        if (!save) return;
+
+
+        const saveData =
+            await save.json();
+
+
+        if (!save.ok) {
+
+            return status(
+                saveData.message ||
+                "Photo uploaded but could not be saved."
+            );
+        }
+
+
+        status(
+            "✅ Photo uploaded successfully!"
+        );
+
+
+        document.getElementById(
+            "photoTitle"
+        ).value = "";
+
+        document.getElementById(
+            "photoCaption"
+        ).value = "";
+
         fileInput.value = "";
+
 
         loadGallery();
 
+
     } catch (error) {
 
-        console.error("Photo upload error:", error);
+        console.error(
+            "Photo upload error:",
+            error
+        );
 
-        status("Photo upload failed. Please try again.");
-
+        status(
+            "Photo upload failed. Please try again."
+        );
     }
-    }
-
-    
-async function addVideo() {
-    const title = document.getElementById("videoTitle").value.trim();
-    const videoUrl = document.getElementById("videoUrl").value.trim();
-    const description = document.getElementById("videoDescription").value.trim();
-    if (!title || !videoUrl) return status("Video title and URL are required.");
-    const response = await api("/videos", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, videoUrl, description })
-    });
-    if (response && response.ok) { status("Video added successfully."); loadVideos(); }
 }
+
+
+/* =========================================
+   ADD VIDEO
+========================================= */
+
+async function addVideo() {
+
+    const title =
+        document.getElementById(
+            "videoTitle"
+        ).value.trim();
+
+    const videoUrl =
+        document.getElementById(
+            "videoUrl"
+        ).value.trim();
+
+    const description =
+        document.getElementById(
+            "videoDescription"
+        ).value.trim();
+
+
+    if (!title || !videoUrl) {
+
+        return status(
+            "Video title and URL are required."
+        );
+    }
+
+
+    const response =
+        await api(
+            "/videos",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    title,
+                    videoUrl,
+                    description
+                })
+            }
+        );
+
+
+    if (!response) return;
+
+
+    if (response.ok) {
+
+        status(
+            "Video added successfully."
+        );
+
+        loadVideos();
+
+    } else {
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {}
+
+        status(
+            data.message ||
+            "Could not add video."
+        );
+    }
+}
+
+
+/* =========================================
+   UPLOAD DOCUMENT
+========================================= */
 
 async function uploadDocument() {
-    const file = document.getElementById("documentFile").files[0];
-    if (!file) return status("Select a PDF first.");
-    if (file.type !== "application/pdf") return status("Only PDF files are allowed.");
-    const form = new FormData(); form.append("file", file);
-    const response = await api("/upload", { method: "POST", body: form });
+
+    const file =
+        document.getElementById(
+            "documentFile"
+        ).files[0];
+
+
+    if (!file) {
+
+        return status(
+            "Select a PDF first."
+        );
+    }
+
+
+    if (
+        file.type !==
+        "application/pdf"
+    ) {
+
+        return status(
+            "Only PDF files are allowed."
+        );
+    }
+
+
+    const form =
+        new FormData();
+
+    form.append(
+        "file",
+        file
+    );
+
+
+    const response =
+        await api(
+            "/upload",
+            {
+                method: "POST",
+                body: form
+            }
+        );
+
+
     if (!response) return;
-    const data = await response.json();
-    status(data.message || "Document uploaded.");
+
+
+    const data =
+        await response.json();
+
+
+    status(
+        data.message ||
+        "Document uploaded."
+    );
 }
+
+
+/* =========================================
+   ADD EVENT
+========================================= */
 
 async function addEvent() {
-    const title = document.getElementById("eventTitle").value.trim();
-    const eventDate = document.getElementById("eventDate").value;
-    const location = document.getElementById("eventLocation").value.trim();
-    const description = document.getElementById("eventDescription").value.trim();
-    if (!title || !eventDate) return status("Event title and date are required.");
-    const response = await api("/events", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, eventDate, location, description })
-    });
-    if (response && response.ok) { status("Event added successfully."); loadEvents(); }
+
+    const title =
+        document.getElementById(
+            "eventTitle"
+        ).value.trim();
+
+    const eventDate =
+        document.getElementById(
+            "eventDate"
+        ).value;
+
+    const location =
+        document.getElementById(
+            "eventLocation"
+        ).value.trim();
+
+    const description =
+        document.getElementById(
+            "eventDescription"
+        ).value.trim();
+
+
+    if (!title || !eventDate) {
+
+        return status(
+            "Event title and date are required."
+        );
+    }
+
+
+    const response =
+        await api(
+            "/events",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    title,
+                    eventDate,
+                    location,
+                    description
+                })
+            }
+        );
+
+
+    if (!response) return;
+
+
+    if (response.ok) {
+
+        status(
+            "Event added successfully."
+        );
+
+        loadEvents();
+
+    } else {
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {}
+
+        status(
+            data.message ||
+            "Could not add event."
+        );
+    }
 }
+
+
+/* =========================================
+   LOAD NOTICES
+========================================= */
 
 async function loadNotices() {
+
     try {
-        const response = await fetch("/api/notices");
-        const notices = await response.json();
-        const container = document.getElementById("noticeList");
+
+        const response =
+            await fetch(
+                "/api/notices",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        const notices =
+            await response.json();
+
+
+        const container =
+            document.getElementById(
+                "noticeList"
+            );
+
+
         if (!container) return;
-        container.innerHTML = notices.length ? notices.map(n => `<div class="admin-list-item"><div><strong>${escapeHTML(n.title)}</strong><p>${escapeHTML(n.description || "")}</p></div></div>`).join("") : "No notices.";
-    } catch { status("Could not load notices."); }
-}
 
-async function loadGallery() {
-    try {
-        const response = await fetch("/api/gallery");
-        const items = await response.json();
-        const container = document.getElementById("galleryList");
-        if (!container) return;
-        container.innerHTML = items.length ? items.map(i => `<div class="admin-list-item"><div><strong>${escapeHTML(i.title)}</strong><p>${escapeHTML(i.caption || "")}</p></div></div>`).join("") : "No photos uploaded.";
-    } catch { status("Could not load gallery."); }
-}
 
-async function loadVideos() { try { await fetch("/api/videos"); } catch {} }
-async function loadEvents() { try { await fetch("/api/events"); } catch {} }
+        container.innerHTML =
+            notices.length
 
-function escapeHTML(value) {
-    return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
-}
+            ?
 
-document.getElementById("logout")?.addEventListener("click", () => {
-    localStorage.removeItem("djss_admin_token");
-    window.location.href = "login.html";
-});
+            notices.map(
+                n => `
+                <div class="admin-list-item">
 
-status("Admin dashboard connected.");
-loadNotices();
-loadGallery();
-</script>
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(n.title)}
+                        </strong>
+
+                        <p>
+                            ${escapeHTML(
+                                n.description || ""
+                            )}
+                                                 }
+                        ).join("")
+
+                        :
+
+                        "No notices.";
+
+            } catch {
+
+                status(
+                    "Could not load notices."
+                );
+            }
+        }
+
+
+        /* =========================================
+           LOAD GALLERY
+        ========================================= */
+
+        async function loadGallery() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/gallery",
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                const items =
+                    await response.json();
+
+
+                const container =
+                    document.getElementById(
+                        "galleryList"
+                    );
+
+
+                if (!container) return;
+
+
+                container.innerHTML =
+                    items.length
+
+                    ?
+
+                    items.map(
+                        i => `
+                        <div class="admin-list-item">
+
+                            <div>
+
+                                <strong>
+                                    ${escapeHTML(i.title)}
+                                </strong>
+
+                                <p>
+                                    ${escapeHTML(
+                                        i.caption || ""
+                                    )}
+                                </p>
+
+                            </div>
+
+                        </div>
+                        `
+                    ).join("")
+
+                    :
+
+                    "No photos uploaded.";
+
+            } catch {
+
+                status(
+                    "Could not load gallery."
+                );
+            }
+        }
+
+
+        /* =========================================
+           LOAD VIDEOS
+        ========================================= */
+
+        async function loadVideos() {
+
+            try {
+
+                await fetch(
+                    "/api/videos",
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+            } catch {}
+        }
+
+
+        /* =========================================
+           LOAD EVENTS
+        ========================================= */
+
+        async function loadEvents() {
+
+            try {
+
+                await fetch(
+                    "/api/events",
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+            } catch {}
+        }
+
+
+        /* =========================================
+           HTML ESCAPE
+        ========================================= */
+
+        function escapeHTML(value) {
+
+            return String(
+                value ?? ""
+            )
+
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+        }
+
+
+        /* =========================================
+           LOGOUT
+        ========================================= */
+
+        document
+            .getElementById("logout")
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    localStorage.removeItem(
+                        "djss_admin_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+                }
+            );
+
+
+        /* =========================================
+           START DASHBOARD
+        ========================================= */
+
+        (async function () {
+
+            const authenticated =
+                await verifyAdmin();
+
+
+            if (!authenticated) return;
+
+
+            status(
+                "Admin dashboard connected."
+            );
+
+
+            loadNotices();
+
+            loadGallery();
+
+        })();
+
+    </script>
+
 </body>
+
 </html>
