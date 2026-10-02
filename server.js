@@ -9,14 +9,22 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const path = require("path");
+const fs = require("fs");
 const rateLimit = require("express-rate-limit");
 
-// Cloudinary configuration
+// ===============================
+// CLOUDINARY CONFIGURATION
+// ===============================
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+// ===============================
+// MODELS
+// ===============================
 
 const User = require("./User");
 const Notice = require("./Notice");
@@ -24,13 +32,33 @@ const Gallery = require("./Gallery");
 const Video = require("./Video");
 const Event = require("./Event");
 
+// ===============================
+// APP CONFIG
+// ===============================
+
 const app = express();
+
 const PORT = process.env.PORT || 5000;
+
 const FRONTEND_DIR = path.join(__dirname);
 
+// ===============================
+// MIDDLEWARE
+// ===============================
+
 app.use(cors());
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
+
+// ===============================
+// ENVIRONMENT CHECK
+// ===============================
 
 if (!process.env.MONGODB_URI) {
   throw new Error("MONGODB_URI is required");
@@ -40,11 +68,20 @@ if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is required");
 }
 
-if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
-  throw new Error("ADMIN_USERNAME and ADMIN_PASSWORD are required");
+if (
+  !process.env.ADMIN_USERNAME ||
+  !process.env.ADMIN_PASSWORD
+) {
+  throw new Error(
+    "ADMIN_USERNAME and ADMIN_PASSWORD are required"
+  );
 }
 
 app.set("trust proxy", 1);
+
+// ===============================
+// LOGIN RATE LIMIT
+// ===============================
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -61,6 +98,7 @@ const authLimiter = rateLimit({
 const upload = multer({
   storage: new CloudinaryStorage({
     cloudinary: cloudinary,
+
     params: {
       folder: "school_gallery",
       upload_preset: "ml_default"
@@ -83,7 +121,11 @@ const upload = multer({
       "application/pdf"
     ];
 
-    if (!allowed.includes(file.mimetype.toLowerCase())) {
+    if (
+      !allowed.includes(
+        file.mimetype.toLowerCase()
+      )
+    ) {
       return cb(
         new Error(
           "Only JPG, JPEG, PNG, WEBP, GIF, HEIC, HEIF images and PDF files are allowed."
@@ -119,7 +161,11 @@ const gridfsUpload = multer({
       "application/pdf"
     ];
 
-    if (!allowed.includes(file.mimetype.toLowerCase())) {
+    if (
+      !allowed.includes(
+        file.mimetype.toLowerCase()
+      )
+    ) {
       return cb(
         new Error(
           "Only JPG, JPEG, PNG, WEBP, GIF, HEIC, HEIF images and PDF files are allowed."
@@ -136,7 +182,9 @@ const gridfsUpload = multer({
 // ===============================
 
 function requireAuth(req, res, next) {
-  const header = req.headers.authorization || "";
+  const header =
+    req.headers.authorization || "";
+
   const token = header.startsWith("Bearer ")
     ? header.slice(7)
     : null;
@@ -148,7 +196,10 @@ function requireAuth(req, res, next) {
   }
 
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
 
     if (req.user.role !== "admin") {
       return res.status(403).json({
@@ -157,6 +208,7 @@ function requireAuth(req, res, next) {
     }
 
     next();
+
   } catch {
     return res.status(401).json({
       message: "Invalid or expired token"
@@ -170,7 +222,9 @@ function requireAuth(req, res, next) {
 
 function getGridFS() {
   if (!mongoose.connection.db) {
-    throw new Error("Database is not ready");
+    throw new Error(
+      "Database is not ready"
+    );
   }
 
   return new mongoose.mongo.GridFSBucket(
@@ -185,143 +239,234 @@ function getGridFS() {
 // HEALTH
 // ===============================
 
-app.get("/api/health", (req, res) => {
-  res.json({
-    ok: true,
-    database: mongoose.connection.readyState === 1
-  });
-});
+app.get(
+  "/api/health",
+  (req, res) => {
+    res.json({
+      ok: true,
+
+      database:
+        mongoose.connection.readyState === 1
+    });
+  }
+);
 
 // ===============================
 // LOGIN
 // ===============================
 
-app.post("/api/auth/login", authLimiter, async (req, res) => {
-  const { username, password } = req.body || {};
+app.post(
+  "/api/auth/login",
+  authLimiter,
+  async (req, res) => {
 
-  if (!username || !password) {
-    return res.status(400).json({
-      message: "Username and password are required"
-    });
-  }
+    const {
+      username,
+      password
+    } = req.body || {};
 
-  try {
-    const user = await User.findOne({ username });
-
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({
-        message: "Invalid credentials"
+    if (!username || !password) {
+      return res.status(400).json({
+        message:
+          "Username and password are required"
       });
     }
 
-    const token = jwt.sign(
-      {
-        id: user._id.toString(),
-        role: user.role,
-        username: user.username
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1d"
-      }
-    );
+    try {
 
-    res.json({
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        role: user.role
-      }
-    });
-  } catch (err) {
-    console.error("Login error:", err);
+      const user =
+        await User.findOne({
+          username
+        });
 
-    res.status(500).json({
-      message: "Server error"
-    });
+      if (
+        !user ||
+        !(await bcrypt.compare(
+          password,
+          user.password
+        ))
+      ) {
+        return res.status(401).json({
+          message:
+            "Invalid credentials"
+        });
+      }
+
+      const token =
+        jwt.sign(
+          {
+            id: user._id.toString(),
+
+            role: user.role,
+
+            username: user.username
+          },
+
+          process.env.JWT_SECRET,
+
+          {
+            expiresIn: "1d"
+          }
+        );
+
+      res.json({
+        token,
+
+        user: {
+          id: user._id,
+
+          username:
+            user.username,
+
+          role:
+            user.role
+        }
+      });
+
+    } catch (err) {
+
+      console.error(
+        "Login error:",
+        err
+      );
+
+      res.status(500).json({
+        message:
+          "Server error"
+      });
+    }
   }
-});
+);
 
 // ===============================
 // PUBLIC APIs
 // ===============================
 
-app.get("/api/notices", async (req, res) => {
-  try {
-    res.json(
-      await Notice.find({
-        published: true
-      }).sort({
-        createdAt: -1
-      })
-    );
-  } catch (err) {
-    res.status(500).json({
-      message: "Unable to load notices"
-    });
-  }
-});
+// NOTICES
 
-app.get("/api/notices/latest", async (req, res) => {
-  try {
-    res.json(
-      await Notice.find({
-        published: true
-      })
-        .sort({
+app.get(
+  "/api/notices",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Notice.find({
+          published: true
+        }).sort({
           createdAt: -1
         })
-        .limit(5)
-    );
-  } catch (err) {
-    res.status(500).json({
-      message: "Unable to load notices"
-    });
-  }
-});
+      );
 
-app.get("/api/gallery", async (req, res) => {
-  try {
-    res.json(
-      await Gallery.find().sort({
-        createdAt: -1
-      })
-    );
-  } catch (err) {
-    res.status(500).json({
-      message: "Unable to load gallery"
-    });
-  }
-});
+    } catch (err) {
 
-app.get("/api/videos", async (req, res) => {
-  try {
-    res.json(
-      await Video.find().sort({
-        createdAt: -1
-      })
-    );
-  } catch (err) {
-    res.status(500).json({
-      message: "Unable to load videos"
-    });
+      res.status(500).json({
+        message:
+          "Unable to load notices"
+      });
+    }
   }
-});
+);
 
-app.get("/api/events", async (req, res) => {
-  try {
-    res.json(
-      await Event.find().sort({
-        eventDate: 1
-      })
-    );
-  } catch (err) {
-    res.status(500).json({
-      message: "Unable to load events"
-    });
+// LATEST NOTICES
+
+app.get(
+  "/api/notices/latest",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Notice.find({
+          published: true
+        })
+          .sort({
+            createdAt: -1
+          })
+          .limit(5)
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load notices"
+      });
+    }
   }
-});
+);
+
+// GALLERY
+
+app.get(
+  "/api/gallery",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Gallery.find().sort({
+          createdAt: -1
+        })
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load gallery"
+      });
+    }
+  }
+);
+
+// VIDEOS
+
+app.get(
+  "/api/videos",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Video.find().sort({
+          createdAt: -1
+        })
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load videos"
+      });
+    }
+  }
+);
+
+// EVENTS
+
+app.get(
+  "/api/events",
+  async (req, res) => {
+
+    try {
+
+      res.json(
+        await Event.find().sort({
+          eventDate: 1
+        })
+      );
+
+    } catch (err) {
+
+      res.status(500).json({
+        message:
+          "Unable to load events"
+      });
+    }
+  }
+);
 
 // ===============================
 // ADMIN - NOTICE
@@ -329,24 +474,38 @@ app.get("/api/events", async (req, res) => {
 
 app.post(
   "/api/notices",
+
   requireAuth,
+
   upload.single("image"),
+
   async (req, res) => {
+
     try {
+
       const noticeData = {
         ...req.body
       };
 
       if (req.file) {
-        noticeData.image = req.file.path;
+        noticeData.image =
+          req.file.path;
       }
 
-      const newNotice = await Notice.create(noticeData);
+      const newNotice =
+        await Notice.create(
+          noticeData
+        );
 
-      res.status(201).json(newNotice);
+      res.status(201).json(
+        newNotice
+      );
+
     } catch (err) {
+
       res.status(400).json({
-        message: err.message
+        message:
+          err.message
       });
     }
   }
@@ -358,24 +517,38 @@ app.post(
 
 app.post(
   "/api/gallery",
+
   requireAuth,
+
   upload.single("image"),
+
   async (req, res) => {
+
     try {
+
       const galleryData = {
         ...req.body
       };
 
       if (req.file) {
-        galleryData.image = req.file.path;
+        galleryData.image =
+          req.file.path;
       }
 
-      const newGallery = await Gallery.create(galleryData);
+      const newGallery =
+        await Gallery.create(
+          galleryData
+        );
 
-      res.status(201).json(newGallery);
+      res.status(201).json(
+        newGallery
+      );
+
     } catch (err) {
+
       res.status(400).json({
-        message: err.message
+        message:
+          err.message
       });
     }
   }
@@ -385,33 +558,59 @@ app.post(
 // ADMIN - VIDEO
 // ===============================
 
-app.post("/api/videos", requireAuth, async (req, res) => {
-  try {
-    res.status(201).json(
-      await Video.create(req.body)
-    );
-  } catch (err) {
-    res.status(400).json({
-      message: err.message
-    });
+app.post(
+  "/api/videos",
+
+  requireAuth,
+
+  async (req, res) => {
+
+    try {
+
+      res.status(201).json(
+        await Video.create(
+          req.body
+        )
+      );
+
+    } catch (err) {
+
+      res.status(400).json({
+        message:
+          err.message
+      });
+    }
   }
-});
+);
 
 // ===============================
 // ADMIN - EVENTS
 // ===============================
 
-app.post("/api/events", requireAuth, async (req, res) => {
-  try {
-    res.status(201).json(
-      await Event.create(req.body)
-    );
-  } catch (err) {
-    res.status(400).json({
-      message: err.message
-    });
+app.post(
+  "/api/events",
+
+  requireAuth,
+
+  async (req, res) => {
+
+    try {
+
+      res.status(201).json(
+        await Event.create(
+          req.body
+        )
+      );
+
+    } catch (err) {
+
+      res.status(400).json({
+        message:
+          err.message
+      });
+    }
   }
-});
+);
 
 // ===============================
 // GRIDFS FILE UPLOAD
@@ -419,73 +618,113 @@ app.post("/api/events", requireAuth, async (req, res) => {
 
 app.post(
   "/api/upload",
+
   requireAuth,
+
   gridfsUpload.single("file"),
+
   async (req, res) => {
 
     if (!req.file) {
       return res.status(400).json({
-        message: "No file selected"
+        message:
+          "No file selected"
       });
     }
 
     try {
-      const bucket = getGridFS();
 
-      const safeName = req.file.originalname.replace(
-        /[^a-zA-Z0-9._-]/g,
-        "_"
-      );
+      const bucket =
+        getGridFS();
 
-      const filename = `${Date.now()}-${safeName}`;
+      const safeName =
+        req.file.originalname.replace(
+          /[^a-zA-Z0-9._-]/g,
+          "_"
+        );
 
-      const stream = bucket.openUploadStream(
-        filename,
-        {
-          contentType: req.file.mimetype,
-          metadata: {
-            originalName: req.file.originalname
+      const filename =
+        `${Date.now()}-${safeName}`;
+
+      const stream =
+        bucket.openUploadStream(
+          filename,
+          {
+            contentType:
+              req.file.mimetype,
+
+            metadata: {
+              originalName:
+                req.file.originalname
+            }
+          }
+        );
+
+      stream.on(
+        "error",
+        (err) => {
+
+          console.error(
+            "GridFS upload error:",
+            err
+          );
+
+          if (!res.headersSent) {
+
+            res.status(500).json({
+              message:
+                "Upload failed",
+
+              error:
+                err.message
+            });
           }
         }
       );
 
-      stream.on("error", (err) => {
-        console.error(
-          "GridFS upload error:",
-          err
-        );
+      stream.on(
+        "finish",
+        () => {
 
-        if (!res.headersSent) {
-          res.status(500).json({
-            message: "Upload failed",
-            error: err.message
+          const id =
+            stream.id.toString();
+
+          res.status(201).json({
+
+            message:
+              "File uploaded successfully",
+
+            url:
+              `/api/uploads/${id}`,
+
+            id: id,
+
+            contentType:
+              req.file.mimetype
           });
         }
-      });
+      );
 
-      stream.on("finish", () => {
-        const id = stream.id.toString();
-
-        res.status(201).json({
-          message: "File uploaded successfully",
-          url: `/api/uploads/${id}`,
-          id: id,
-          contentType: req.file.mimetype
-        });
-      });
-
-      stream.end(req.file.buffer);
+      stream.end(
+        req.file.buffer
+      );
 
     } catch (err) {
+
       console.error(
         "Upload error:",
         err
       );
 
       if (!res.headersSent) {
+
         res.status(500).json({
-          message: "Upload failed",
-          error: err.message
+
+          message:
+            "Upload failed",
+
+          error:
+            err.message
         });
       }
     }
@@ -496,66 +735,182 @@ app.post(
 // GRIDFS FILE VIEW
 // ===============================
 
-app.get("/api/uploads/:id", async (req, res) => {
-  try {
+app.get(
+  "/api/uploads/:id",
+  async (req, res) => {
 
-    if (!mongoose.connection.db) {
-      return res.status(500).send(
-        "Database is not ready"
+    try {
+
+      if (!mongoose.connection.db) {
+
+        return res
+          .status(500)
+          .send(
+            "Database is not ready"
+          );
+      }
+
+      const id =
+        new mongoose.mongo.ObjectId(
+          req.params.id
+        );
+
+      const files =
+        await mongoose.connection.db
+          .collection(
+            "uploads.files"
+          )
+          .find({
+            _id: id
+          })
+          .limit(1)
+          .toArray();
+
+      if (!files.length) {
+
+        return res
+          .status(404)
+          .send(
+            "File not found"
+          );
+      }
+
+      res.set(
+        "Content-Type",
+
+        files[0].contentType ||
+          "application/octet-stream"
+      );
+
+      res.set(
+        "Cache-Control",
+        "public, max-age=31536000, immutable"
+      );
+
+      getGridFS()
+        .openDownloadStream(id)
+        .on(
+          "error",
+          () => {
+
+            if (!res.headersSent) {
+              res.status(404).end();
+            }
+          }
+        )
+        .pipe(res);
+
+    } catch (err) {
+
+      console.error(
+        "GridFS download error:",
+        err
+      );
+
+      res.status(400).send(
+        "Invalid file id"
       );
     }
+  }
+);
 
-    const id = new mongoose.mongo.ObjectId(
-      req.params.id
+// ===============================
+// SEO - ROBOTS.TXT
+// ===============================
+
+app.get(
+  "/robots.txt",
+  (req, res) => {
+
+    res.type(
+      "text/plain"
     );
 
-    const files =
-      await mongoose.connection.db
-        .collection("uploads.files")
-        .find({
-          _id: id
-        })
-        .limit(1)
-        .toArray();
+    res.send(
+`User-agent: *
+Allow: /
 
-    if (!files.length) {
-      return res.status(404).send(
-        "File not found"
-      );
-    }
+Disallow: /api/
+Disallow: /admin.html
 
-    res.set(
-      "Content-Type",
-      files[0].contentType ||
-        "application/octet-stream"
-    );
-
-    res.set(
-      "Cache-Control",
-      "public, max-age=31536000, immutable"
-    );
-
-    getGridFS()
-      .openDownloadStream(id)
-      .on("error", () => {
-        if (!res.headersSent) {
-          res.status(404).end();
-        }
-      })
-      .pipe(res);
-
-  } catch (err) {
-
-    console.error(
-      "GridFS download error:",
-      err
-    );
-
-    res.status(400).send(
-      "Invalid file id"
+Sitemap: https://dibyajyotiss.edu.np/sitemap.xml
+`
     );
   }
-});
+);
+
+// ===============================
+// SEO - SITEMAP.XML
+// ===============================
+
+app.get(
+  "/sitemap.xml",
+  (req, res) => {
+
+    const baseUrl =
+      "https://dibyajyotiss.edu.np";
+
+    let htmlFiles = [];
+
+    try {
+
+      htmlFiles =
+        fs
+          .readdirSync(
+            FRONTEND_DIR
+          )
+          .filter(
+            file =>
+              file.endsWith(
+                ".html"
+              ) &&
+              file.toLowerCase() !==
+                "admin.html"
+          );
+
+    } catch (err) {
+
+      console.error(
+        "Sitemap file scan error:",
+        err
+      );
+    }
+
+    const urls = [
+
+      `<url>
+  <loc>${baseUrl}/</loc>
+</url>`
+
+    ];
+
+    htmlFiles.forEach(
+      file => {
+
+        urls.push(
+`<url>
+  <loc>${baseUrl}/${file}</loc>
+</url>`
+        );
+
+      }
+    );
+
+    const sitemap =
+`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join("\n")}
+</urlset>`;
+
+    res.type(
+      "application/xml"
+    );
+
+    res.send(
+      sitemap
+    );
+  }
+);
 
 // ===============================
 // FRONTEND
@@ -570,21 +925,36 @@ app.use(
   )
 );
 
-app.get("/{*splat}", (req, res) => {
+// ===============================
+// SPA / FRONTEND FALLBACK
+// ===============================
 
-  if (req.path.startsWith("/api/")) {
-    return res.status(404).json({
-      message: "API route not found"
-    });
+app.get(
+  "/{*splat}",
+  (req, res) => {
+
+    if (
+      req.path.startsWith(
+        "/api/"
+      )
+    ) {
+
+      return res
+        .status(404)
+        .json({
+          message:
+            "API route not found"
+        });
+    }
+
+    res.sendFile(
+      path.join(
+        FRONTEND_DIR,
+        "index.html"
+      )
+    );
   }
-
-  res.sendFile(
-    path.join(
-      FRONTEND_DIR,
-      "index.html"
-    )
-  );
-});
+);
 
 // ===============================
 // ERROR HANDLER
@@ -595,17 +965,27 @@ app.use(
 
     console.error(err);
 
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({
-        message: err.message
-      });
+    if (
+      err instanceof
+      multer.MulterError
+    ) {
+
+      return res
+        .status(400)
+        .json({
+          message:
+            err.message
+        });
     }
 
-    res.status(400).json({
-      message:
-        err.message ||
-        "Request failed"
-    });
+    res
+      .status(400)
+      .json({
+
+        message:
+          err.message ||
+          "Request failed"
+      });
   }
 );
 
@@ -637,13 +1017,15 @@ async function start() {
       );
 
     await User.create({
+
       username:
         process.env.ADMIN_USERNAME,
 
       password:
         hashedPassword,
 
-      role: "admin"
+      role:
+        "admin"
     });
 
     console.log(
@@ -655,19 +1037,23 @@ async function start() {
     PORT,
     "0.0.0.0",
     () => {
+
       console.log(
         `Server running on port ${PORT}`
       );
+
     }
   );
 }
 
-start().catch((err) => {
+start().catch(
+  (err) => {
 
-  console.error(
-    "Startup failed:",
-    err
-  );
+    console.error(
+      "Startup failed:",
+      err
+    );
 
-  process.exit(1);
-});
+    process.exit(1);
+  }
+);
