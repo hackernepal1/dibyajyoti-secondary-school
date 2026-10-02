@@ -871,7 +871,6 @@ app.get(
     res.send(
 `User-agent: *
 Allow: /
-Allow: /adminportal
 Disallow: /api/
 Disallow: /admin.html
 
@@ -991,8 +990,7 @@ app.use(
 
       return res
         .status(404)
-        .send("Service Unavailable Repo- Changed By REDCSS TEAM 
-              ");
+        .send("Service Unavailable Repo- Changed By REDCSS TEAM ");
 
     }
 
@@ -1032,7 +1030,7 @@ app.get(
         .status(404)
         .json({
           message:
-            "API route not found and is changed By REDCSS TEAM"
+            "API route not found"
         });
 
     }
