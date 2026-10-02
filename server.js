@@ -92,7 +92,6 @@ const authLimiter = rateLimit({
 
 // ===============================
 // CLOUDINARY UPLOAD
-// Used for Notice + Gallery
 // ===============================
 
 const upload = multer({
@@ -110,6 +109,7 @@ const upload = multer({
   },
 
   fileFilter: (req, file, cb) => {
+
     const allowed = [
       "image/jpeg",
       "image/jpg",
@@ -139,7 +139,6 @@ const upload = multer({
 
 // ===============================
 // GRIDFS UPLOAD
-// Used for /api/upload
 // ===============================
 
 const gridfsUpload = multer({
@@ -150,6 +149,7 @@ const gridfsUpload = multer({
   },
 
   fileFilter: (req, file, cb) => {
+
     const allowed = [
       "image/jpeg",
       "image/jpg",
@@ -182,12 +182,14 @@ const gridfsUpload = multer({
 // ===============================
 
 function requireAuth(req, res, next) {
+
   const header =
     req.headers.authorization || "";
 
-  const token = header.startsWith("Bearer ")
-    ? header.slice(7)
-    : null;
+  const token =
+    header.startsWith("Bearer ")
+      ? header.slice(7)
+      : null;
 
   if (!token) {
     return res.status(401).json({
@@ -196,6 +198,7 @@ function requireAuth(req, res, next) {
   }
 
   try {
+
     req.user = jwt.verify(
       token,
       process.env.JWT_SECRET
@@ -210,6 +213,7 @@ function requireAuth(req, res, next) {
     next();
 
   } catch {
+
     return res.status(401).json({
       message: "Invalid or expired token"
     });
@@ -221,6 +225,7 @@ function requireAuth(req, res, next) {
 // ===============================
 
 function getGridFS() {
+
   if (!mongoose.connection.db) {
     throw new Error(
       "Database is not ready"
@@ -242,12 +247,14 @@ function getGridFS() {
 app.get(
   "/api/health",
   (req, res) => {
+
     res.json({
       ok: true,
 
       database:
         mongoose.connection.readyState === 1
     });
+
   }
 );
 
@@ -266,10 +273,12 @@ app.post(
     } = req.body || {};
 
     if (!username || !password) {
+
       return res.status(400).json({
         message:
           "Username and password are required"
       });
+
     }
 
     try {
@@ -286,19 +295,19 @@ app.post(
           user.password
         ))
       ) {
+
         return res.status(401).json({
           message:
             "Invalid credentials"
         });
+
       }
 
       const token =
         jwt.sign(
           {
             id: user._id.toString(),
-
             role: user.role,
-
             username: user.username
           },
 
@@ -310,17 +319,15 @@ app.post(
         );
 
       res.json({
+
         token,
 
         user: {
           id: user._id,
-
-          username:
-            user.username,
-
-          role:
-            user.role
+          username: user.username,
+          role: user.role
         }
+
       });
 
     } catch (err) {
@@ -334,7 +341,9 @@ app.post(
         message:
           "Server error"
       });
+
     }
+
   }
 );
 
@@ -364,7 +373,9 @@ app.get(
         message:
           "Unable to load notices"
       });
+
     }
+
   }
 );
 
@@ -380,10 +391,10 @@ app.get(
         await Notice.find({
           published: true
         })
-          .sort({
-            createdAt: -1
-          })
-          .limit(5)
+        .sort({
+          createdAt: -1
+        })
+        .limit(5)
       );
 
     } catch (err) {
@@ -392,7 +403,9 @@ app.get(
         message:
           "Unable to load notices"
       });
+
     }
+
   }
 );
 
@@ -416,7 +429,9 @@ app.get(
         message:
           "Unable to load gallery"
       });
+
     }
+
   }
 );
 
@@ -440,7 +455,9 @@ app.get(
         message:
           "Unable to load videos"
       });
+
     }
+
   }
 );
 
@@ -464,7 +481,9 @@ app.get(
         message:
           "Unable to load events"
       });
+
     }
+
   }
 );
 
@@ -507,7 +526,9 @@ app.post(
         message:
           err.message
       });
+
     }
+
   }
 );
 
@@ -550,7 +571,9 @@ app.post(
         message:
           err.message
       });
+
     }
+
   }
 );
 
@@ -579,7 +602,9 @@ app.post(
         message:
           err.message
       });
+
     }
+
   }
 );
 
@@ -608,7 +633,9 @@ app.post(
         message:
           err.message
       });
+
     }
+
   }
 );
 
@@ -626,10 +653,12 @@ app.post(
   async (req, res) => {
 
     if (!req.file) {
+
       return res.status(400).json({
         message:
           "No file selected"
       });
+
     }
 
     try {
@@ -678,7 +707,9 @@ app.post(
               error:
                 err.message
             });
+
           }
+
         }
       );
 
@@ -701,7 +732,9 @@ app.post(
 
             contentType:
               req.file.mimetype
+
           });
+
         }
       );
 
@@ -725,9 +758,13 @@ app.post(
 
           error:
             err.message
+
         });
+
       }
+
     }
+
   }
 );
 
@@ -748,6 +785,7 @@ app.get(
           .send(
             "Database is not ready"
           );
+
       }
 
       const id =
@@ -773,6 +811,7 @@ app.get(
           .send(
             "File not found"
           );
+
       }
 
       res.set(
@@ -796,6 +835,7 @@ app.get(
             if (!res.headersSent) {
               res.status(404).end();
             }
+
           }
         )
         .pipe(res);
@@ -810,7 +850,9 @@ app.get(
       res.status(400).send(
         "Invalid file id"
       );
+
     }
+
   }
 );
 
@@ -836,6 +878,7 @@ Disallow: /admin.html
 Sitemap: https://dibyajyotiss.edu.np/sitemap.xml
 `
     );
+
   }
 );
 
@@ -864,9 +907,15 @@ app.get(
               file.endsWith(
                 ".html"
               ) &&
-              file.toLowerCase() !== "admin.html" &&
-file.toLowerCase() !== "login.html" &&
-!file.toLowerCase().startsWith("google")
+              file.toLowerCase() !==
+                "admin.html" &&
+              file.toLowerCase() !==
+                "login.html" &&
+              !file
+                .toLowerCase()
+                .startsWith(
+                  "google"
+                )
           );
 
     } catch (err) {
@@ -875,6 +924,7 @@ file.toLowerCase() !== "login.html" &&
         "Sitemap file scan error:",
         err
       );
+
     }
 
     const urls = [
@@ -910,6 +960,43 @@ ${urls.join("\n")}
     res.send(
       sitemap
     );
+
+  }
+);
+
+// ===============================
+// BLOCK SERVER-SIDE FILES
+// ===============================
+
+app.use(
+  (req, res, next) => {
+
+    const blockedFiles = [
+      "/server.js",
+      "/User.js",
+      "/Notice.js",
+      "/Gallery.js",
+      "/Video.js",
+      "/Event.js",
+      "/package.json",
+      "/package-lock.json",
+      "/.env"
+    ];
+
+    if (
+      blockedFiles.includes(
+        req.path
+      )
+    ) {
+
+      return res
+        .status(404)
+        .send("Not Found");
+
+    }
+
+    next();
+
   }
 );
 
@@ -946,6 +1033,7 @@ app.get(
           message:
             "API route not found"
         });
+
     }
 
     res.sendFile(
@@ -954,6 +1042,7 @@ app.get(
         "index.html"
       )
     );
+
   }
 );
 
@@ -977,6 +1066,7 @@ app.use(
           message:
             err.message
         });
+
     }
 
     res
@@ -986,7 +1076,9 @@ app.use(
         message:
           err.message ||
           "Request failed"
+
       });
+
   }
 );
 
@@ -1027,11 +1119,13 @@ async function start() {
 
       role:
         "admin"
+
     });
 
     console.log(
       `Initial admin '${process.env.ADMIN_USERNAME}' created.`
     );
+
   }
 
   app.listen(
@@ -1045,6 +1139,7 @@ async function start() {
 
     }
   );
+
 }
 
 start().catch(
@@ -1056,5 +1151,6 @@ start().catch(
     );
 
     process.exit(1);
+
   }
 );
