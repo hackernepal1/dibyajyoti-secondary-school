@@ -864,8 +864,9 @@ app.get(
               file.endsWith(
                 ".html"
               ) &&
-              file.toLowerCase() !==
-                "admin.html"
+              file.toLowerCase() !== "admin.html" &&
+file.toLowerCase() !== "login.html" &&
+!file.toLowerCase().startsWith("google")
           );
 
     } catch (err) {
