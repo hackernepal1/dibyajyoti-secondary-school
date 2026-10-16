@@ -1257,17 +1257,17 @@ h1 span {
 
   <div class="tag">SYSTEM ACCESS CONTROL</div>
 
-  <h1>ACCESS <span>RESTRICTED</span></h1>
+  <h1>ACCESS <span>DENIED</span></h1>
 
   <p class="description">
     This resource is not publicly available.
-    Protected application resources are restricted
+    Protected application resources are denied
     to prevent unauthorized access.
   </p>
 
   <div class="status">
     <span class="dot"></span>
-    <span>RESTRICTED RESOURCE · HTTP 404</span>
+    <span>DENIED RESOURCE · HTTP 404</span>
   </div>
 
   <div class="footer">
