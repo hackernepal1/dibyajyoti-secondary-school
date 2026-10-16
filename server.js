@@ -1000,7 +1000,7 @@ app.use((req, res, next) => {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#050816">
-<title>Access Restricted | REDCSS TEAM</title>
+<title>Access Denied | REDCSS TEAM</title>
 
 <style>
 * {
