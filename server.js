@@ -963,41 +963,324 @@ ${urls.join("\n")}
   }
 );
 
-// ===============================
-// BLOCK SERVER-SIDE FILES
-// ===============================
 
-app.use(
-  (req, res, next) => {
+ // ==========================================
+ // REDCSS TEAM | SECURE FILE ACCESS
+ // Animated Cyber Security Response
+ // ==========================================
 
-    const blockedFiles = [
-      "/server.js",
-      "/User.js",
-      "/Notice.js",
-      "/Gallery.js",
-      "/Video.js",
-      "/Event.js",
-      "/package.json",
-      "/package-lock.json",
-      "/.env"
-    ];
+const blockedFiles = new Set([
+  "/server.js",
+  "/user.js",
+  "/notice.js",
+  "/gallery.js",
+  "/video.js",
+  "/event.js",
+  "/package.json",
+  "/package-lock.json",
+  "/.env"
+]);
 
-    if (
-      blockedFiles.includes(
-        req.path
-      )
-    ) {
+app.use((req, res, next) => {
+  const pathname = req.path.toLowerCase();
 
-      return res
-        .status(404)
-        .send("Service Unavailable Repo- Changed By REDCSS TEAM ");
-
-    }
-
-    next();
-
+  if (!blockedFiles.has(pathname)) {
+    return next();
   }
-);
+
+  // Never expose backend source or environment data.
+  res.status(404);
+  res.set("Cache-Control", "no-store");
+  res.type("html");
+
+  return res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#050816">
+<title>Access Restricted | REDCSS TEAM</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 24px;
+  font-family: system-ui, Arial, sans-serif;
+  color: #f1f5ff;
+  background:
+    radial-gradient(ellipse at 15% 15%,
+      #112653 0%, transparent 42%),
+    radial-gradient(ellipse at 85% 85%,
+      #251044 0%, transparent 40%),
+    #050816;
+}
+
+.grid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .17;
+  background-image:
+    linear-gradient(#4568a3 1px, transparent 1px),
+    linear-gradient(90deg, #4568a3 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent);
+  animation: gridMove 18s linear infinite;
+}
+
+.orb {
+  position: fixed;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  filter: blur(85px);
+  opacity: .24;
+  pointer-events: none;
+  animation: float 7s ease-in-out infinite alternate;
+}
+
+.orb.one {
+  background: #00e5ff;
+  top: -100px;
+  left: -70px;
+}
+
+.orb.two {
+  background: #8b5cf6;
+  bottom: -100px;
+  right: -70px;
+  animation-delay: -3s;
+}
+
+.card {
+  width: min(100%, 480px);
+  position: relative;
+  isolation: isolate;
+  padding: 38px 25px;
+  text-align: center;
+  border: 1px solid #34456b;
+  border-radius: 25px;
+  background: rgba(8, 15, 35, .82);
+  box-shadow:
+    0 0 45px rgba(0, 229, 255, .09),
+    0 25px 80px rgba(0, 0, 0, .4);
+  backdrop-filter: blur(18px);
+  animation: appear .8s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    130deg, #00e5ff, transparent 38%,
+    #8b5cf6 72%, #00e5ff
+  );
+  background-size: 250% 250%;
+  animation: borderFlow 5s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.logo {
+  width: 94px;
+  height: 94px;
+  margin: 0 auto 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 26px;
+  color: #00e5ff;
+  border: 1px solid #245a7c;
+  background: linear-gradient(145deg,
+    rgba(0,229,255,.13),
+    rgba(139,92,246,.13));
+  box-shadow: 0 0 35px rgba(0,229,255,.15);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.logo svg {
+  width: 53px;
+  height: 53px;
+  filter: drop-shadow(0 0 8px #00e5ff);
+}
+
+.tag {
+  display: inline-block;
+  margin-bottom: 19px;
+  padding: 7px 12px;
+  border: 1px solid #24556a;
+  border-radius: 30px;
+  background: rgba(0,229,255,.06);
+  color: #66efff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+h1 {
+  font-size: clamp(25px, 7vw, 35px);
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin-bottom: 13px;
+}
+
+h1 span {
+  color: #4deaff;
+  text-shadow: 0 0 22px rgba(0,229,255,.25);
+}
+
+.description {
+  color: #a8b5d0;
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 0 auto 25px;
+  max-width: 340px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px;
+  border: 1px solid #263957;
+  border-radius: 12px;
+  background: rgba(255,255,255,.025);
+  color: #c5d2ea;
+  font-size: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #42e9a4;
+  box-shadow: 0 0 12px #42e9a4;
+  animation: blink 1.5s infinite;
+}
+
+.footer {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #26314c;
+  color: #7384a5;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.footer strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #dbe9ff;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(24px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 22px #00e5ff12; }
+  50% { transform: scale(1.045); box-shadow: 0 0 38px #00e5ff30; }
+}
+
+@keyframes borderFlow {
+  to { background-position: 250% 250%; }
+}
+
+@keyframes float {
+  to { transform: translate(35px, 30px) scale(1.2); }
+}
+
+@keyframes gridMove {
+  to { background-position: 42px 42px; }
+}
+
+@keyframes blink {
+  50% { opacity: .35; }
+}
+
+@media (max-width: 400px) {
+  .card { padding: 30px 19px; }
+  .logo { width: 80px; height: 80px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="grid"></div>
+<div class="orb one"></div>
+<div class="orb two"></div>
+
+<main class="card">
+  <div class="logo" aria-hidden="true">
+    <svg viewBox="0 0 64 64" fill="none"
+         stroke="currentColor" stroke-width="2.5"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M32 5 53 13V29C53 43 44 53 32 59
+               20 53 11 43 11 29V13L32 5Z"/>
+      <path d="m22 32 7 7 14-16"/>
+    </svg>
+  </div>
+
+  <div class="tag">SYSTEM ACCESS CONTROL</div>
+
+  <h1>ACCESS <span>RESTRICTED</span></h1>
+
+  <p class="description">
+    This resource is not publicly available.
+    Protected application resources are restricted
+    to prevent unauthorized access.
+  </p>
+
+  <div class="status">
+    <span class="dot"></span>
+    <span>RESTRICTED RESOURCE · HTTP 404</span>
+  </div>
+
+  <div class="footer">
+    <strong>REDCSS TEAM</strong>
+    Dibya Jyoti Secondary School Portal
+    <p style="margin-top:10px">
+      SECURITY • INTEGRITY • PROTECTION
+    </p>
+  </div>
+</main>
+</body>
+</html>`);
+});
 
 // ===============================
 // FRONTEND
