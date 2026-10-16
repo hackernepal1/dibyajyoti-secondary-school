@@ -1275,9 +1275,9 @@ h1 span {
     Dibya Jyoti Secondary School Portal
     <p style="margin-top:10px">
       SECURITY • INTEGRITY • PROTECTION
+      </p>
       <span class="dot"></span>
       <span> ADMIN : Jageshwarkushwaha .REDCSS </span>
-    </p>
   </div>
 </main>
 </body>
