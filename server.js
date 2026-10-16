@@ -1277,7 +1277,11 @@ h1 span {
       SECURITY • INTEGRITY • PROTECTION
       </p>
       <span class="dot"></span>
-      <span> ADMIN : Jageshwarkushwaha .REDCSS </span>
+      <span> ADMIN : Jageshwar Kushwaha • REDCSS </span>
+      
+<a href="https://www.jageshwarkushwaha.com.np/" target="_blank" rel="noopener noreferrer">🌐 Developer Site</a>
+
+      
   </div>
 </main>
 </body>
