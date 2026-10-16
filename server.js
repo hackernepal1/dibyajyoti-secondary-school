@@ -1279,7 +1279,7 @@ h1 span {
       <span class="dot"></span>
       <span> ADMIN : Jageshwar Kushwaha • REDCSS </span>
       
-<a href="https://www.jageshwarkushwaha.com.np/" target="_blank" rel="noopener noreferrer">🌐 Developer Site</a>
+<a href="https://www.jageshwarkushwaha.com.np/" target="_blank" rel="noopener noreferrer"> Developer Site</a>
 
       
   </div>
